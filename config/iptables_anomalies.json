@@ -1,0 +1,61 @@
+{
+    "spark_config": {
+        "appName": "testApp",
+        "streaming": {
+            "batch_interval": 1
+        }
+    },
+    "server": {
+        "port": 3000,
+        "debug": false
+    },
+    "sources": {
+        "src1": {
+            "module": "IPTablesSource",
+            "params": {
+                "server_sleep_in_seconds": 0.01
+            }
+        }
+    },
+    "ingestors": {
+        "ing1": {
+            "module": "IptablesIngestor"
+        }
+    },
+    "smls": {
+        "sml1": {
+            "module": "SvmOneClass"
+        }
+    },
+    "voters": {
+        "vot1": {
+            "module": "PickIndexVoter",
+            "params": {
+                "index": 0
+            }
+        }
+    },
+    "sinks": {
+        "snk1": {
+            "module": "IptablesSQLiteSink"
+        },
+        "snk2": {
+            "module": "StdoutSink"
+        }
+    },
+    "ldps": {
+        "ldp1": {
+            "module": "IptablesLDP"
+        }
+    },
+    "connections": {
+        "src1": ["ing1", "ldp1"],
+        "ing1": [],
+        "sml1": ["vot1"],
+        "vot1": ["ldp1"],
+        "ldp1": ["snk1", "snk2"],
+        "snk1": [],
+        "snk2": []
+    },
+    "feedback": {}
+}

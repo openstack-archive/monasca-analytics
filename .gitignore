@@ -1,0 +1,10 @@
+*~
+*.egg-info
+*.swp
+*.log
+*.pyc
+*.pyo
+.project
+.pydevproject
+.vagrant
+.idea

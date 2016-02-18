@@ -1,0 +1,52 @@
+{
+    "id": "my_id",
+    "spark_config": {
+        "appName": "testApp",
+        "streaming": {
+            "batch_interval": 1
+        }
+    },
+    "server": {
+        "port": 3000,
+        "debug": false
+    },
+    "sources": {
+        "src1": {
+            "module": "my_src_module"
+        }
+    },
+    "ingestors": {
+        "ing1": {
+            "module": "my_ingestor_module"
+        }
+    },
+    "smls": {
+        "sml1": {
+            "module": "my_sml_module"
+        }
+    },
+    "voters": {
+        "vot1": {
+            "module": "my_voter_module"
+        }
+    },
+    "sinks": {
+        "snk1": {
+            "module": "my_sink_module"
+        }
+    },
+    "ldps": {
+        "ldp1": {
+            "module": "my_ldp_module"
+        }
+    },
+    "connections": {
+        "src1": ["ing1", "ldp1"],
+        "sml1": ["vot1"],
+        "ing1": [],
+        "vot1": ["ldp1"],
+        "ldp1": ["snk1"],
+        "snk1": []
+    },
+    "feedback": {}
+}
