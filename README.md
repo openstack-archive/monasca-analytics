@@ -52,11 +52,8 @@ enables you to add your own [data ingestors](doc/dev_guide.md#ingestors).
 * [MoNanas/GettingStarted](doc/getting_started.md): A starting point for users
 and developers of MoNanas.
 
-### Presentations
-* Monasca Analytics Framework: https://github.hpe.com/labs/monanas/blob/master/doc/slides/monanas.pptx
-
 ### Repositories
-Core: https://github.hpe.com/labs/monanas/
+Core: https://github.com/openstack/monasca-analytics.git
 
 ## MoNanas Design
 See: [MoNanas/Design](doc/design.md) for details on MoNanas's architecture,
@@ -87,9 +84,8 @@ engine for large-scale data processing.
 There are multiple ways to contribute to the project. All are equally important
 to us!
 * You can have a look at the
-[issue tracker](https://github.hpe.com/labs/monanas/issues) for problems that
-needs to be solved, ask if anyone is already working on it, and take the issue
-assignment.
+[Monasca launchpad](https://launchpad.net/monasca) for problems that
+needs to be solved (bugs/issues), and blueprints.
 * You can also help us to add
 [new learning algorithms](doc/dev_guide.md#add_new_algorithms).
 * Finally, we are very interested in having more data sources to experiment
@@ -100,8 +96,11 @@ aspect, [you are welcome as well](doc/dev_guide.md#add_new_sources).
 For more information on setting up your development environment, see
 [MoNanas/DevGuide](doc/dev_guide.md).
 
-## Contributors
-Suksant Sae Lor (Hui), David Subiros Perez,  Joan Varvenne, Luis M. Vaquero
+For more information about Monanas, please visit the wiki page:
+[Monanas wiki](https://wiki.openstack.org/wiki/Monasca/Analytics).
+
+And for more information about Monasca, please visit the wiki page:
+[Monasca wiki](https://wiki.openstack.org/wiki/Monasca).
 
 ## License
 Copyright (c) 2016 Hewlett Packard Enterprise Development Company, L.P.
