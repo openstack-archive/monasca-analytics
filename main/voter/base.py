@@ -35,10 +35,10 @@ class BaseVoter(base.BaseComponent):
     def elect_structure(self, structures):
         """Elect a structure or combine them to create a new one
 
-        :param structures: list[numpy.ndarray] -- the list of structure
-        learned over the samples.
-        :returns: numpy.ndarray -- this should returns one of the structure
-        or a combination.
+        :type structures: list[numpy.ndarray]
+        :param structures: the list of structure learned over the samples.
+        :rtype: numpy.ndarray
+        :returns: this should returns one of the structure or a combination.
         """
         pass
 
@@ -47,7 +47,7 @@ class BaseVoter(base.BaseComponent):
 
         :param who: the sml making the proposal
         :param structure: the structure proposed
-        :returns: numpy.ndarray
+        :rtype: numpy.ndarray
         """
         if who not in self._has_receive_structure_from:
             self._structures.append(structure)
@@ -68,7 +68,8 @@ class BaseVoter(base.BaseComponent):
         This method is automatically called by the passed sml
         when this voter is connected to it and shouldn't be used directly.
 
-        :param l: main.ml.base.BaseSML -- sml just connected to this.
+        :type l: main.sml.base.BaseSML
+        :param l: sml just connected to this.
         """
         self._smls.append(l)
 
@@ -79,7 +80,8 @@ class BaseVoter(base.BaseComponent):
         when this voter is disconnected to it and shouldn't be used
         directly.
 
-        :param l: main.ml.base.BaseSML -- sml just disconnected to this.
+        :type l: main.sml.base.BaseSML
+        :param l: sml just disconnected to this.
         """
         self._smls.remove(l)
 

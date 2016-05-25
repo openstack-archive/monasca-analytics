@@ -42,8 +42,9 @@ class MonanasDSL():
         If no configuration file path is provided, the default base
         configuration defined in config.const will be used.
 
-        :param config_file_path: str -- path to the file containing
-        the configuration that will be loaded at MonansDSL creation
+        :type config_file_path: str
+        :param config_file_path: path to the file containing the configuration
+                                 that will be loaded at MonansDSL creation
         """
         if config_file_path:
             self.load_configuration(config_file_path)
@@ -59,13 +60,14 @@ class MonanasDSL():
         The configuration passed as parameter is validated, raising exceptions
         if the module does not exist or the configuration is invalid.
 
-        :param _component_config: dict -- configuration of
-        the component to be added
-        :returns: str -- Component ID for the added component
+        :type _component_config: dict
+        :param _component_config: configuration of the component to be added
+        :rtype: str
+        :returns: Component ID for the added component
         :raises: MonanasNoSuchClassError -- if the defined class doesn't
-        exist or is not of a valid type
+                 exist or is not of a valid type
         :raises: SchemaError -- if the configuration is not valid for
-        the class.
+                 the class.
         """
         if type(_component_config) == str:
             _component_config = json.loads(_component_config)
@@ -84,13 +86,17 @@ class MonanasDSL():
         following the path in the dictionary defined by params_path, and
         assigning the value value.
 
-        :param comp_id: str -- ID of the component to be modified
-        :param params_path: list -- parameters path to modify in the config
-        :param value: str -- new value to be assigned, will be parsed
-        according to the expected configuration
-        :returns: bool -- True if the component was modified (or if the
-        modification result was the same as the existing configuration),
-        False otherwise
+        :type comp_id: str
+        :param comp_id: ID of the component to be modified
+        :type params_path: list
+        :param params_path: parameters path to modify in the config
+        :type value: str | int | float
+        :param value: new value to be assigned, will be parsed
+                      according to the expected configuration
+        :rtype: bool
+        :returns: True if the component was modified (or if the modification
+                  result was the same as the existing configuration),
+                  False otherwise
         :raises: SchemaError -- if the new configuration would not be valid
         """
         comp_type = self._get_type_by_id(comp_id)
@@ -124,10 +130,12 @@ class MonanasDSL():
         Removes from the configuration the component whose ID matches the
         one passed as parameter.
 
-        :param: component_id: str -- ID of the component to be removed
-        :returns: bool -- True if the component was removed, False otherwise
+        :type component_id: str
+        :param: component_id: ID of the component to be removed
+        :rtype: bool
+        :returns: True if the component was removed, False otherwise
         :raises: DSLExistingConnection -- if at least a connection exists with
-        the component as origin or destination.
+                 the component as origin or destination.
         """
         if self._is_connected(component_id):
             raise err.DSLExistingConnection("Cannot remove component " +
@@ -149,14 +157,16 @@ class MonanasDSL():
         If any of the components is not defined, a DSLInexistentComponent
         exception is raised.
 
-        :param origin_id: str -- ID of the component at the origin of the
-        connection
-        :param dest_id: str -- ID of the component at the destination of the
-        connection
-        :returns: bool -- True if the components were connected, False if
-        the connection already existed
+        :type origin_id: str
+        :param origin_id: ID of the component at the origin of the connection
+        :type dest_id: str
+        :param dest_id: ID of the component at the destination of the
+                        connection
+        :rtype: bool
+        :returns: True if the components were connected, False if
+                  the connection already existed
         :raises: DSLInexistentComponent -- if either the origin or the
-        destination are not defined in the configuration
+                 destination are not defined in the configuration
         """
         if not self._component_defined(origin_id):
             raise err.DSLInexistentComponent(origin_id)
@@ -178,12 +188,14 @@ class MonanasDSL():
         and the function returns true.
         If it didn't exist, the function returns false and nothing happens
 
-        :param origin_id: str -- ID of the component at the origin of
-        the connection
-        :param dest_id: str -- ID of the component at the destination
-        of the connection
-        :returns: bool -- True if the components were already disconnected,
-        False if the connection didn't exist in the first place
+        :type origin_id: str
+        :param origin_id: ID of the component at the origin of the connection
+        :type dest_id: str
+        :param dest_id: ID of the component at the destination of the
+                        connection
+        :rtype: bool
+        :returns: True if the components were already disconnected,
+                  False if the connection didn't exist in the first place
         """
         if origin_id in self._config[const.CONNECTIONS]:
             if dest_id in self._config[const.CONNECTIONS][origin_id]:
@@ -194,8 +206,9 @@ class MonanasDSL():
     def load_configuration(self, config_file_path):
         """Load a configuration from the file passed as parameter
 
-        :param config_file_path: str -- file path containing the
-        configuration that will be loaded
+        :type config_file_path: str
+        :param config_file_path: file path containing the
+               configuration that will be loaded
         """
         self._config = cu.parse_json_file(config_file_path)
         self._init_ids_dictionary()
@@ -213,12 +226,16 @@ class MonanasDSL():
     def save_configuration(self, config_file_path, overwrite_file=True):
         """Save the configuration to the file passed as parameter
 
-        :param config_file_path: str: file path where the configuration
-        will be saved
-        :param overwrite_file (optional): bool -- True will overwrite the
-        file if it exists, False will make the function return without saving.
-        :returns: bool -- True if the configuration was saved,
-        False otherwise
+        :type config_file_path: str
+        :param config_file_path: file path where the configuration
+                                 will be saved
+        :type overwrite_file: bool
+        :param overwrite_file: True will overwrite the file if it exists,
+                               False will make the function return without
+                               saving.
+        :rtype: bool
+        :returns: True if the configuration was saved,
+                  False otherwise
         """
         if os.path.exists(config_file_path) and\
                 os.stat(config_file_path).st_size > 0 and\
@@ -235,10 +252,11 @@ class MonanasDSL():
         After the ID is generated, the last max checked number is stored
         in the ids_by_type dictionary
 
-        :param comp_type: str -- type of component for which the ID will
-        be created
+        :type comp_type: str
+        :param comp_type: type of component for which the ID will
+                          be created
         :raises: KeyError -- if the comp_type does not correspond to a
-        component type of the configuration
+                             component type of the configuration
         """
         typ, num = self.ids_by_type[comp_type]
         num += 1
@@ -247,24 +265,27 @@ class MonanasDSL():
         self.ids_by_type[comp_type] = (typ, num)
         return typ + str(num)
 
-    def _get_type_by_id(self, compoment_id):
+    def _get_type_by_id(self, component_id):
         """Gets the type of a copmonent from its ID
 
-        :param component_id: str -- ID of a component
+        :type component_id: str
+        :param component_id: ID of a component
+        :rtype: str
         :returns: type of component for the ID passed as parameter
         """
         for comp_type in const.components_types:
-            if compoment_id in self._config[comp_type]:
+            if component_id in self._config[comp_type]:
                 return comp_type
 
-    def _component_defined(self, compoment_id):
+    def _component_defined(self, component_id):
         """Check if a component is defined in the configuration
 
-        :param component_id: string -- ID of a component
-        :returns: boolean -- True if the component is defined in
-        the configuration, False otherwise
+        :type component_id: str
+        :param component_id: ID of a component
+        :rtype: bool
+        :returns: True if the component is defined in the configuration
         """
-        comp_type = self._get_type_by_id(compoment_id)
+        comp_type = self._get_type_by_id(component_id)
         if not comp_type:
             return False
         return True
@@ -276,9 +297,11 @@ class MonanasDSL():
         connection with component_id as either source or destination, this
         function will return true. Empty connections lists are ignored.
 
-        :param component_id: str -- ID of a component
-        :returns: bool -- True if the component is connected to another
-        component according to the configuration, False otherwise
+        :type component_id: str
+        :param component_id: ID of a component
+        :rtype: bool
+        :returns: True if the component is connected to another component
+                  according to the configuration, False otherwise
         """
         for origin_id, dest_ids in self._config[const.CONNECTIONS].iteritems():
             if dest_ids == []:
@@ -297,9 +320,12 @@ class MonanasDSL():
         to the component with ID = dest_id is validated according to the
         valid connections dictionary defined in the validation module.
 
-        :param origin_id: str -- ID of the origin component
-        :param dest_id: str -- ID of the destination component
-        :returns: bool -- True if the connection is allowed, False otherwise
+        :type origin_id: str
+        :param origin_id: ID of the origin component
+        :type dest_id: str
+        :param dest_id: ID of the destination component
+        :rtype: bool
+        :returns: True if the connection is allowed, False otherwise
         """
         origin_type = self._get_type_by_id(origin_id)
         dest_type = self._get_type_by_id(dest_id)
@@ -312,12 +338,17 @@ class MonanasDSL():
 
         Modify the dictionary passed as first parameter, assigning the value
         passed as last parameter to the key path defined by params_path
-        :param target_dict: dict -- target to be modified
-        :param params_path: list -- hierarchy of keys to navigate in
-        the dictionary, pointing the leave to modify
-        :param value: any -- Value that will be assigned to the path defined
-        by params_path in the dictionary
-        :returns: dict -- Modified dictionary
+
+        :type target_dict: dict
+        :param target_dict: target to be modified
+        :type params_path: list[str]
+        :param params_path: hierarchy of keys to navigate in
+                            the dictionary, pointing the leave to modify
+        :type value: object
+        :param value: Value that will be assigned to the path defined
+                      by params_path in the dictionary
+        :rtype dict
+        :returns: Modified dictionary
         """
         aux = target_dict
         for i, param in enumerate(params_path):

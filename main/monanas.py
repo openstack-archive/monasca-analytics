@@ -46,7 +46,8 @@ class Monanas(object):
         It validates the configuration passed as parameter and,
         if it is fine, it creates the components defined by it.
 
-        :param _config: dict -- configuration of the system.
+        :type _config: dict
+        :param _config: configuration of the system.
         """
         self._is_streaming = False
         self._driver = driver.DriverExecutor(_config)
@@ -55,8 +56,8 @@ class Monanas(object):
     def is_streaming(self):
         """Gets the status of streaming.
 
-        :returns: bool -- `True` if Monanas is streaming,
-        `False` otherwise.
+        :rtype: bool
+        :returns: `True` if Monanas is streaming,`False` otherwise.
         """
         return self._is_streaming
 

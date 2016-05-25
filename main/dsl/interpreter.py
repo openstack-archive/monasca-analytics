@@ -38,8 +38,10 @@ class DSLInterpreter():
     def execute_string(self, str_program):
         """Parse and execute the command/s in the string passed as parameter
 
-        :param str_program: str -- command to be executed
-        :returns: str -- execution result
+        :type str_program: str
+        :param str_program: command to be executed
+        :rtype: str
+        :returns: execution result
         """
         info = parser.get_parser().parseString(str_program)
         return self.execute(info)
@@ -47,9 +49,11 @@ class DSLInterpreter():
     def execute_file(self, file_program):
         """Parse and execute the command/s in the file passed as parameter
 
-        :param file_program: str -- path to the file containing the
-        command to be executed
-        :returns: str -- execution result
+        :type file_program: str
+        :param file_program: path to the file containing the
+                             command to be executed
+        :rtype: str
+        :returns: execution result
         """
         info = parser.get_parser().parseFile(file_program)
         return self.execute(info)
@@ -57,8 +61,10 @@ class DSLInterpreter():
     def execute(self, info):
         """Execute parsed command/s
 
-        :param info: dict -- containing the parsed instructions
-        :returns: str -- execution result
+        :type info: dict
+        :param info: containing the parsed instructions
+        :rtype: str
+        :returns: execution result
         """
         for cmd in info:
             for key in cmd.keys():
@@ -97,9 +103,11 @@ class DSLInterpreter():
     def create(self, varname, modulename):
         """Add a module defined by modulename in the configuration
 
-        :param varname: str -- name of the variable representing
-        the new component
-        :returns: str -- new component ID
+        :type varname: str
+        :param varname: name of the variable representing
+                        the new component
+        :rtype: str
+        :returns: new component ID
         """
         clz = cu.get_class_by_name(modulename)
         conf = copy.deepcopy(clz.get_default_config())
@@ -110,12 +118,15 @@ class DSLInterpreter():
     def connect(self, origin_varname, dest_varname):
         """Connect two components
 
-        :param origin_varname: str -- variable name or ID of the source
-        component of the connection
-        :param dest_varname: str -- variable name or ID of the destination
-        component of the connection
-        :returns: bool -- True if the connection was performed,
-        false otherwise
+        :type origin_varname: str
+        :param origin_varname: variable name or ID of the source
+                               component of the connection
+        :type dest_varname: str
+        :param dest_varname: variable name or ID of the destination
+                            component of the connection
+        :rtype: bool
+        :returns: True if the connection was performed,
+                  False otherwise
         """
         origin_id = self._get_id(origin_varname)
         dest_id = self._get_id(dest_varname)
@@ -124,10 +135,10 @@ class DSLInterpreter():
     def _get_id(self, name_or_id):
         """Get the ID from a name or ID
 
-        :param name_or_id: str -- variable name or ID
-        :param dest_varname: variable name or ID of the destination
-        component of the connection
-        :returns: str -- ID
+        :type name_or_id: str
+        :param name_or_id: variable name or ID
+        :rtype: str
+        :returns: ID
         """
         if name_or_id in self.mappings.keys():
             return self.mappings[name_or_id]
@@ -139,12 +150,15 @@ class DSLInterpreter():
     def disconnect(self,  origin_varname, dest_varname):
         """Disconnect two components
 
-        :param origin_varname: str -- variable name or ID of the source
-        component of the connection
-        :param dest_varname: str -- variable name or ID of the destination
-        component of the connection
-        :returns: bool -- True if the components were disconnected,
-        false otherwise
+        :type origin_varname: str
+        :param origin_varname: variable name or ID of the source
+                               component of the connection
+        :type dest_varname: str
+        :param dest_varname: variable name or ID of the destination
+                             component of the connection
+        :rtype: bool
+        :returns: True if the components were disconnected,
+                  False otherwise
         """
         origin_id = self._get_id(origin_varname)
         dest_id = self._get_id(dest_varname)
@@ -153,7 +167,8 @@ class DSLInterpreter():
     def load(self, filepath):
         """Load configuration from a file
 
-        :param filepath: str -- path to the file to be loaded
+        :type filepath: str
+        :param filepath: path to the file to be loaded
         """
         self.dsl.load_configuration(filepath)
         self.file_in_use = filepath
@@ -161,9 +176,10 @@ class DSLInterpreter():
     def save(self, filepath=None):
         """Save configuration to a file
 
-        :param filepath: str -- (Optional) path to the file where the
-        configuration will be saved. If the path is not provided, the last file
-        used for saving or loading will be used.
+        :type filepath: str
+        :param filepath: (Optional) path to the file where the configuration
+                         will be saved. If the path is not provided, the last
+                         file used for saving or loading will be used.
         """
         if not filepath:
             filepath = self.file_in_use
@@ -175,8 +191,9 @@ class DSLInterpreter():
     def remove(self, varname):
         """Remove a variable or ID from the configuration
 
-        :param varname: str -- variable name or ID mapped to the component
-        that will be removed from the configuration
+        :type varname: str
+        :param varname: variable name or ID mapped to the component
+                        that will be removed from the configuration
         """
         remove_id = self._get_id(varname)
         return self.dsl.remove_component(remove_id)
@@ -184,9 +201,12 @@ class DSLInterpreter():
     def modify(self, varname, params, value):
         """Override the value of the configuration path of a component
 
-        :param varname: str -- variable name or ID mapped to the component
-        :param params: list -- path to be modified in the configuration
-        :param value: any -- value to assign
+        :type varname: str
+        :param varname: variable name or ID mapped to the component
+        :type params: list
+        :param params: path to be modified in the configuration
+        :type value: float | int | str
+        :param value: value to assign
         """
         modify_id = self._get_id(varname)
         return self.dsl.modify_component(modify_id, params, value)
@@ -199,8 +219,10 @@ class DSLInterpreter():
         of components, the configurations of all components of that type
         will be printed.
 
-        :param varname: str -- variable, ID or type to be printed
-        :returns: str -- requested configuration in string format
+        :type varname: str
+        :param varname: variable, ID or type to be printed
+        :rtype: str
+        :returns: requested configuration in string format
         """
         if varname in self.dsl._config.keys():
             return self._json_print(self.dsl._config[varname])
@@ -212,7 +234,8 @@ class DSLInterpreter():
     def prnt_all(self):
         """Print the the whole configuration
 
-        :returns: str -- whole configuration in string format
+        :rtype: str
+        :returns: whole configuration in string format
         """
         return self._json_print(self.dsl._config)
 

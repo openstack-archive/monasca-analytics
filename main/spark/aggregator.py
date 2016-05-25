@@ -29,8 +29,8 @@ class Aggregator(object):
     def __init__(self, driver):
         """BaseAggregator constructor.
 
-        :param driver: main.spark.driver.DriverExecutor -- The driver that
-        manages spark
+        :type driver: main.spark.driver.DriverExecutor
+        :param driver: The driver that manages spark
         """
         self._combined_stream = None
         self._smls = []
@@ -40,22 +40,24 @@ class Aggregator(object):
     def append_sml(self, l):
         """The given sml will now be owned and receive the accumulated data
 
-        :param l: main.sml.base.BaseSML -- the sml to connect to.
+        :type l: main.sml.base.BaseSML
+        :param l: The sml to connect to.
         """
         self._smls.append(l)
 
     def accumulate_dstream_samples(self, stream):
         """Accumulate the samples coming from a stream
 
-        The first time this function is called it sets the _aggregated_stream
+        The first time this function is called it sets the _combined_stream
         to be the _stream parameter, and the _output_stream to be the
         transformed version (according to the logic implemented by children
-        of this class) of the _aggregated_stream.
+        of this class) of the _combined_stream.
         The consecutive times, it joins the _stream to the aggregated stream,
-        so at runtime _aggregated_stream is a funnel of all streams passed
+        so at runtime _combined_stream is a funnel of all streams passed
         to this function.
 
-        :param stream: pyspark.streaming.DStream -- stream to be aggregated
+        :type stream: pyspark.streaming.DStream
+        :param stream: stream to be collected
         """
         if self._combined_stream is None:
             self._combined_stream = stream
@@ -75,7 +77,8 @@ class Aggregator(object):
     def _processRDD(self, rdd):
         """Process the RDD
 
-        :param rdd: pyspark.RDD
+        :type rdd: pyspark.RDD
+        :param rdd: A Spark Resilient Distributed Dataset
         """
         if len(self._smls) > 0:
             rdd_entries = rdd.collect()

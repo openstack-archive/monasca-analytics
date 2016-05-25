@@ -55,8 +55,10 @@ class IptablesLDP(bt.BaseLDP):
     def _detect_anomalies(self, rdd_entry, data):
         """Classifies and marks the RDD entry as anomalous or non-anomalous
 
-        :param rdd_entry: pyspark.streaming.RDD -- entry to be classified
-        :param data: dict -- contains the features and the classifier
+        :type rdd_entry: pyspark.RDD
+        :param rdd_entry: entry to be classified
+        :type data: dict
+        :param data: contains the features and the classifier
         """
         rdd_entry = json.loads(rdd_entry)
         new_entries = []

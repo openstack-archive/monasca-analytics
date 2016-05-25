@@ -37,10 +37,13 @@ class MarkovChain(object):
     def apply_on(self, node, hour_of_day):
         """Performs a state transition for the given node.
 
+        :type node: main.source.markov_chain.base.StateNode
         :param node: the state of this node will be changed
+        :type hour_of_day: int
         :param hour_of_day: the hour of the day (used by probability checks)
-        :returns: bool -- True if there exists in the model at least
-        one transition from the node current state.
+        :rtype: bool
+        :returns: True if there exists in the model at least one transition
+                  from the node current state.
         """
         if node.state not in self._transitions:
             return False

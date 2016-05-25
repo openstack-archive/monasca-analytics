@@ -18,7 +18,10 @@ import abc
 
 
 class abstractstatic(staticmethod):
-
+    """
+    See http://stackoverflow.com/a/4474495 for
+    more details on this class purpose
+    """
     __slots__ = ()
 
     def __init__(self, function):
@@ -39,8 +42,10 @@ class BaseComponent(object):
     def __init__(self, _id, _config):
         """BaseComponent constructor.
 
-        :param _id: str -- identifier of this Source
-        :param _config: dict -- configuration of this Source
+        :type _id: str
+        :param _id: identifier of this Source
+        :type _config: dict
+        :param _config: configuration of this Source
         """
         self.validate_config(_config)
         self._id = _id
@@ -56,8 +61,8 @@ class BaseComponent(object):
         This function should raise exceptions if the validation fails,
         otherwise it is assumed the validation was successful.
 
-        :param _config: dict -- configuration of this module,
-        to be validated.
+        :type _config: dict
+        :param _config: configuration of this module to be validated.
         """
         pass
 
@@ -68,7 +73,8 @@ class BaseComponent(object):
         To be implemented by BaseComponent children. It has to return a default
         valid configuration for the module.
 
-        :returns: dict -- default configuration
+        :rtype: dict
+        :returns: default configuration
         """
         pass
 

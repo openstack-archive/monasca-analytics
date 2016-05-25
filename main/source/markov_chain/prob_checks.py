@@ -30,9 +30,10 @@ class ProbCheck(object):
     def __init__(self, prob):
         """Create a ProbCheck, or change stat if the prob check is passed.
 
-        :param prob: dict[int, float] | float -- a probability value or a
-        dictionary where the key is the hour of the day and the value
-        is the probability associated with it.
+        :type prob: dict[int, float] | float
+        :param prob: a probability value or a dictionary where keys correspond
+                     to the hour of the day and the value is the probability of
+                     success associated with it.
         """
         if isinstance(prob, dict):
             self._prob = prob.items()
