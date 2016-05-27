@@ -42,7 +42,8 @@ class CloudCausalityLDP(bt.BaseLDP):
     def map_dstream(self, dstream):
         """Executes _aggregate for each RDD in the dstream
 
-        :param dstream: pyspark.streaming.DStream
+        :type dstream: pyspark.streaming.DStream
+        :param dstream: DStream created by the source.
         """
         data = self._data
         return dstream.flatMap(lambda r: self._aggregate(r, data))

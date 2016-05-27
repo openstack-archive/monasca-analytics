@@ -39,7 +39,7 @@ class BaseSource(base.BaseComponent):
     def get_feature_list(self):
         """Returns the list of features names.
 
-        :returns: list[str]
+        :rtype: list[str]
         """
         pass
 
@@ -47,10 +47,10 @@ class BaseSource(base.BaseComponent):
     def create_dstream(self, ssc):
         """Create a dstream to be consumed by Monanas.
 
-        :param ssc: pyspark.streaming.StreamingContext -- Spark streaming
-        context. It shouldn't be stored by the source.
-        :returns: pyspark.streaming.DStream -- a Spark dstream to be
-        consumed by Monanas.
+        :type ssc: pyspark.streaming.StreamingContext
+        :param ssc: Spark streaming context. It shouldn't be stored by self.
+        :rtype: pyspark.streaming.DStream
+        :returns: a Spark dstream to be consumed by Monanas.
         """
         pass
 

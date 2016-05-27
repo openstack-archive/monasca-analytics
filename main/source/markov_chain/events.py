@@ -21,23 +21,30 @@ class Trigger(object):
     def __init__(self, node_check, prob_check, event_builder):
         """Create a new trigger.
 
-        :param node_check: function (main.source.markov_chain.base.StateNode)
-        -> bool -- Checker function that will return true if the node has an
-        appropriate type
-        :param prob_check: function (int) -> bool -- A probability check that
-        can return true or false with a random chance
-        :param event_builder: function (main.source.markov_chain.base.
-        StateNode)-> Event -- Event builder that receive the node and use
-        the state to return an event.
+        :type node_check: (main.source.markov_chain.base.StateNode) -> bool
+        :param node_check: Checker function that will return true if the node has an
+                           appropriate type
+        :type prob_check: (int) -> bool
+        :param prob_check: A bernoulli trial that randomly return true or false that
+                           can use the parameter (hour of the day) to modify the
+                           probability of success
+
+        :type event_builder: (main.source.markov_chain.base.StateNode) -> Event
+        :param event_builder:  Event builder that receive the node and use
+                               the state to return an event.
         """
         self._prob_check = prob_check
         self._node_check = node_check
         self._event_builder = event_builder
 
     def apply_on(self, node, hour_of_day):
-        """
-        :param node: main.source.markov_chain.base.StateNode
-        :param hour_of_day: int
+        """Apply this trigger on the given node.
+
+        :type node: main.source.markov_chain.base.StateNode
+        :param  node: Node to test the trigger with.
+        :type hour_of_day: int
+        :param hour_of_day: An integer between [0, 24) representing
+                            the hour of the day.
         """
         if self._prob_check(hour_of_day) and self._node_check(node):
             return self._event_builder(node)
@@ -48,8 +55,10 @@ class Event(object):
 
     def __init__(self, msg, ident):
         """
-        :param msg: str
-        :param ident: str
+        :type msg: str
+        :param msg: The event message.
+        :type ident: str
+        :param ident: The id of the node causing this event.
         """
         self.id = ident
         self.msg = msg
@@ -59,12 +68,14 @@ class EventBuilder(object):
 
     def __init__(self, msg):
         """
-        :param msg: str
+        :type msg: str
+        :param msg: The event message.
         """
         self._msg = msg
 
     def __call__(self, node):
         """
-        :param node: main.source.markov_chain.base.StateNode
+        :type node: main.source.markov_chain.base.StateNode
+        :param node: The node associated with the event.
         """
         return Event(self._msg, str(node.id()))

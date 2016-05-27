@@ -26,6 +26,7 @@ import main.sml.base as bml
 import main.voter.base as mvoter
 import main.sink.base as msink
 import main.ldp.base as mldp
+import main.spark.streaming_context as streamingctx
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +45,7 @@ class DriverExecutor(object):
         self._orchestrator = agg.Aggregator(self)
 
         def restart_spark():
-            self._ssc = streaming.StreamingContext(self._sc, _config[
-                "spark_config"]["streaming"]["batch_interval"])
+            self._ssc = streamingctx.create_streaming_context(self._sc, _config)
 
         self._restart_spark = restart_spark
         self._sc = pyspark.SparkContext(
@@ -114,9 +114,10 @@ class DriverExecutor(object):
     def _prepare_phase(self, connect_dependent):
         """Prepare given phase by starting sources.
 
-        :param connect_dependent: function (pyspark.streaming.DStream, main.
-        source.base.BaseSource) -> None -- Callback that is going to
-        selectively connect the appropriate dependencies of each sources.
+        :type connect_dependent: (pyspark.streaming.DStream,
+                                  main.source.base.BaseSource) -> None
+        :param connect_dependent: Callback that is going to selectively connect
+                                  the appropriate dependencies of each sources.
         """
         for src in self._sources:
             logger.debug("Prepare source {}".format(src))
@@ -129,8 +130,8 @@ class DriverExecutor(object):
         During phase 1 this code is running exclusively by the driver
         at the moment.
 
-        :param from_component: bml.BaseSML | mvoter.BaseVoter --
-        Where we came from.
+        :type from_component: bml.BaseSML | mvoter.BaseVoter
+        :param from_component: Where we came from.
         """
         for connected_node in self._links[from_component]:
 
@@ -166,11 +167,12 @@ class DriverExecutor(object):
         During phase 2, only live data processors are considered.
         All ingestors are shutdown.
 
-        :param dstream: pyspark.streaming.DStream | None -- Dstream
-        that will be modified by dependent.
-        It can be None, only if from_component is aggregator, sml or voter.
-        :param from_component: main.component.base.BaseComponent --
-        Where we came from.
+        :type dstream: pyspark.streaming.DStream | None
+        :param dstream: Dstream that will be modified by dependent.
+                        It can be None, only if from_component is aggregator,
+                        sml or voter.
+        :type from_component: main.component.base.BaseComponent
+        :param from_component: Where we came from.
         """
         for connected_node in self._links[from_component]:
             # Live data processors are also doing a map, they add
@@ -188,11 +190,12 @@ class DriverExecutor(object):
 
         All live data processors are ignored during that phase.
 
-        :param dstream: pyspark.streaming.DStream | None --
-        Dstream that will be modified by dependent.
-        It can be None, only if from_component is aggregator, sml or voter.
-        :param from_component: main.component.base.BaseComponent --
-        Where we came from.
+        :type dstream: pyspark.streaming.DStream | None
+        :param dstream: Dstream that will be modified by dependent.
+                        It can be None, only if from_component is aggregator,
+                        sml or voter.
+        :type from_component: main.component.base.BaseComponent --
+        :param from_component: Where we came from.
         """
         for connected_node in self._links[from_component]:
 

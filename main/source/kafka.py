@@ -70,8 +70,8 @@ class KafkaSource(base.BaseSource):
         to the consumers. It uses a KafkaUtils.createStream, to read data from
         the Kafka queue that was defined in the configuration.
 
-        :param ssc: pyspark.streaming.StreamingContext -- Spark Streaming
-        Context that provides the data input
+        :type ssc: pyspark.streaming.StreamingContext
+        :param ssc: Spark Streaming Context
         """
         return kafka.KafkaUtils.createStream(
             ssc,

@@ -43,8 +43,8 @@ class MarkovChainSource(base.BaseSource):
         """
         Abstract method that should be implemented by subclasses
 
-        :returns: list[StateNode]-- List of StateNode that do not have
-        any dependencies
+        :rtype: list[StateNode]
+        :returns: List of StateNode that do not have any dependencies
         """
         pass
 
@@ -55,8 +55,8 @@ class MarkovChainSource(base.BaseSource):
         to the consumers. It uses a socketTextStream, to read data from
         the ThreadingTCPServer.
 
-        :param ssc: pyspark.streaming.StreamingContext -- Spark Streaming
-        Context that provides the data input
+        :type ssc: pyspark.streaming.StreamingContext
+        :param ssc: Spark Streaming Context that provides the data input
         """
         system = LeafNodes(self._create_system())
         port = self._start_thread(system)
@@ -110,16 +110,18 @@ class LeafNodes(object):
     def __init__(self, state_nodes):
         """Constructor with list of state nodes
 
-        :param state_nodes: list[StateNode] -- The node of the
-        directed acyclic graph that has no dependencies.
+        :type state_nodes: list[StateNode]
+        :param state_nodes: The node of the directed acyclic graph
+                            that has no dependencies.
         """
         self._state_nodes = state_nodes
 
     def next_state(self, hour_of_day):
         """Move to next state
 
-        :param hour_of_day: int -- An hour of the day that is used by
-        StateNode.next_state
+        :type hour_of_day: int
+        :param hour_of_day: An hour of the day that is used by
+                            StateNode.next_state
         """
         ignored_states = set([])
         for s in self._state_nodes:
@@ -128,9 +130,11 @@ class LeafNodes(object):
     def collect_events(self, hour_of_day):
         """Get list of events
 
-        :param hour_of_day: int -- An hour of the day that is used by
-        StateNode.collect_event
-        :returns: list -- List of event. Specific to the event builder.
+        :type hour_of_day: int
+        :param hour_of_day: An hour of the day that is used by
+                            StateNode.collect_event
+        :rtype: list
+        :returns: List of event. Specific to the event builder.
         """
         events = []
         for node in self._state_nodes:
@@ -150,10 +154,15 @@ class StateNode(object):
     def __init__(self, initial_state, markov_chain, trigger, _id=None):
         """Constructor
 
-        :param _id: int | str
-        :param initial_state: str | int | None
-        :param markov_chain: main.source.markov_chain.transition.MarkovChain
-        :param trigger: list | main.source.markov_chain.events.Trigger
+        :type _id: int | str
+        :param _id: Id of the node
+        :type initial_state: str | int | None
+        :param initial_state: Initial state for this node.
+        :type markov_chain: main.source.markov_chain.transition.MarkovChain
+        :param markov_chain: Markov Chain managing this node state.
+        :type trigger: list | main.source.markov_chain.events.Trigger
+        :param trigger: List of triggers or single trigger that you want
+                        to attached to this node.
         """
         if _id is None:
             self._id = next(self.__class__.ids)
@@ -169,7 +178,8 @@ class StateNode(object):
 
     def id(self):
         """
-        :returns: int | str -- Returns this object id.
+        :rtype: int | str
+        :returns: Returns this object id.
         """
         return self._id
 
@@ -179,9 +189,11 @@ class StateNode(object):
         This will affect this element's children that conditionally depends
         on this element's state.
 
-        :param hour_of_day: int -- An integer in the range of 0 to 24 to
-        express the hour of the day.
-        :param ignored_states: set -- set of states that should not change.
+        :type hour_of_day: int
+        :param hour_of_day: An integer in the range of 0 to 24 to
+                            express the hour of the day.
+        :type ignored_states: set
+        :param ignored_states: set of states that should not change.
         """
         if self._id not in ignored_states:
             ignored_states.add(self._id)
@@ -192,9 +204,11 @@ class StateNode(object):
     def collect_events(self, hour_of_day):
         """Collect event triggered for the next burst.
 
-        :param hour_of_day: int -- an integer in the range of 0 to 24 to
-        express the hour of the day.
-        :returns: list -- events for this step or None
+        :type hour_of_day: int
+        :param hour_of_day: an integer in the range of 0 to 24 to
+                            express the hour of the day.
+        :rtype: list
+        :returns: events for this step or None
         """
         events = []
         for trigger in self._triggers:

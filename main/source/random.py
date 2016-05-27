@@ -17,6 +17,7 @@
 import abc
 import json
 import logging
+# TODO: Recursive import => File needs to be renamed
 import random
 import SocketServer
 import threading as th
@@ -138,8 +139,8 @@ class RandomSource(base.BaseSource):
         to the consumers. It uses a socketTextStream, to read data from
         the ThreadingTCPServer.
 
-        :param ssc: pyspark.streaming.StreamingContext -- Spark Streaming
-        Context that provides the data input
+        :type ssc: pyspark.streaming.StreamingContext
+        :param ssc: Spark Streaming Context
         """
         self._start_server()
         self._dstream = ssc.socketTextStream(
@@ -205,7 +206,8 @@ class BaseDataSourceGenerator:
     def __init__(self, _config):
         """BaseDataSourceGenerator constructor.
 
-        :param _config: dict -- Configuration of this source
+        :type _config: dict
+        :param _config: Configuration of this source
         """
         self._config = _config
         self.generate = getattr(self, "generate_" +

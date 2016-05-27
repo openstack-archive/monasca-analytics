@@ -49,7 +49,8 @@ valid_feedback_connection_types = {
 def validate_config(config):
     """Perform the whole validation: schema, uniqueness and connections
 
-    :param config: dict -- configuration to validate
+    :type config: dict
+    :param config: configuration to validate
     :raises: SchemaError -- if the configuration is not valid for any reason
     """
     _validate_schema(config)
@@ -61,7 +62,8 @@ def validate_config(config):
 def validate_links(links):
     """Validate links to make sure, nothing is missing
 
-    :param links: dict -- connection links to validate
+    :type links: dict
+    :param links: connection links to validate
     :raises: SchemaError -- if any link is missing
     """
     missing = set([])
@@ -85,9 +87,10 @@ def _validate_schema(config):
     structure in the configuration up to the orchestration level.
     Each module will be responsible to validate its own sub-configuration.
 
-    :param config: dict -- configuration model for the whole system
+    :type config: dict
+    :param config: configuration model for the whole system
     :raises: SchemaError -- if the configuration, up to the
-    orchestration level, is not valid
+             orchestration level, is not valid
     """
     config_schema = schema.Schema({
         "spark_config": {
@@ -131,7 +134,8 @@ def _validate_schema(config):
 def _validate_only_one_voter(config):
     """Check that the configuration defines only a single voter
 
-    :param config: dict -- configuration model for the whole system
+    :type config: dict
+    :param config: configuration model for the whole system
     :raises: SchemaError -- if there is more than one voter defined in config
     """
     def _raise(comp):
@@ -146,7 +150,8 @@ def _validate_only_one_voter(config):
 def _validate_ids_uniqueness(config):
     """Validate that the IDs of the components are unique
 
-    :param config: dict -- configuration model for the whole system
+    :type config: dict
+    :param config: configuration model for the whole system
     :raises: SchemaError -- if there is any duplicated ID in the configuration
     """
     all_ids = set()
@@ -161,13 +166,17 @@ def _validate_ids_uniqueness(config):
 def _validate_expected_dest_type(config, from_id, to_ids, expected_types):
     """Check that the connection is valid according to expected_types.
 
-    :param config: dict -- configuration model for the whole system
-    :param from_id: str -- ID of the component which is the
-    origin point of the connection
-    :param to_ids: list -- IDs of the components which are the
-    destination points of the connections
-    :param expected_types: list -- types of components that are allowed
-    as destination points
+    :type config: dict
+    :param config: configuration model for the whole system
+    :type from_id: str
+    :param from_id: ID of the component which is the
+                    origin point of the connection
+    :type to_ids: list
+    :param to_ids: IDs of the components which are the
+                   destination points of the connections
+    :type expected_types: list
+    :param expected_types: types of components that are allowed
+                           as destination points
     """
     for to_id in to_ids:
         logger.debug("validating connection "+from_id+" --> "+to_id)
@@ -186,8 +195,10 @@ def _validate_expected_dest_type(config, from_id, to_ids, expected_types):
 def _validate_existing_id(config, component_id):
     """Check that the id passed as parameter is defined in the configuration
 
-    :param config: dict -- configuration model for the whole system
-    :param from_id: str -- component ID to be found in configuration
+    :type config: dict
+    :param config: configuration model for the whole system
+    :type component_id: str
+    :param component_id: component ID to be found in configuration
     """
     found_id = False
     for comp_type in valid_connection_types.keys():
@@ -203,11 +214,15 @@ def _validate_existing_id(config, component_id):
 def _validate_from_dictionary(config, conf_key, validation_dict):
     """Validate connections in config[conf_key] according to validation_dict
 
-    :param config: dict -- configuration model for the whole system
-    :param conf_key: str -- key of the configuration dictionary where
-    the connections to be checked are defined
-    :param validation_dict: dict -- keys are source types, and values
-    are lists of allowed destination types for that particular source type
+    :type config: dict
+    :param config: configuration model for the whole system
+    :type conf_key: str
+    :param conf_key: key of the configuration dictionary where
+                     the connections to be checked are defined
+    :type validation_dict: dict
+    :param validation_dict: keys are source types, and values
+                            are lists of allowed destination types
+                            for that particular source type
     """
     for from_id in config[conf_key].keys():
         _validate_existing_id(config, from_id)
@@ -221,7 +236,8 @@ def _validate_from_dictionary(config, conf_key, validation_dict):
 def _validate_connections(config):
     """Validate that the connections defined in config are allowed
 
-    :param config: dict -- configuration model for the whole system
+    :type config: dict
+    :param config: configuration model for the whole system
     """
     _validate_from_dictionary(config, "connections", valid_connection_types)
     _validate_from_dictionary(config, "feedback",

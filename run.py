@@ -85,6 +85,7 @@ def main(arguments):
     command += arguments["<sources>"]
 
     try:
+        logger.info("Executing `{}`...".format(" ".join(command)))
         subprocess.Popen(command).communicate()
     except OSError as e:
         raise RunnerError(e.__str__())

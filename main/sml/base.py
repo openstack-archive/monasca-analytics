@@ -36,8 +36,10 @@ class BaseSML(base.BaseComponent):
         going to be suggested to a voter which then
         forward it to a LDP.
 
-        :param samples: numpy.ndarray -- the list of samples to be processed
-        :returns: numpy.ndarray
+        :type samples: numpy.ndarray
+        :param samples: the list of samples to be processed
+        :rtype: numpy.ndarray
+        :returns: The information learned with the training set.
         """
         pass
 
@@ -45,7 +47,12 @@ class BaseSML(base.BaseComponent):
     def number_of_samples_required(self):
         """This function returns the number of samples required
 
-        :returns: int -- the number of samples required.
+        Algorithm typically requires a number of samples before
+        being able to produce a result. You can specify this constraint
+        with this function.
+
+        :rtype: int
+        :returns: the number of samples required.
         """
         pass
 
@@ -54,8 +61,9 @@ class BaseSML(base.BaseComponent):
 
         This method is called by the aggregator owning this sml.
 
-        :param samples: numpy.ndarray -- the list of samples that can be
-        processed by the data.
+        :type samples: numpy.ndarray
+        :param samples: the list of samples that can be
+                        processed by the data.
         """
         self._voter.suggest_structure(self, self.learn_structure(samples))
 

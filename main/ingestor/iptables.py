@@ -65,9 +65,11 @@ class IptablesIngestor(base.BaseIngestor):
         Assuming the rdd_entry is encoded in JSON format, this method
         gets the events and vectorizes them according to the features.
 
-        :param rdd_entry: str -- json encoded in a string, containing
-        the data of an RDD
-        :param feature_list: list -- features to extract, in order
+        :type rdd_entry: str
+        :param rdd_entry: json encoded in a string, containing
+                          the data of an RDD
+        :type feature_list: list[str]
+        :param feature_list: features to extract, in order
         """
         rdd_json = json.loads(rdd_entry)
         events = rdd_json[RDD_EVENTS]
@@ -83,7 +85,8 @@ class IptablesIngestor(base.BaseIngestor):
         Finally, we increase the index of the vector corresponding to
         that feature.
 
-        :param feature_list: list -- features to extract, in order
+        :type feature_list: list[str]
+        :param feature_list: features to extract, in order
         """
         ret = np.zeros(len(feature_list))
         for event in events:

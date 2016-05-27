@@ -27,8 +27,10 @@ class BaseLDP(base.BaseComponent):
     def __init__(self, _id, _config):
         """Constructor with ID and configuration
 
-        :param _id: str -- ID assigned to this component
-        :param _config: dict -- configuration of this component
+        :type _id: str
+        :param _id: ID assigned to this component
+        :type _config: dict
+        :param _config: configuration of this component
         """
         super(BaseLDP, self).__init__(_id, _config)
         self._features = None
@@ -39,13 +41,18 @@ class BaseLDP(base.BaseComponent):
 
     @abc.abstractmethod
     def map_dstream(self, dstream):
+        """Map the dstream input to new values
+
+        :type dstream: pyspark.streaming.DStream
+        :param dstream: DStream created by the source.
+        """
         pass
 
     def set_voter_output(self, matrix):
         """Assign the features and matrix to the _data object that
 
-        :param features: list[str]
-        :param matrix: numpy.ndarray
+        :type matrix: numpy.ndarray
+        :param matrix: the causality matrix learned by the voter.
         """
         self._data["features"] = self._features
         self._data["matrix"] = matrix
@@ -53,6 +60,7 @@ class BaseLDP(base.BaseComponent):
     def set_feature_list(self, features):
         """Set the list of features
 
-        :param features: list[str]
+        :type features: list[str]
+        :param features: list of the features names.
         """
         self._features = features

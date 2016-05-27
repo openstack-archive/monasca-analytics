@@ -27,11 +27,14 @@ logger = logging.getLogger(__name__)
 def connect_components(components, _config):
     """Connects the components using the information from the configuration
 
-    :param components: dict -- components to connect
-    :param _config: dict -- configuration containing the
-    connections definitions
-    :returns: dict -- keys are IDs of sources of connections,
-    and values are their destinations IDs.
+    :type components: dict
+    :param components: components to connect
+    :type _config: dict
+    :param _config: configuration containing the
+                    connections definitions
+    :rtype: dict
+    :returns: Dictionary where keys are IDs of sources of connections,
+              and values are their destinations IDs.
     """
     return _perform_all_connections(const.CONNECTIONS, _config, components)
     # _perform_all_connections(const.FEEDBACK, _config, components)
@@ -40,11 +43,15 @@ def connect_components(components, _config):
 def _perform_all_connections(connection_kind, _config, components):
     """Connect all component that are of the given kind.
 
-    :param connection_kind: str -- Kind of connection (feedback or flow)
-    :param _config: dict -- configuration containing the connections
-    :param components: dict -- components to connect.
-    :returns: dict -- keys are IDs of sources of connections,
-    and values are their destinations IDs.
+    :type connection_kind: str
+    :param connection_kind: Kind of connection (feedback or flow)
+    :type _config: dict
+    :param _config: configuration containing the connections
+    :type components: dict
+    :param components: components to connect.
+    :rtype: dict
+    :returns: Dictionay where keys are IDs of sources of connections,
+              and values are their destinations IDs.
     """
     links = {}
     for origin_id in _config[connection_kind].keys():
@@ -61,10 +68,14 @@ def _perform_all_connections(connection_kind, _config, components):
 def _perform_connections(origin, connections_list, components, links):
     """Connect 'origin' with all destinations in connections_list
 
-    :param origin: str -- origin component
-    :param connections_list: list[str] -- destinations IDs to be connected
-    :param components: dict -- all components
-    :param links: dict -- links that we are going to represent
+    :type origin: str
+    :param origin: origin component
+    :type connections_list: list[str]
+    :param connections_list: destinations IDs to be connected
+    :type components: dict
+    :param components: all components
+    :type links: dict
+    :param links: links that we are going to represent
     """
     if origin not in links:
         links[origin] = []

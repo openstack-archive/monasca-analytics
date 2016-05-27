@@ -25,8 +25,10 @@ logger = logging.getLogger(__name__)
 def create_components(_config):
     """Creates the components defined by the configuration
 
-    :param _config: dict -- configuration containing components
-    :returns: dict -- created components indexed by type and ID
+    :type _config: dict
+    :param _config: configuration containing components
+    :rtype: dict
+    :returns: Created components indexed by type and ID
     """
     components = {}
     for component_type in validation.valid_connection_types.keys():
@@ -38,10 +40,13 @@ def create_components(_config):
 def _create_comps_by_module(comp_type, _config):
     """Instantiates all the components of a type defined in the configuration
 
-    :param comp_type: string -- type of the components to be deployed
-    (e.g. source, ingestor, ...)
-    :type _config: dictionary -- configuration containing components
-    :returns: dictionary -- deployed components, keyed by ID
+    :type comp_type: str
+    :param comp_type: type of the components to be deployed
+                      (e.g. source, ingestor, ...)
+    :type _config: dict
+    :param _config: Configuration containing components
+    :rtype: dict
+    :returns: deployed components, keyed by ID
     :raises: MonanasNoSuchSourceError -- if no source class found.
     """
     logger.debug("Creating components of type : " + comp_type)
@@ -58,10 +63,14 @@ def _create_component_by_module(comp_id, comp_config, comp_type):
 
     The id assigned to that component will be comp_id.
 
-    :param comp_id: str -- ID of the component to create
-    :param comp_config: dict -- configuration of the component to create
-    :param comp_type: str -- type of component to create
-    :returns: Object -- instantiated component object
+    :type comp_id: str
+    :param comp_id: ID of the component to create
+    :type comp_config: dict
+    :param comp_config: Configuration of the component to create
+    :type comp_type: str
+    :param comp_type: type of component to create
+    :rtype: main.component.base.BaseComponent
+    :returns: Instantiated component object
     """
     logger.debug("deploying " + comp_config["module"] + " object")
     clazz = common_util.get_class_by_name(comp_config["module"],

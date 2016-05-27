@@ -28,8 +28,10 @@ class BaseIngestor(base.BaseComponent):
     def __init__(self, _id, _config):
         """Constructor with ID and configuration
 
-        :param _id: str -- ID assigned to this component
-        :param _config: dict -- configuration of this component
+        :type _id: str
+        :param _id: ID assigned to this component
+        :type _config: dict
+        :param _config: configuration of this component
         """
         self._features = None
         super(BaseIngestor, self).__init__(_id, _config)
@@ -41,16 +43,17 @@ class BaseIngestor(base.BaseComponent):
         Abstract method to be implemented by BaseIngestor children.
         The processed dstream should be returned.
 
-        :param: dstream: pyspark.streaming.Dstream -- stream of data before
-        being processed
-        :returns: pyspark.streaming.Dstream: stream of data after
-        being processed
+        :type dstream: pyspark.streaming.DStream
+        :param dstream: stream of data before being processed
+        :rtype: pyspark.streaming.DStream
+        :returns: stream of data after being processed
         """
         pass
 
     def set_feature_list(self, features):
         """Set the list of features
 
-        :param features: list[str]
+        :type features: list[str]
+        :param features: List of features names (when extracted from the data)
         """
         self._features = features

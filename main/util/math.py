@@ -20,8 +20,10 @@ import bisect
 def interpolate_1d(table, value):
     """Return the interpolated result using the table for the passed value.
 
-    :param table: list[(int, float)] -- a list where keys are numbers
-    :param value: float | int -- the value we want to compute the result from.
+    :type table: list[(int, float)]
+    :param table: a list where keys are numbers
+    :type value: float | int
+    :param value: the value we want to compute the result from.
     """
     table.sort(key=lambda fn: fn[0])
     keys = [fv[0] for fv in table]

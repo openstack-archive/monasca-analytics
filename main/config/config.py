@@ -28,8 +28,10 @@ logger = logging.getLogger(__name__)
 def instantiate_components(_config):
     """Instantiate the components from the configuration.
 
-    :param _config: dict -- configuration of the module to instantiate
-    :returns: dict -- the list of components
+    :type _config: dict
+    :param _config: configuration of the module to instantiate
+    :rtype: dict
+    :returns: the list of components
     """
     try:
         validation.validate_config(_config)
@@ -50,8 +52,9 @@ def instantiate_components(_config):
 def collect_sources(links):
     """Collect the sources from the links and return them in a list
 
-    :param links: dict
-    :returns: list[msource.BaseSource] -- List of sources
+    :type links: dict
+    :returns: List of sources
+    :rtype: list[msource.BaseSource]
     """
     sources = []
     for key in links.keys():
