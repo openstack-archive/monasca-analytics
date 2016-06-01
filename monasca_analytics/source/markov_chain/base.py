@@ -158,9 +158,11 @@ class StateNode(object):
         :param _id: Id of the node
         :type initial_state: str | int | None
         :param initial_state: Initial state for this node.
-        :type markov_chain: monasca_analytics.source.markov_chain.transition.MarkovChain
+        :type markov_chain:
+            monasca_analytics.source.markov_chain.transition.MarkovChain
         :param markov_chain: Markov Chain managing this node state.
-        :type trigger: list | monasca_analytics.source.markov_chain.events.Trigger
+        :type trigger:
+            list | monasca_analytics.source.markov_chain.events.Trigger
         :param trigger: List of triggers or single trigger that you want
                         to attached to this node.
         """

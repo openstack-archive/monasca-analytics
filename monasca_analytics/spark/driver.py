@@ -26,7 +26,6 @@ import monasca_analytics.sml.base as bml
 import monasca_analytics.voter.base as mvoter
 import monasca_analytics.sink.base as msink
 import monasca_analytics.ldp.base as mldp
-import monasca_analytics.spark.streaming_context as streamingctx
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +44,8 @@ class DriverExecutor(object):
         self._orchestrator = agg.Aggregator(self)
 
         def restart_spark():
-            self._ssc = streamingctx.create_streaming_context(self._sc, _config)
+            self._ssc = streaming.StreamingContext(self._sc, _config[
+                "spark_config"]["streaming"]["batch_interval"])
 
         self._restart_spark = restart_spark
         self._sc = pyspark.SparkContext(
@@ -115,7 +115,7 @@ class DriverExecutor(object):
         """Prepare given phase by starting sources.
 
         :type connect_dependent: (pyspark.streaming.DStream,
-                                  monasca_analytics.source.base.BaseSource) -> None
+            monasca_analytics.source.base.BaseSource) -> None
         :param connect_dependent: Callback that is going to selectively connect
                                   the appropriate dependencies of each sources.
         """
