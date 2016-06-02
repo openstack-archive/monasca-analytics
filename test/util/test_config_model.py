@@ -21,8 +21,8 @@ import unittest
 
 import schema
 
-from main.config import validation
-from main.util import common_util
+from monasca_analytics.config import validation
+from monasca_analytics.util import common_util
 
 logger = logging.getLogger(__name__)
 

@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.util import math
+from monasca_analytics.util import math
 
 
 class MathTest(unittest.TestCase):

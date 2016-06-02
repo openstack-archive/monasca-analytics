@@ -20,12 +20,12 @@ import logging
 import os
 import unittest
 
-from main.config import const
-from main.dsl import interpreter
-from main.exception import dsl as dsl_err
-from main.exception import monanas as mon_err
-from main.source import iptables_markov_chain as ipt_src
-from main.source import kafka
+from monasca_analytics.config import const
+from monasca_analytics.dsl import interpreter
+from monasca_analytics.exception import dsl as dsl_err
+from monasca_analytics.exception import monanas as mon_err
+from monasca_analytics.source import iptables_markov_chain as ipt_src
+from monasca_analytics.source import kafka
 
 
 class TestDSLInterpreter(unittest.TestCase):

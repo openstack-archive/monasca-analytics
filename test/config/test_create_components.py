@@ -19,11 +19,11 @@ import logging
 import os
 import unittest
 
-from main.config import const
-from main.config import creation
-from main.exception import monanas as err
+from monasca_analytics.config import const
+from monasca_analytics.config import creation
+from monasca_analytics.exception import monanas as err
 from test.mocks import sml_mocks
-import main.util.common_util as cu
+import monasca_analytics.util.common_util as cu
 
 
 class CreateComponentsTest(unittest.TestCase):

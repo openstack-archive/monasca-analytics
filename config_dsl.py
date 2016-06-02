@@ -18,7 +18,7 @@ import json
 from logging import config as log_conf
 import os
 
-from main.dsl import interpreter
+from monasca_analytics.dsl import interpreter
 
 DEFAULT_LOGGING_CONFIG_FILE = "config/logging.json"
 

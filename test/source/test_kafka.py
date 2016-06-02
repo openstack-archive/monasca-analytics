@@ -21,7 +21,7 @@ import unittest
 
 import schema
 
-from main.source import kafka
+from monasca_analytics.source import kafka
 from test.mocks import spark_mocks
 
 

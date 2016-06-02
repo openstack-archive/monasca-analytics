@@ -79,7 +79,7 @@ def main(arguments):
                       format(arguments["<spark_path>"], kafka_jar)
     command = [
         spark_submit, "--master", "local[2]",
-        "--jars", spark_kafka_jar, "main/monanas.py",
+        "--jars", spark_kafka_jar, "monasca_analytics/monanas.py",
         arguments["<config>"], arguments["<log_config>"]
     ]
     command += arguments["<sources>"]

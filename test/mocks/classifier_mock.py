@@ -16,7 +16,7 @@
 
 import numpy as np
 
-from main.sml import svm_one_class as svm
+from monasca_analytics.sml import svm_one_class as svm
 
 
 class MockClassifier():

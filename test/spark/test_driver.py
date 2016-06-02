@@ -19,9 +19,9 @@ import logging
 import os
 import unittest
 
-from main.config import const
-import main.spark.driver as driver
-import main.util.common_util as cu
+from monasca_analytics.config import const
+import monasca_analytics.spark.driver as driver
+import monasca_analytics.util.common_util as cu
 from test.mocks import sml_mocks
 from test.mocks import spark_mocks
 

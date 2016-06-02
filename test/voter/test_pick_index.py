@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.voter import pick_index
+from monasca_analytics.voter import pick_index
 
 
 class TestPickIndexVoter(unittest.TestCase):

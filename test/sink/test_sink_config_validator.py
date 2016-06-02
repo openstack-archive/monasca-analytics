@@ -17,7 +17,7 @@
 import schema
 import unittest
 
-import main.sink.sink_config_validator as validator
+import monasca_analytics.sink.sink_config_validator as validator
 
 kafka = validator.validate_kafka_sink_config
 

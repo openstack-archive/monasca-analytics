@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from main.source import base
+from monasca_analytics.source import base
 
 
 class MockBaseSource(base.BaseSource):

@@ -16,14 +16,14 @@
 
 import numpy as np
 
-from main.exception import monanas as err
-from main.ingestor import base as base_ing
-from main.ldp import base as base_ldp
-from main.sink import base as base_snk
-from main.sml import base as base_sml
-from main.source import base as base_src
-from main.spark import aggregator
-from main.voter import base as base_voter
+from monasca_analytics.exception import monanas as err
+from monasca_analytics.ingestor import base as base_ing
+from monasca_analytics.ldp import base as base_ldp
+from monasca_analytics.sink import base as base_snk
+from monasca_analytics.sml import base as base_sml
+from monasca_analytics.source import base as base_src
+from monasca_analytics.spark import aggregator
+from monasca_analytics.voter import base as base_voter
 
 
 class SMLMocks(object):

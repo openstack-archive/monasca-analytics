@@ -22,10 +22,10 @@ import unittest
 
 import schema
 
-from main.config import const
-from main.dsl.dsl import MonanasDSL
-from main.exception import dsl as dsl_err
-from main.exception import monanas as mon_err
+from monasca_analytics.config import const
+from monasca_analytics.dsl.dsl import MonanasDSL
+from monasca_analytics.exception import dsl as dsl_err
+from monasca_analytics.exception import monanas as mon_err
 
 
 class TestMonanasDSL(unittest.TestCase):

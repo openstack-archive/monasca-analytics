@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.ldp import cloud_causality as cloud
+from monasca_analytics.ldp import cloud_causality as cloud
 
 
 class TestCloudCausalityLDP(unittest.TestCase):

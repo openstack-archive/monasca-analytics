@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.spark import aggregator
+from monasca_analytics.spark import aggregator
 from test.mocks import spark_mocks
 
 

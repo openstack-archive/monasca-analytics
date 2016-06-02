@@ -19,9 +19,9 @@ import logging
 import os
 import unittest
 
-import main.source.markov_chain.prob_checks as pck
-import main.source.markov_chain.state_check as dck
-import main.source.markov_chain.transition as t
+import monasca_analytics.source.markov_chain.prob_checks as pck
+import monasca_analytics.source.markov_chain.state_check as dck
+import monasca_analytics.source.markov_chain.transition as t
 
 
 class DummyState(object):

@@ -21,7 +21,7 @@ import unittest
 
 import schema
 
-from main.source import cloud_markov_chain as cloud
+from monasca_analytics.source import cloud_markov_chain as cloud
 from test.mocks import spark_mocks
 
 

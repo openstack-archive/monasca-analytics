@@ -17,7 +17,7 @@
 import os
 import unittest
 
-from main.sink import iptables_sqlite as ipt_snk
+from monasca_analytics.sink import iptables_sqlite as ipt_snk
 
 
 class TestIptablesSQLiteSink(unittest.TestCase):

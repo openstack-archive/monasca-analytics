@@ -17,12 +17,12 @@
 import os
 import unittest
 
-from main.config import const
-from main.exception import monanas as err
-from main.sml import lingam
-from main.source import kafka
-from main.util import common_util
-from main.voter import pick_index
+from monasca_analytics.config import const
+from monasca_analytics.exception import monanas as err
+from monasca_analytics.sml import lingam
+from monasca_analytics.source import kafka
+from monasca_analytics.util import common_util
+from monasca_analytics.voter import pick_index
 from test import util
 from test.util import inheritance as inh
 

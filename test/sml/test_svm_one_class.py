@@ -20,7 +20,7 @@ import unittest
 import numpy as np
 from sklearn import svm
 
-from main.sml import svm_one_class
+from monasca_analytics.sml import svm_one_class
 
 logger = logging.getLogger(__name__)
 

@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.source import random
+from monasca_analytics.source import random
 
 
 class TestRandomSource(unittest.TestCase):

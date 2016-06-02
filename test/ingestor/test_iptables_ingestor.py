@@ -21,8 +21,8 @@ import unittest
 
 import numpy as np
 
-from main.ingestor import iptables as ipt_ing
-from main.source import iptables_markov_chain as ipt_src
+from monasca_analytics.ingestor import iptables as ipt_ing
+from monasca_analytics.source import iptables_markov_chain as ipt_src
 
 
 class TestIptablesIngestor(unittest.TestCase):

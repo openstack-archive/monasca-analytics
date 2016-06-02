@@ -21,7 +21,7 @@ import unittest
 
 import schema
 
-from main.source import iptables_markov_chain
+from monasca_analytics.source import iptables_markov_chain
 
 
 class TestIPTablesSource(unittest.TestCase):

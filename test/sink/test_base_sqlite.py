@@ -22,7 +22,7 @@ import cPickle
 import numpy as np
 import schema
 
-from main.sink import base_sqlite as bsql
+from monasca_analytics.sink import base_sqlite as bsql
 from test.mocks import spark_mocks
 
 

@@ -19,8 +19,8 @@ import logging
 import os
 import unittest
 
-from main.dsl import const
-from main.dsl import parser
+from monasca_analytics.dsl import const
+from monasca_analytics.dsl import parser
 
 
 class TestMonanasDSL(unittest.TestCase):

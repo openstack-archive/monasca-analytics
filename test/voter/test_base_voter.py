@@ -16,7 +16,7 @@
 
 import unittest
 
-from main.voter import base
+from monasca_analytics.voter import base
 
 
 class BaseVoterTest(unittest.TestCase):

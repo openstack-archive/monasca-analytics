@@ -19,7 +19,7 @@ import unittest
 
 import numpy as np
 
-from main.sml import lingam
+from monasca_analytics.sml import lingam
 
 logger = logging.getLogger(__name__)
 

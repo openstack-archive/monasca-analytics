@@ -19,10 +19,10 @@ from logging import config as log_cfg
 import os
 import unittest
 
-from main.exception import monanas as err
-import main.monanas as mnn
-import main.spark.driver as driver
-import main.util.common_util as cu
+from monasca_analytics.exception import monanas as err
+import monasca_analytics.monanas as mnn
+import monasca_analytics.spark.driver as driver
+import monasca_analytics.util.common_util as cu
 from test.mocks import sml_mocks
 from test.mocks import spark_mocks
 

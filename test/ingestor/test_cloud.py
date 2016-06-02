@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.ingestor import cloud
+from monasca_analytics.ingestor import cloud
 
 
 class TestIptablesIngestor(unittest.TestCase):

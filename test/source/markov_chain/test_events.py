@@ -19,9 +19,9 @@ import logging
 import os
 import unittest
 
-import main.source.markov_chain.events as ev
-import main.source.markov_chain.prob_checks as pck
-import main.source.markov_chain.state_check as dck
+import monasca_analytics.source.markov_chain.events as ev
+import monasca_analytics.source.markov_chain.prob_checks as pck
+import monasca_analytics.source.markov_chain.state_check as dck
 
 
 class DummyState(object):

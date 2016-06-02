@@ -17,7 +17,7 @@
 import unittest
 # This file is name kafkas otherwise it will conflict
 # with the global import 'kafka'
-import main.sink.kafkas as kf
+import monasca_analytics.sink.kafkas as kf
 
 
 class KafkaSinkTest(unittest.TestCase):

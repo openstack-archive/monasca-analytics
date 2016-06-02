@@ -19,7 +19,7 @@ import logging
 import os
 import unittest
 
-from main.ldp import iptables_ldp
+from monasca_analytics.ldp import iptables_ldp
 from test.mocks import classifier_mock
 
 

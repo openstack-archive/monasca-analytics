@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from main.ingestor import base
+from monasca_analytics.ingestor import base
 
 
 class IngestorBasicChild(base.BaseIngestor):
