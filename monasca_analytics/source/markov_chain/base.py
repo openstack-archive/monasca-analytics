@@ -19,6 +19,7 @@ import datetime
 import itertools
 import json
 import logging
+import six
 import SocketServer
 import threading
 import time
@@ -142,6 +143,7 @@ class LeafNodes(object):
         return events
 
 
+@six.add_metaclass(MetaId)
 class StateNode(object):
     """This class describes a particular node in the dependency graph.
 
@@ -149,7 +151,6 @@ class StateNode(object):
     dependencies with the other nodes. The Markov
     It is managed by one instance of a StateDescriptor.
     """
-    __metaclass__ = MetaId
 
     def __init__(self, initial_state, markov_chain, trigger, _id=None):
         """Constructor

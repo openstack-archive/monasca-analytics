@@ -17,10 +17,11 @@
 """Monanas Error classes."""
 
 import abc
+import six
 
 
+@six.add_metaclass(abc.ABCMeta)
 class MonanasException(Exception):
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __str__(self):

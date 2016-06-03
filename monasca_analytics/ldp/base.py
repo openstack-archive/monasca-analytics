@@ -15,14 +15,14 @@
 # under the License.
 
 import abc
+import six
 
 from monasca_analytics.component import base
 
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseLDP(base.BaseComponent):
     """Base class for Live Data Processor (LDP), to be extended"""
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, _id, _config):
         """Constructor with ID and configuration

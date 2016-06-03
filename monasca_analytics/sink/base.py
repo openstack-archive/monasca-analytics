@@ -15,14 +15,14 @@
 # under the License.
 
 import abc
+import six
 
 from monasca_analytics.component import base
 
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseSink(base.BaseComponent):
     """Base class for dstream sink to be extended by concrete dstream sinks."""
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def sink_dstream(self, dstream):
