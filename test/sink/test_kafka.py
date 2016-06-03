@@ -15,6 +15,7 @@
 # under the License.
 
 import unittest
+
 # This file is name kafkas otherwise it will conflict
 # with the global import 'kafka'
 import monasca_analytics.sink.kafkas as kf

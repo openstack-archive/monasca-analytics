@@ -17,10 +17,10 @@
 import logging
 import sys
 
-import monasca_analytics.source.base as msource
 import monasca_analytics.config.connection as connection
 import monasca_analytics.config.creation as creation
 import monasca_analytics.config.validation as validation
+import monasca_analytics.source.base as msource
 
 logger = logging.getLogger(__name__)
 
