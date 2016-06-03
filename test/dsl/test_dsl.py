@@ -190,7 +190,7 @@ class TestMonanasDSL(unittest.TestCase):
             original, ["params"], "new_value")
         expected = {
             "module": "src_module1",
-            "params":  "new_value"
+            "params": "new_value"
         }
         self.assertEqual(expected, modified)
 

@@ -147,7 +147,7 @@ class DSLInterpreter():
                 return name_or_id
         raise err.DSLInterpreterException("undefined variable: " + name_or_id)
 
-    def disconnect(self,  origin_varname, dest_varname):
+    def disconnect(self, origin_varname, dest_varname):
         """Disconnect two components
 
         :type origin_varname: str
