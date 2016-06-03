@@ -48,7 +48,7 @@ class CloudIngestor(base.BaseIngestor):
     def get_default_config():
         return {"module": CloudIngestor.__name__}
 
-    # TODO: With the new model, this can now be method, and the lambda
+    # TODO(David): With the new model, this can now be method, and the lambda
     #       can be removed.
     @staticmethod
     def _process_data(rdd_entry, feature_list):
