@@ -1,0 +1,10 @@
+docopt
+findspark
+libpgm
+numpy
+schema
+scipy
+tornado
+sklearn
+kafka-python
+pyparsing
