@@ -179,7 +179,7 @@ def _validate_expected_dest_type(config, from_id, to_ids, expected_types):
                            as destination points
     """
     for to_id in to_ids:
-        logger.debug("validating connection "+from_id+" --> "+to_id)
+        logger.debug("validating connection " + from_id + " --> " + to_id)
         valid_connection = False
         for expected_type in expected_types:
             if to_id in config[expected_type].keys():

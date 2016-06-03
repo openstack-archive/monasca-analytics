@@ -51,7 +51,7 @@ class SvmOneClass(base.BaseSML):
         return N_SAMPLES
 
     def _generate_train_test_sets(self, samples, ratio_train):
-        num_samples_train = int(len(samples)*ratio_train)
+        num_samples_train = int(len(samples) * ratio_train)
         X_train = np.array(samples[:num_samples_train])
         X_test = np.array(samples[num_samples_train:])
         return X_train, X_test
