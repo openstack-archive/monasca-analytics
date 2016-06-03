@@ -15,7 +15,7 @@
 # under the License.
 
 
-class Baseclass():
+class Baseclass(object):
     pass
 
 

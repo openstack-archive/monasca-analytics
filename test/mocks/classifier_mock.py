@@ -19,7 +19,7 @@ import numpy as np
 from monasca_analytics.sml import svm_one_class as svm
 
 
-class MockClassifier():
+class MockClassifier(object):
 
     def __init__(self, predict_anomaly=False):
         self._predict_anomaly = predict_anomaly

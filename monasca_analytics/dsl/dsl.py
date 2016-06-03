@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 MODULE = "module"
 
 
-class MonanasDSL():
+class MonanasDSL(object):
 
     def __init__(self, config_file_path=None):
         """Constructor with an optional configuration file path

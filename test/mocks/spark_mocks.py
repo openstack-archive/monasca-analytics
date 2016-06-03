@@ -17,7 +17,7 @@
 import time
 
 
-class MockSparkContext():
+class MockSparkContext(object):
 
     def __init__(self, appName):
         self.parallelize_cnt = 0
@@ -28,7 +28,7 @@ class MockSparkContext():
         pass
 
 
-class MockStreamingContext():
+class MockStreamingContext(object):
 
     def __init__(self, sc, streaming_batch_interval):
         self.sparkContext = sc
@@ -59,7 +59,7 @@ class MockStreamingContext():
         return MockDStream(None, None, None)
 
 
-class MockKafkaUtils():
+class MockKafkaUtils(object):
 
     @staticmethod
     def createStream(ssc, hostport, groupid, topics):

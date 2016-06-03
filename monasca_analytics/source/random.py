@@ -199,7 +199,7 @@ class RandomSource(base.BaseSource):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseDataSourceGenerator:
+class BaseDataSourceGenerator(object):
     """An interface for random data source generators."""
 
     @abc.abstractmethod

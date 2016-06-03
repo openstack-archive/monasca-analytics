@@ -28,7 +28,7 @@ import monasca_analytics.util.common_util as cu
 logger = logging.getLogger(__name__)
 
 
-class DSLInterpreter():
+class DSLInterpreter(object):
 
     def __init__(self):
         self.file_in_use = None

@@ -16,8 +16,8 @@
 
 import abc
 import logging
-import sqlite3
 import six
+import sqlite3
 import time
 
 import cPickle
