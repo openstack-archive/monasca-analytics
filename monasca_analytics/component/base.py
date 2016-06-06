@@ -15,6 +15,7 @@
 # under the License.
 
 import abc
+import six
 
 
 class abstractstatic(staticmethod):
@@ -30,14 +31,13 @@ class abstractstatic(staticmethod):
     __isabstractmethod__ = True
 
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseComponent(object):
     """Base class for all component types.
 
     Should be as lightweight as possible, becuase any data here will be sent
     to all workers every time a component is added.
     """
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, _id, _config):
         """BaseComponent constructor.

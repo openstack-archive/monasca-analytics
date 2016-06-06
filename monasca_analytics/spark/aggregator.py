@@ -16,15 +16,16 @@
 
 import abc
 import logging
+import six
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
 
 
+@six.add_metaclass(abc.ABCMeta)
 class Aggregator(object):
     """Aggregator that accumulates data and sends it to SMLs"""
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, driver):
         """BaseAggregator constructor.

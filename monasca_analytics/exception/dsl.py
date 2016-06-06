@@ -17,10 +17,11 @@
 """DSL Error classes."""
 
 import abc
+import six
 
 
+@six.add_metaclass(abc.ABCMeta)
 class DSLException(Exception):
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __str__(self):

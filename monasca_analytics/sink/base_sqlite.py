@@ -17,6 +17,7 @@
 import abc
 import logging
 import sqlite3
+import six
 import time
 
 import cPickle
@@ -28,10 +29,9 @@ DB_NAME_DEFAULT = "sqlite_sink.db"
 logger = logging.getLogger(__name__)
 
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseSQLiteSink(base.BaseSink):
     """Base class for SQLite sink to be extended by concrete implementations"""
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, _id, _config):
         super(BaseSQLiteSink, self).__init__(_id, _config)

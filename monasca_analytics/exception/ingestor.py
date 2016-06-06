@@ -17,10 +17,11 @@
 """Data Ingestor Error classes."""
 
 import abc
+import six
 
 
+@six.add_metaclass(abc.ABCMeta)
 class IngestorException(Exception):
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __str__(self):

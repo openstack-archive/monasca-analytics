@@ -26,6 +26,7 @@ import uuid
 
 import numpy as np
 import schema
+import six
 
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.source import base
@@ -197,10 +198,9 @@ class RandomSource(base.BaseSource):
                 return i
 
 
+@six.add_metaclass(abc.ABCMeta)
 class BaseDataSourceGenerator:
     """An interface for random data source generators."""
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __init__(self, _config):
