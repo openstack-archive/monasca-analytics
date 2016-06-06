@@ -119,7 +119,7 @@ class LiNGAM(base.BaseSML):
             percent_upper = best_slt / np.sum(best_b_permuted ** 2)
 
             if percent_upper > 0.2:
-                # TODO: Change that code to raise an exception instead
+                # TODO(David): Change that code to raise an exception instead
                 logger.error("LiNGAM failed to run on the data set")
                 logger.error(
                     "--> B permuted matrix is at best {}% lower triangular"

@@ -56,7 +56,7 @@ class BaseVoter(base.BaseComponent):
                 candidate = self.elect_structure(self._structures)
                 for tr in self._ldps:
                     tr.set_voter_output(candidate)
-                # TODO: feed the sinks with candidate.
+                # TODO(David): feed the sinks with candidate.
                 self._has_receive_structure_from = set([])
             return
         logger.debug("SML algorithm '{}' already suggested a structure"
