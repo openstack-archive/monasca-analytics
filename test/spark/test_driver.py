@@ -159,22 +159,22 @@ class DriverExecutorTest(unittest.TestCase):
 
     def test_pipeline_connected(self):
         self.mlf.start_pipeline()
-        self.assert_src_initialized(sml_mocks.sml_mocks.instantiated[
-                                        "src_module1"][0])
-        self.assert_src_initialized(sml_mocks.sml_mocks.instantiated[
-                                        "src_module2"][0])
-        self.assert_ingestor(sml_mocks.sml_mocks.instantiated[
-                                 "ingestor_module"][0])
+        self.assert_src_initialized(
+            sml_mocks.sml_mocks.instantiated["src_module1"][0])
+        self.assert_src_initialized(
+            sml_mocks.sml_mocks.instantiated["src_module2"][0])
+        self.assert_ingestor(
+            sml_mocks.sml_mocks.instantiated["ingestor_module"][0])
         self.assert_agg(self.mlf._orchestrator)
         self.mlf._orchestrator.accumulate_dstream_samples(
             spark_mocks.MockDStream(None, None, None))
         self.mlf._orchestrator.prepare_final_accumulate_stream_step()
         self.assert_sml(sml_mocks.sml_mocks.instantiated["sml_module"][0])
         self.assert_voter(sml_mocks.sml_mocks.instantiated["voter_module"][0])
-        self.assert_sink(sml_mocks.sml_mocks.instantiated[
-                             "sink_module1"][0])
-        self.assert_sink_ml(sml_mocks.sml_mocks.instantiated[
-                                     "sink_module1"][0])
+        self.assert_sink(
+            sml_mocks.sml_mocks.instantiated["sink_module1"][0])
+        self.assert_sink_ml(
+            sml_mocks.sml_mocks.instantiated["sink_module1"][0])
 
     def test_start_pipeline(self):
         self.mlf.start_pipeline()
@@ -185,10 +185,10 @@ class DriverExecutorTest(unittest.TestCase):
         self.mlf._orchestrator.accumulate_dstream_samples(
             spark_mocks.MockDStream(None, None, None))
         self.mlf._orchestrator.prepare_final_accumulate_stream_step()
-        self.assert_ldp(sml_mocks.sml_mocks.instantiated[
-                            "ldp_module1"][0])
-        self.assert_sink(sml_mocks.sml_mocks.instantiated[
-                             "sink_module2"][0])
+        self.assert_ldp(
+            sml_mocks.sml_mocks.instantiated["ldp_module1"][0])
+        self.assert_sink(
+            sml_mocks.sml_mocks.instantiated["sink_module2"][0])
         self.assert_sink_dstream(sml_mocks.sml_mocks.instantiated[
                                  "sink_module2"][0])
 

@@ -125,10 +125,9 @@ class TestIPTablesSource(unittest.TestCase):
                              state=iptables_markov_chain.STATE_STOP,
                              num_triggers=16,
                              states_transitions={
-                                iptables_markov_chain.STATE_STOP: 1,
-                                iptables_markov_chain.STATE_NORMAL: 2,
-                                iptables_markov_chain.STATE_ATTACK: 1
-                            })
+                                 iptables_markov_chain.STATE_STOP: 1,
+                                 iptables_markov_chain.STATE_NORMAL: 2,
+                                 iptables_markov_chain.STATE_ATTACK: 1})
         self.assert_all_correct_transitions(nodes[0].
                                             _markov_chain._transitions)
 
