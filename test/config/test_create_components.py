@@ -22,8 +22,8 @@ import unittest
 from monasca_analytics.config import const
 from monasca_analytics.config import creation
 from monasca_analytics.exception import monanas as err
-from test.mocks import sml_mocks
 import monasca_analytics.util.common_util as cu
+from test.mocks import sml_mocks
 
 
 class CreateComponentsTest(unittest.TestCase):

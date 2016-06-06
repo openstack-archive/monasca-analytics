@@ -21,11 +21,11 @@ from pyspark import streaming
 
 import monasca_analytics.config.config as config
 import monasca_analytics.ingestor.base as bi
-import monasca_analytics.spark.aggregator as agg
-import monasca_analytics.sml.base as bml
-import monasca_analytics.voter.base as mvoter
-import monasca_analytics.sink.base as msink
 import monasca_analytics.ldp.base as mldp
+import monasca_analytics.sink.base as msink
+import monasca_analytics.sml.base as bml
+import monasca_analytics.spark.aggregator as agg
+import monasca_analytics.voter.base as mvoter
 
 logger = logging.getLogger(__name__)
 
