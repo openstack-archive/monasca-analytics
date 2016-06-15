@@ -19,7 +19,7 @@ not tested so nothing is guaranteed.
 
 ## Installation
 
-* Clone MoNanas repo: https://github.hpe.com/labs/monanas.git.
+* Clone MoNanas repo: https://github.com/openstack/monasca-analytics
 
 ### Everything on Host
 
