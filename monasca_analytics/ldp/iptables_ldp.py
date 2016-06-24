@@ -14,14 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import logging
 
 import schema
 
-from monasca_analytics.ingestor import iptables as ip_ing
+import monasca_analytics.ingestor.iptables as ip_ing
 import monasca_analytics.ldp.base as bt
 from monasca_analytics.sml import svm_one_class
+import monasca_analytics.util.spark_func as fn
 
 logger = logging.getLogger(__name__)
 
@@ -46,23 +46,28 @@ class IptablesLDP(bt.BaseLDP):
     def map_dstream(self, dstream):
         """Detect anomalies in a dstream using the learned classifier
 
-        :param dstream: pyspark.streaming.DStream
+        :type dstream: pyspark.streaming.DStream
+        :param dstream: Spark's DStream
         """
         data = self._data
-        return dstream.flatMap(lambda r:
-                               self._detect_anomalies(r, data))
+        return dstream.map(fn.from_json)\
+            .flatMap(lambda r:
+                     self._detect_anomalies(r, data))
 
     def _detect_anomalies(self, rdd_entry, data):
         """Classifies and marks the RDD entry as anomalous or non-anomalous
 
-        :type rdd_entry: pyspark.RDD
+        :type rdd_entry: list[dict]
         :param rdd_entry: entry to be classified
         :type data: dict
         :param data: contains the features and the classifier
         """
-        rdd_entry = json.loads(rdd_entry)
         new_entries = []
-        events = rdd_entry[ip_ing.RDD_EVENTS]
+        events = []
+        ctimes = []
+        for event in rdd_entry:
+            events.append(event[ip_ing.RDD_EVENT])
+            ctimes.append(event["ctime"])
         features = data[FEATURES]
         classifier = data[MATRIX]
 
@@ -73,7 +78,7 @@ class IptablesLDP(bt.BaseLDP):
         Y = classifier.predict(X)
         for i in range(len(events)):
             event = events[i]
-            event["ctime"] = rdd_entry["ctime"]
+            event["ctime"] = ctimes[i]
             if Y[0] == svm_one_class.ANOMALY:
                 event["anomalous"] = True
             else:

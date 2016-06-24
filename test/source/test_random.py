@@ -15,11 +15,11 @@
 # under the License.
 
 import json
-import logging
+import logging.config
 import os
 import unittest
 
-from monasca_analytics.source import random
+from monasca_analytics.source import randoms
 
 
 class TestRandomSource(unittest.TestCase):
@@ -39,6 +39,6 @@ class TestRandomSource(unittest.TestCase):
         pass
 
     def test_get_default_config(self):
-        default_config = random.RandomSource.get_default_config()
-        random.RandomSource.validate_config(default_config)
+        default_config = randoms.RandomSource.get_default_config()
+        randoms.RandomSource.validate_config(default_config)
         self.assertEqual("RandomSource", default_config["module"])

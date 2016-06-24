@@ -14,27 +14,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import schema
+from expression import create_fn_with_config
+from expression import validate_environment
+from expression import validate_expression
+from expression import validate_name_binding
 
-from monasca_analytics.sink import base
-
-
-class StdoutSink(base.BaseSink):
-    """Sink that prints the dstream to stdout, using pprint command"""
-
-    def sink_dstream(self, dstream):
-        dstream.pprint(1000)
-
-    def sink_ml(self, voter_id, matrix):
-        pass
-
-    @staticmethod
-    def get_default_config():
-        return {"module": StdoutSink.__name__}
-
-    @staticmethod
-    def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i))
-        }).validate(_config)
+create_fn_with_config = create_fn_with_config
+validate_expression = validate_expression
+validate_environment = validate_environment
+validate_name_binding = validate_name_binding

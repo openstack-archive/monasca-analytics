@@ -15,7 +15,7 @@
 # under the License.
 
 import json
-import logging
+import logging.config
 import os
 import unittest
 
@@ -37,17 +37,19 @@ class TestIptablesIngestor(unittest.TestCase):
 
     def setUp(self):
         self.setup_logging()
-        self.rdd_entry = {
+        self.rdd_entry = [{
             "ctime": "Mon Apr 11 19:59:12 2016",
-            "events": [
-                {
-                    "msg": "OUTPUT -p icmp --icmp-type echo-request -j ACCEPT",
-                    "id": "1"},
-                {
-                    "msg": "OUTPUT -o eth0 -p tcp --sport 80 -j ACCEPT",
-                    "id": "1"}
-            ]
-        }
+            "event": {
+                "msg": "OUTPUT -p icmp --icmp-type echo-request -j ACCEPT",
+                "id": "1"
+            }
+        }, {
+            "ctime": "Mon Apr 11 19:59:12 2016",
+            "event": {
+                "msg": "OUTPUT -o eth0 -p tcp --sport 80 -j ACCEPT",
+                "id": "1"
+            }
+        }]
         self.ip_ing = ipt_ing.IptablesIngestor("fake_id",
                                                {"module": "fake_config"})
         self.ip_ing.set_feature_list(["ssh", "ip", "http", "ping"])
@@ -61,10 +63,15 @@ class TestIptablesIngestor(unittest.TestCase):
         self.assertEqual("IptablesIngestor", default_config["module"])
 
     def test_process_data(self):
-        rdd_str = '{"ctime": "Mon Apr 11 19:59:12 2016","events": ['
+        rdd_entry = []
         for iptable in ipt_src.iptables:
-            rdd_str += '{"msg": "' + iptable + '","id": "1"}, '
-        rdd_str = rdd_str[:-2] + ']}'
-        processed = self.ip_ing._process_data(rdd_str, self.ip_ing._features)
+            rdd_entry.append({
+                'ctime': "Mon Apr 11 19:59:12 2016",
+                'event': {
+                    "msg": iptable,
+                    "id": 1
+                }
+            })
+        processed = self.ip_ing._process_data(rdd_entry, self.ip_ing._features)
         np.testing.assert_array_equal(
             processed, np.array([2, 4, 2, 4]))

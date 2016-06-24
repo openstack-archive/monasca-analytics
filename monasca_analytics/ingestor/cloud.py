@@ -21,6 +21,7 @@ import numpy as np
 import schema
 
 from monasca_analytics.ingestor import base
+import monasca_analytics.util.spark_func as fn
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +40,11 @@ class CloudIngestor(base.BaseIngestor):
         }).validate(_config)
 
     def map_dstream(self, dstream):
-        feature_list = list(self._features)
-        return dstream.map(
-            lambda rdd_entry: CloudIngestor._process_data(rdd_entry,
-                                                          feature_list))
+        features_list = list(self._features)
+        return dstream.map(fn.from_json)\
+            .map(lambda rdd_entry: CloudIngestor._process_data(
+                rdd_entry,
+                features_list))
 
     @staticmethod
     def get_default_config():

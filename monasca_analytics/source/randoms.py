@@ -17,16 +17,15 @@
 import abc
 import json
 import logging
-# TODO(David): Recursive import => File needs to be renamed
+import numpy as np
 import random
+import schema
+import six
 import SocketServer
 import threading as th
 import time
 import uuid
 
-import numpy as np
-import schema
-import six
 
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.source import base

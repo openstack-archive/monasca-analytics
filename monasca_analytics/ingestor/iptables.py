@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import logging
 
 import numpy as np
@@ -22,10 +21,11 @@ import schema
 
 from monasca_analytics.ingestor import base
 from monasca_analytics.source import iptables_markov_chain as src
+import monasca_analytics.util.spark_func as fn
 
 logger = logging.getLogger(__name__)
 
-RDD_EVENTS = "events"
+RDD_EVENT = "event"
 RDD_CTIME = "ctime"
 EVENT_MSG = "msg"
 
@@ -53,10 +53,11 @@ class IptablesIngestor(base.BaseIngestor):
         return {"module": IptablesIngestor.__name__}
 
     def map_dstream(self, dstream):
-        new_dstream = dstream.map(
-            lambda rdd_entry: IptablesIngestor._process_data(rdd_entry,
-                                                             self._features))
-        return new_dstream
+        features_list = list(self._features)
+        return dstream.map(fn.from_json)\
+            .map(lambda rdd_entry: IptablesIngestor._process_data(
+                rdd_entry,
+                features_list))
 
     @staticmethod
     def _process_data(rdd_entry, feature_list):
@@ -65,14 +66,14 @@ class IptablesIngestor(base.BaseIngestor):
         Assuming the rdd_entry is encoded in JSON format, this method
         gets the events and vectorizes them according to the features.
 
-        :type rdd_entry: str
-        :param rdd_entry: json encoded in a string, containing
-                          the data of an RDD
+        :type rdd_entry: list[dict]
+        :param rdd_entry: event
         :type feature_list: list[str]
         :param feature_list: features to extract, in order
         """
-        rdd_json = json.loads(rdd_entry)
-        events = rdd_json[RDD_EVENTS]
+        events = []
+        for event in rdd_entry:
+            events.append(event[RDD_EVENT])
         return IptablesIngestor._vectorize_events(events, feature_list)
 
     @staticmethod

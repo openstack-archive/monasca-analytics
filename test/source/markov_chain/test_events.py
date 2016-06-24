@@ -14,14 +14,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import datetime
 import json
-import logging
+import logging.config
 import os
 import unittest
 
 import monasca_analytics.source.markov_chain.events as ev
 import monasca_analytics.source.markov_chain.prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
+import test.mocks.markov as markov_mocks
 
 
 class DummyState(object):
@@ -56,8 +58,20 @@ class TriggersTest(unittest.TestCase):
             prob_check=pck.NoProbCheck(),
             event_builder=ev.EventBuilder("")
         )
-        self.assertIsNotNone(some_trigger.apply_on(DummyState(), 1))
-        self.assertIsNone(some_trigger.apply_on(DummyState(1), 1))
+        events = []
+        some_trigger.apply_on(
+            DummyState(),
+            1,
+            datetime.datetime.now(),
+            markov_mocks.MockRequestBuilder(events))
+        self.assertEqual(len(events), 1)
+        events = []
+        some_trigger.apply_on(
+            DummyState(1),
+            1,
+            datetime.datetime.now(),
+            markov_mocks.MockRequestBuilder(events))
+        self.assertEqual(len(events), 0)
 
 
 if __name__ == "__main__":

@@ -17,7 +17,6 @@
 import logging
 
 import pyspark
-from pyspark import streaming
 
 import monasca_analytics.config.config as config
 import monasca_analytics.ingestor.base as bi
@@ -25,6 +24,7 @@ import monasca_analytics.ldp.base as mldp
 import monasca_analytics.sink.base as msink
 import monasca_analytics.sml.base as bml
 import monasca_analytics.spark.aggregator as agg
+import monasca_analytics.spark.streaming_context as streamingctx
 import monasca_analytics.voter.base as mvoter
 
 logger = logging.getLogger(__name__)
@@ -44,14 +44,14 @@ class DriverExecutor(object):
         self._orchestrator = agg.Aggregator(self)
 
         def restart_spark():
-            self._ssc = streaming.StreamingContext(self._sc, _config[
-                "spark_config"]["streaming"]["batch_interval"])
+            self._ssc = streamingctx.create_streaming_context(
+                self._sc,
+                _config)
 
         self._restart_spark = restart_spark
         self._sc = pyspark.SparkContext(
             appName=_config["spark_config"]["appName"])
-        self._ssc = streaming.StreamingContext(self._sc, _config[
-            "spark_config"]["streaming"]["batch_interval"])
+        self._ssc = streamingctx.create_streaming_context(self._sc, _config)
         logger.debug("Propagating feature list...")
         self._propagate_feature_list()
 
@@ -59,14 +59,23 @@ class DriverExecutor(object):
         """Start the pipeline"""
 
         # Start by connecting the source
-        self._prepare_phase(self._connect_dependents_phase1)
+        if self._phase1_required():
+            logger.info("Phase 1 required, ldp won't produce data until"
+                        " smls have finished.")
+            # Connect sources to ingestors
+            self._prepare_phase(self._connect_dependents_phase1)
 
-        # Preparation step for the orchestrator:
-        #   Accumulate everything from the sources
-        self._orchestrator.prepare_final_accumulate_stream_step()
+            # Preparation step for the orchestrator:
+            #   Accumulate everything from the sources
+            self._orchestrator.prepare_final_accumulate_stream_step()
 
-        # Then prepare the orchestrator
-        self._prepare_orchestrator()
+            # Then prepare the orchestrator
+            self._prepare_orchestrator()
+
+        else:
+            # Connect sources to ldps
+            logger.info("Phase 1 was not required, skipping it.")
+            self._prepare_phase(self._connect_dependents_phase2)
 
         logger.info("Start the streaming context")
         self._ssc.start()
@@ -88,11 +97,20 @@ class DriverExecutor(object):
             logger.debug("Phase 2: Create new connections")
             self._prepare_phase(self._connect_dependents_phase2)
             self._ssc.start()
+            # ?
+            self._ssc.awaitTermination()
 
     def _terminate_sources(self):
         """Terminates the sources."""
         for source in self._sources:
             source.terminate_source()
+
+    def _phase1_required(self):
+        for src in self._sources:
+            if any(isinstance(el, bi.BaseIngestor) for el in self._links[src]):
+                return True
+
+        return False
 
     def _prepare_orchestrator(self):
         """
@@ -137,14 +155,14 @@ class DriverExecutor(object):
 
             # SML can, for now, only be connected to voter.
             if isinstance(connected_node, mvoter.BaseVoter) and \
-               isinstance(from_component, bml.BaseSML):
+                    isinstance(from_component, bml.BaseSML):
                 logger.debug("Set {} to {}"
                              .format(connected_node, from_component))
                 from_component.set_voter(connected_node)
 
             # Voter can only be connected to LDPs
             if isinstance(from_component, mvoter.BaseVoter) and \
-               isinstance(connected_node, mldp.BaseLDP):
+                    isinstance(connected_node, mldp.BaseLDP):
                 logger.debug("Append {} to {}"
                              .format(connected_node, from_component))
                 from_component.append_ldp(connected_node)
@@ -178,11 +196,15 @@ class DriverExecutor(object):
             # Live data processors are also doing a map, they add
             # the causality bit to each element in the stream.
             if isinstance(connected_node, mldp.BaseLDP):
+                logger.debug("Connecting {} to {}".format(from_component,
+                                                          connected_node))
                 new_dstream = connected_node.map_dstream(dstream)
                 self._connect_dependents_phase2(new_dstream, connected_node)
 
             # Sink are at the end of the branch!
             if isinstance(connected_node, msink.BaseSink):
+                logger.debug("Sink {} into {}".format(from_component,
+                                                      connected_node))
                 connected_node.sink_dstream(dstream)
 
     def _connect_dependents_phase1(self, dstream, from_component):

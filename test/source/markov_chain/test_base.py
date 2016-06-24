@@ -14,8 +14,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import datetime
 import json
-import logging
+import logging.config
 import os
 import unittest
 
@@ -24,6 +25,7 @@ import monasca_analytics.source.markov_chain.events as ev
 import monasca_analytics.source.markov_chain.prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as tr
+import test.mocks.markov as markov_mocks
 
 
 class StateNodeTest(unittest.TestCase):
@@ -49,9 +51,11 @@ class StateNodeTest(unittest.TestCase):
             event_builder=ev.EventBuilder("test")
         )
         node = base.StateNode(0, None, some_trigger)
-        events = node.collect_events(1)
+        events = []
+        node.collect_events(1, datetime.datetime.now(),
+                            markov_mocks.MockRequestBuilder(events))
         self.assertTrue(len(events) == 1)
-        self.assertEqual(events[0].msg, "test", "a")
+        self.assertEqual(events[0]["event"].msg, "test", "a")
 
     def test_next_state_should_use_available_transitions(self):
         tr1 = tr.Transition(

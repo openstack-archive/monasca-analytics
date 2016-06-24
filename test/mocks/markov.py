@@ -14,27 +14,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import schema
 
-from monasca_analytics.sink import base
+import monasca_analytics.source.markov_chain.base as bmkv
 
 
-class StdoutSink(base.BaseSink):
-    """Sink that prints the dstream to stdout, using pprint command"""
+class MockRequestBuilder(bmkv.RequestBuilder):
 
-    def sink_dstream(self, dstream):
-        dstream.pprint(1000)
+    def __init__(self, events):
+        super(MockRequestBuilder, self).__init__(request=None)
+        self.events = events
 
-    def sink_ml(self, voter_id, matrix):
+    def send(self, data):
+        self.events.append(data)
+
+    def finalize(self):
         pass
-
-    @staticmethod
-    def get_default_config():
-        return {"module": StdoutSink.__name__}
-
-    @staticmethod
-    def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i))
-        }).validate(_config)

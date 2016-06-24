@@ -76,7 +76,7 @@ class MarkovChainSource(base.BaseSource):
     def _start_thread(self, system):
         self._server = SocketServer.ThreadingTCPServer(
             ("", 0),        # Let the OS pick a port for us
-            FMSTCPHandler,  # Handler of the
+            FMSTCPHandler,  # Handler of the requests
             False)
         self._server.allow_reuse_address = True
         self._server.server_bind()
@@ -128,19 +128,21 @@ class LeafNodes(object):
         for s in self._state_nodes:
             s.next_state(hour_of_day, ignored_states)
 
-    def collect_events(self, hour_of_day):
+    def collect_events(self, hour_of_day, fake_date, request):
         """Get list of events
 
         :type hour_of_day: int
         :param hour_of_day: An hour of the day that is used by
                             StateNode.collect_event
+        :type fake_date: datetime.datetime
+        :param fake_date: A date that you can use to generate a ctime.
+        :type request: RequestBuilder
+        :param request: Request object to send data.
         :rtype: list
         :returns: List of event. Specific to the event builder.
         """
-        events = []
         for node in self._state_nodes:
-            events.extend(node.collect_events(hour_of_day))
-        return events
+            node.collect_events(hour_of_day, fake_date, request)
 
 
 @six.add_metaclass(MetaId)
@@ -204,23 +206,23 @@ class StateNode(object):
                 dep.next_state(hour_of_day, ignored_states)
             self._markov_chain.apply_on(self, hour_of_day)
 
-    def collect_events(self, hour_of_day):
+    def collect_events(self, hour_of_day, fake_date, request):
         """Collect event triggered for the next burst.
 
         :type hour_of_day: int
-        :param hour_of_day: an integer in the range of 0 to 24 to
-                            express the hour of the day.
+        :param hour_of_day: an integer in the range of 0 to 24 to express
+                            he hour of the day.
+        :type fake_date: datetime.datetime
+        :param fake_date: A date that you can use to generate a ctime.
+        :type request: RequestBuilder
+        :param request: Request builder to send specific events
         :rtype: list
         :returns: events for this step or None
         """
-        events = []
         for trigger in self._triggers:
-            event = trigger.apply_on(self, hour_of_day)
-            if event is not None:
-                events.append(event)
+            trigger.apply_on(self, hour_of_day, fake_date, request)
         for dep in self.dependencies:
-            events.extend(dep.collect_events(hour_of_day))
-        return events
+            dep.collect_events(hour_of_day, fake_date, request)
 
 
 class FMSTCPHandler(SocketServer.BaseRequestHandler):
@@ -233,13 +235,11 @@ class FMSTCPHandler(SocketServer.BaseRequestHandler):
         hour_of_day = fake_date.hour
         while not self.server.terminate:
             self.server.system.next_state(hour_of_day)
-            events = self.server.system.collect_events(hour_of_day)
+            request = RequestBuilder(self.request)
+            self.server.system.collect_events(hour_of_day, fake_date, request)
 
             try:
-                self.request.send("{0}\n".format(json.dumps({
-                    'ctime': fake_date.ctime(),
-                    'events': events
-                }, cls=DictEncoder)))
+                request.finalize()
             except IOError:
                 logger.debug("Source is now off")
                 self.server.terminate = True
@@ -250,6 +250,27 @@ class FMSTCPHandler(SocketServer.BaseRequestHandler):
             fake_date += datetime.timedelta(hours=1)
             if hour_of_day > 24:
                 hour_of_day = 0
+
+
+class RequestBuilder(object):
+
+    def __init__(self, request):
+        self._request = request
+        self._collected_data = []
+
+    def send(self, data):
+        """
+        Send an object over the network.
+        :param data: Object to send.
+        """
+        self._collected_data.append(data)
+
+    def finalize(self):
+        for data in self._collected_data:
+            self._request.send("{0}\n".format(json.dumps(data,
+                                                         cls=DictEncoder)))
+        self._request = None
+        self._collected_data = None
 
 
 class DictEncoder(json.JSONEncoder):
