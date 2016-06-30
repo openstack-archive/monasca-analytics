@@ -73,7 +73,7 @@ Please, refer to the 'Add New Data Sources'  section.
 The aim of a SML class is to train a machine learning algorithm, or do statistics to learn something, using a batch of data provided by the aggregator. When data is available, it will be manipulated by the logic implemented in the learn_structure function; the data flow will be stopped by MoNanas when all the SMLs have consumed at least the number of samples provided by the number_of_samples_required function.
 
 * `learn_structure`
-This is the function that implements the logic of the algorithm. the data is provided as a parameter, and it should return the structure learned from the data (e.g. causality matrix, or trained classifier object).
+This is the function that implements the logic of the algorithm. The data is provided as a parameter, and it should return the structure learned from the data (e.g. causality matrix, or trained classifier object).
 
 * `number_of_samples_required`
 this function should return the number of samples that the algorithm requires in order to provide reliable results.

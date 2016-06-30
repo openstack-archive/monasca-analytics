@@ -246,7 +246,7 @@ under this mode is shown below.
 
 ## Anomalies in Rule Firing Patterns
 
-Some attacks can be recognized by patterns of rules being triggered in an anomalous fashion. For exmaple, a Ping flood, a denial of service attack that consist in sending multiple pings to a system, would trigger IPTable rules handling the Ping much more often than if the system is not being attacked.
+Some attacks can be recognized by patterns of rules being triggered in an anomalous fashion. For example, a Ping flood, a denial of service attack that consist in sending multiple pings to a system, would trigger IPTable rules handling the Ping much more often than if the system is not being attacked.
 
 This example shows how MoNanas ingests iptables firing data, trains an anomaly detection algorithm (SVM One Class), and then uses the trained algorithm to detect when the system is being attacked, which is detected as an anomaly. Finally the data is stored in a SQLite database via the SQLite sink.
 
@@ -260,7 +260,7 @@ As you can see, there are 3 states: `stopped`, `normal`, and `attack`. Each tran
 The system triggers 12 possible IPTables, classified in four families: `ssh`, `concrete IPs`, `http`, and `ping` with different probabilities according to the state of the system, in order to model possible ping flood attacks:
 
 1) State `stopped`: nothing is triggered
-2) State `normal`: hihger probability for http traffic, but some of the other rules will be triggered.
+2) State `normal`: higher probability for http traffic, but some of the other rules will be triggered.
 3) State `attack`: very high probability of triggering `ping` traffic in every timestamp, keeping the rest of probabilities as they were in `normal` state.
 
 The ingestor consumes data from the markov chain IPTable source, and counts the number of times that an IPTable of each family has been triggered in every time window, generating a 4D array per time window (one dimension per IPTable type).
@@ -372,7 +372,7 @@ curl -H "Content-Type: application/json" -X POST \
 ```
 
 #### Stop Data Execution
-When you want to stap the example, you can send another HTTP POST to order MoNanas to stop streaming data. In this case, the request body should be:
+When you want to stop the example, you can send another HTTP POST to order MoNanas to stop streaming data. In this case, the request body should be:
 
 ```json
 {
