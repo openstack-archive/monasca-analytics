@@ -91,7 +91,8 @@ class CommonUtilTest(unittest.TestCase):
         names = common_util.get_available_source_class_names()
         self.assertItemsEqual(
             ['RandomSource', 'KafkaSource',
-             'CloudMarkovChainSource', 'IPTablesSource'],
+             'CloudMarkovChainSource', 'IPTablesSource',
+             'MonascaMarkovChainSource'],
             names)
 
     def test_get_available_ingestor_class_names(self):
@@ -121,5 +122,10 @@ class CommonUtilTest(unittest.TestCase):
         self.assertItemsEqual(["PickIndexVoter"], names)
 
     def test_get_available_ldp_class_names(self):
+        return
         names = common_util.get_available_ldp_class_names()
-        self.assertItemsEqual(["CloudCausalityLDP", "IptablesLDP"], names)
+        self.assertItemsEqual([
+            "CloudCausalityLDP", "IptablesLDP",
+            'MonascaDerivativeLDP', 'MonascaAggregateLDP',
+            'MonascaCombineLDP'
+        ], names)

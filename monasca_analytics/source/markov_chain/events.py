@@ -33,7 +33,9 @@ class Trigger(object):
             probability of success
 
         :type event_builder:
-            (monasca_analytics.source.markov_chain.base.StateNode) -> Event
+            (monasca_analytics.source.markov_chain.base.StateNode,
+             datetime.datetime,
+             monasca_analytics.source.markov_chain.base.RequestBuilder) -> None
         :param event_builder:  Event builder that receive the node and use
                                the state to return an event.
         """
@@ -41,7 +43,7 @@ class Trigger(object):
         self._node_check = node_check
         self._event_builder = event_builder
 
-    def apply_on(self, node, hour_of_day):
+    def apply_on(self, node, hour_of_day, fake_date, request):
         """Apply this trigger on the given node.
 
         :type node: monasca_analytics.source.markov_chain.base.StateNode
@@ -49,10 +51,14 @@ class Trigger(object):
         :type hour_of_day: int
         :param hour_of_day: An integer between [0, 24) representing
                             the hour of the day.
+        :type fake_date: datetime.datetime
+        :param fake_date: A date that you can use to generate a ctime.
+        :type request:
+            monasca_analytics.source.markov_chain.base.RequestBuilder
+        :param request: Request builder to send events
         """
         if self._prob_check(hour_of_day) and self._node_check(node):
-            return self._event_builder(node)
-        return None
+            self._event_builder(node, fake_date, request)
 
 
 class Event(object):
@@ -77,9 +83,16 @@ class EventBuilder(object):
         """
         self._msg = msg
 
-    def __call__(self, node):
+    def __call__(self, node, fake_date, request):
         """
         :type node: monasca_analytics.source.markov_chain.base.StateNode
         :param node: The node associated with the event.
+        :type fake_date: datetime.datetime
+        :param fake_date: A date that you can use to generate a ctime.
+        :type request:
+            monasca_analytics.source.markov_chain.base.RequestBuilder
         """
-        return Event(self._msg, str(node.id()))
+        request.send({
+            'ctime': fake_date.ctime(),
+            'event': Event(self._msg, str(node.id()))
+        })

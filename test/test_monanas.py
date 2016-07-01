@@ -58,21 +58,24 @@ class MonanasTest(unittest.TestCase):
         self.original_kill = mnn.os.kill
         self.original_get_class_by_name = cu.get_class_by_name
         self.original_SparkContext = driver.pyspark.SparkContext
-        self.original_StreamingContext = driver.streaming.StreamingContext
+        self.original_StreamingContext = \
+            driver.streamingctx.streaming.StreamingContext
         self.original_Aggregator = driver.agg.Aggregator
 
     def _restore_functions(self):
         cu.get_class_by_name = self.original_get_class_by_name
         mnn.os.kill = self.original_kill
         driver.pyspark.SparkContext = self.original_SparkContext
-        driver.streaming.StreamingContext = self.original_StreamingContext
+        driver.streamingctx.streaming.StreamingContext = \
+            self.original_StreamingContext
         driver.agg.Aggregator = self.original_Aggregator
 
     def _mock_functions(self):
         cu.get_class_by_name = sml_mocks.mock_get_class_by_name
         mnn.os.kill = sml_mocks.mock_kill
         driver.pyspark.SparkContext = spark_mocks.MockSparkContext
-        driver.streaming.StreamingContext = spark_mocks.MockStreamingContext
+        driver.streamingctx.streaming.StreamingContext = \
+            spark_mocks.MockStreamingContext
         driver.agg.Aggregator = sml_mocks.MockClass_aggr_module
 
     def init_sml_config(self):

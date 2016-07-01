@@ -58,6 +58,12 @@ class MockStreamingContext(object):
     def mockDStream(self):
         return MockDStream(None, None, None)
 
+    def addStreamingListener(self, *arg, **kwargs):
+        pass
+
+    def checkpoint(self, directory):
+        pass
+
 
 class MockKafkaUtils(object):
 

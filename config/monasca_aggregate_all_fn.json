@@ -1,0 +1,76 @@
+{
+    "spark_config": {
+        "appName": "testApp",
+        "streaming": {
+            "batch_interval": 1
+        }
+    },
+    "server": {
+        "port": 3000,
+        "debug": false
+    },
+    "sources": {
+        "src1": {
+            "module": "MonascaMarkovChainSource",
+            "params": {
+                "server_sleep_in_seconds": 0.01
+            }
+        }
+    },
+    "ingestors": {},
+    "smls": {},
+    "voters": {},
+    "sinks": {
+        "snk1": {
+            "module": "KafkaSink",
+            "params": {
+                "host": "localhost",
+                "port": 9092,
+                "topic": "monasca_experiments"
+            }
+        },
+        "snk2": {
+            "module": "StdoutSink"
+        }
+    },
+    "ldps": {
+        "ldp1": {
+            "module": "MonascaAggregateLDP",
+            "params": {
+                "aggregation_period": 2,
+                "aggregation_function": "max"
+            }
+        },
+        "ldp2": {
+            "module": "MonascaAggregateLDP",
+            "params": {
+                "aggregation_period": 2,
+                "aggregation_function": "min"
+            }
+        },
+        "ldp3": {
+            "module": "MonascaAggregateLDP",
+            "params": {
+                "aggregation_period": 2,
+                "aggregation_function": "avg"
+            }
+        },
+        "ldp4": {
+            "module": "MonascaAggregateLDP",
+            "params": {
+                "aggregation_period": 2,
+                "aggregation_function": "sum"
+            }
+        }
+    },
+    "connections": {
+        "src1": ["ldp1", "ldp2", "ldp3", "ldp4"],
+        "ldp1": ["snk2"],
+        "ldp2": ["snk2"],
+        "ldp3": ["snk2"],
+        "ldp4": ["snk2"],
+        "snk1": [],
+        "snk2": []
+    },
+    "feedback": {}
+}
