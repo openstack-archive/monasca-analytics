@@ -23,7 +23,7 @@ VOTERS = "voters"
 SINKS = "sinks"
 LDPS = "ldps"
 CONNECTIONS = "connections"
-# FEEDBACK = "feedback"
+FEEDBACK = "feedback"
 
 components_types = [SOURCES, INGESTORS, SMLS, VOTERS, SINKS, LDPS]
 

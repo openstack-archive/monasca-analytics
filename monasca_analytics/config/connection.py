@@ -37,7 +37,6 @@ def connect_components(components, _config):
               and values are their destinations IDs.
     """
     return _perform_all_connections(const.CONNECTIONS, _config, components)
-    # _perform_all_connections(const.FEEDBACK, _config, components)
 
 
 def _perform_all_connections(connection_kind, _config, components):
