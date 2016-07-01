@@ -18,8 +18,8 @@ import logging
 import os
 import sys
 
-import schema
 from tornado import ioloop
+import voluptuous
 
 from monasca_analytics.exception import monanas as err
 from monasca_analytics.spark import driver
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         except ValueError as e:
             raise err.MonanasMainError("`{0}` is not a \
                 valid json file.".format(sys.argv[1]))
-        except schema.SchemaError:
+        except voluptuous.Invalid:
             raise err.MonanasMainError("`{0}` has an \
                 invalid schema.".format(sys.argv[1]))
 

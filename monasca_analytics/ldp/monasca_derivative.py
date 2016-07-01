@@ -15,11 +15,12 @@
 # under the License.
 
 import logging
-import schema
+import voluptuous
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
 import monasca_analytics.util.spark_func as fn
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +42,14 @@ class MonascaDerivativeLDP(bt.BaseLDP):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        monasca_der_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
                 # Derivative period in multiple of batch interval
                 "derivative_period": int
             }
-        })
+        }, required=True)
+        return monasca_der_schema(_config)
 
     @staticmethod
     def get_default_config():
@@ -100,7 +101,7 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         timestamps = map(lambda m: m["metric"]["timestamp"], metric_values)
         all_values = map(lambda m: m["metric"]["value"], metric_values)
         # Sort values
-        all_values = [y for (x, y) in sorted(zip(timestamps, all_values))]
+        all_values = [y for (_, y) in sorted(zip(timestamps, all_values))]
         timestamps = sorted(timestamps)
         # Remove duplicates
         last_timestamp = timestamps[0]

@@ -18,7 +18,7 @@
 
 import logging
 
-import schema
+import voluptuous
 
 from monasca_analytics.config import const
 
@@ -73,7 +73,7 @@ def validate_links(links):
             if component not in all_keys:
                 missing.add(component.id())
     if len(missing) > 0:
-        raise schema.SchemaError([
+        raise voluptuous.Invalid([
             "In connections section, the following components are not "
             "connected\n\t{}\n"
             "please modify the configuration so that their list of "
@@ -92,11 +92,11 @@ def _validate_schema(config):
     :raises: SchemaError -- if the configuration, up to the
              orchestration level, is not valid
     """
-    config_schema = schema.Schema({
+    config_schema = voluptuous.Schema({
         "spark_config": {
             "appName": basestring,
             "streaming": {
-                "batch_interval": schema.And(int, lambda b: b > 0)
+                "batch_interval": voluptuous.And(int, voluptuous.Range(min=1))
             }
         },
         "server": {
@@ -104,31 +104,31 @@ def _validate_schema(config):
             "debug": bool
         },
         "sources": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "ingestors": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "smls": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "voters": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "sinks": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "ldps": {
-            schema.Optional(basestring): {basestring: object}
+            voluptuous.Optional(basestring): {basestring: object}
         },
         "connections": {
-            schema.Optional(basestring): [basestring]
+            voluptuous.Optional(basestring): [basestring]
         },
         "feedback": {
-            schema.Optional(basestring): [basestring]
+            voluptuous.Optional(basestring): [basestring]
         }
-    })
-    return config_schema.validate(config)
+    }, required=True)
+    return config_schema(config)
 
 
 def _validate_only_one_voter(config):
@@ -139,7 +139,7 @@ def _validate_only_one_voter(config):
     :raises: SchemaError -- if there is more than one voter defined in config
     """
     def _raise(comp):
-        raise schema.SchemaError([
+        raise voluptuous.Invalid([
             "More than one {} found in the config, please modify " +
             "it specifying only one {}".format(comp, comp)], [])
 
@@ -158,7 +158,7 @@ def _validate_ids_uniqueness(config):
     for comp_type in valid_connection_types.keys():
         for com_id in config[comp_type].keys():
             if com_id in all_ids:
-                raise schema.SchemaError(
+                raise voluptuous.Invalid(
                     ["Duplicated component ID : " + com_id], [])
             all_ids.add(com_id)
 
@@ -186,7 +186,7 @@ def _validate_expected_dest_type(config, from_id, to_ids, expected_types):
                 valid_connection = True
                 break
         if not valid_connection:
-            raise schema.SchemaError([
+            raise voluptuous.Invalid([
                 from_id + " connected to a wrong component: " + to_id +
                 ". It should be connected only to any of : " +
                 str(expected_types)], [])
@@ -205,7 +205,7 @@ def _validate_existing_id(config, component_id):
         if component_id in config[comp_type].keys():
             found_id = True
     if not found_id:
-        raise schema.SchemaError([
+        raise voluptuous.Invalid([
             'In "connections", component `{}` hasn\'t been defined'
             .format(component_id)
         ], [])

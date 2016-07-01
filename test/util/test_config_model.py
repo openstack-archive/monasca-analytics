@@ -19,7 +19,7 @@ import logging.config
 import os
 import unittest
 
-import schema
+import voluptuous
 
 from monasca_analytics.config import validation
 from monasca_analytics.util import common_util
@@ -56,97 +56,97 @@ class TestConfigModel(unittest.TestCase):
     def test_validate_config_missing_key(self):
         for key in self.comp_types:
             del self.config[key]
-            self.assertRaises(schema.SchemaError,
+            self.assertRaises(voluptuous.Invalid,
                               validation.validate_config, self.config)
             self.config = self.get_config()
 
     def test_validate_config_extra_key(self):
         self.config = self.get_config()
         self.config["infiltrated"] = "I should not exist"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
 
     def test_validate_config_missing_spark_key(self):
         for key in self.config["spark_config"].keys():
             del self.config["spark_config"][key]
-            self.assertRaises(schema.SchemaError,
+            self.assertRaises(voluptuous.Invalid,
                               validation.validate_config, self.config)
             self.config = self.get_config()
         del self.config["spark_config"]["streaming"]["batch_interval"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_missing_server_key(self):
         del self.config["server"]["port"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
         del self.config["server"]["debug"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_spark_wrong_format(self):
         self.config["spark_config"]["streaming"][
             "batch_interval"] = "I should not be a string"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
         self.config["spark_config"]["appName"] = 123
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_server_wrong_format(self):
         self.config["server"]["port"] = "I should be an int"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
         self.config["server"]["debug"] = 52
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_spark_extra_parameters(self):
         self.config["spark_config"]["infiltrated"] = "I should not exist"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
         self.config["spark_config"]["streaming"][
             "infiltrated"] = "I should not exist"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_server_extra_parameters(self):
         self.config["server"]["infiltrated"] = "I should not exist"
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_config_wrong_format_components(self):
         for key in self.comp_types:
             self.config[key] = ["I", "should", "be", "a", "dictionary"]
-            self.assertRaises(schema.SchemaError,
+            self.assertRaises(voluptuous.Invalid,
                               validation.validate_config, self.config)
             self.config = self.get_config()
             for comp_id in self.config[key].keys():
                 self.config[key][comp_id] = ["I", "should", "be", "a", "dict"]
-                self.assertRaises(schema.SchemaError,
+                self.assertRaises(voluptuous.Invalid,
                                   validation.validate_config, self.config)
                 self.config = self.get_config()
 
     def test_validate_config_wrong_format_connections(self):
         self.config["connections"] = ["I", "should", "be", "a", "dictionary"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
         for comp_id in self.config["connections"].keys():
                 self.config["connections"][comp_id] = {"I": "should",
                                                        "be": "a list"}
-                self.assertRaises(schema.SchemaError,
+                self.assertRaises(voluptuous.Invalid,
                                   validation.validate_config, self.config)
                 self.config = self.get_config()
 
     def test_validate_connections_data_models(self):
         self.config["connections"]["mod1"] = ["src1"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
     def test_validate_connections_wrong_dest(self):
@@ -173,18 +173,18 @@ class TestConfigModel(unittest.TestCase):
                 self.config["connections"][from_id] = [dst_id]
                 logger.debug("checking wrong connection: " +
                              from_id + "  --> " + dst_id)
-                self.assertRaises(schema.SchemaError,
+                self.assertRaises(voluptuous.Invalid,
                                   validation.validate_config, self.config)
                 self.config = self.get_config()
 
     def test_validate_connections_inexisteng_source(self):
         self.config["connections"]["inex"] = ["sin2"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()
 
     def test_validate_connections_inexisteng_dest(self):
         self.config["connections"]["src1"] = ["inex"]
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
         self.config = self.get_config()

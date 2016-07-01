@@ -16,13 +16,14 @@
 
 import logging
 
-import schema
+import voluptuous
 
 from monasca_analytics.source.markov_chain import base
 from monasca_analytics.source.markov_chain import events
 from monasca_analytics.source.markov_chain import prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as tr
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -62,15 +63,15 @@ class IPTablesSource(base.MarkovChainSource):
 
     @staticmethod
     def validate_config(_config):
-        source_schema = schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        source_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
-                "server_sleep_in_seconds": schema.And(float,
-                                                      lambda v: 0 < v < 1)
+                "server_sleep_in_seconds": voluptuous.And(
+                    float, voluptuous.Range(
+                        min=0, max=1, min_included=False, max_included=False))
             }
-        })
-        return source_schema.validate(_config)
+        }, required=True)
+        return source_schema(_config)
 
     @staticmethod
     def get_default_config():

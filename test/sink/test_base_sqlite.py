@@ -20,7 +20,7 @@ import unittest
 
 import cPickle
 import numpy as np
-import schema
+import voluptuous
 
 from monasca_analytics.sink import base_sqlite as bsql
 from test.mocks import spark_mocks
@@ -47,12 +47,13 @@ class BaseSQLiteSinkDummyExtension(bsql.BaseSQLiteSink):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
-            schema.Optional("db_name"): schema.And(
+        base_schema = voluptuous.Schema({
+            "module": voluptuous.And(
                 basestring, lambda i: not any(c.isspace() for c in i)),
-        }).validate(_config)
+            voluptuous.Optional("db_name"): voluptuous.And(
+                basestring, lambda i: not any(c.isspace() for c in i)),
+        }, required=True)
+        return base_schema(_config)
 
 
 class TestSQLiteSink(unittest.TestCase):
@@ -105,12 +106,12 @@ class TestSQLiteSink(unittest.TestCase):
 
     def test_validate_config_no_module(self):
         conf = {"db_name": "mySQLite.db"}
-        self.assertRaises(schema.SchemaError, self.snk.validate_config, conf)
+        self.assertRaises(voluptuous.Invalid, self.snk.validate_config, conf)
 
     def test_validate_config_extra_param(self):
         conf = {"module": "BaseSQLiteSinkDummyExtension",
                 "infiltrated": "I shouldn't be here"}
-        self.assertRaises(schema.SchemaError, self.snk.validate_config, conf)
+        self.assertRaises(voluptuous.Invalid, self.snk.validate_config, conf)
 
     def test_get_db_name(self):
         conf = {"db_name": "mySQLite.db"}

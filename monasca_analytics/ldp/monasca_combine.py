@@ -15,12 +15,13 @@
 # under the License.
 
 import logging
-import schema
+import voluptuous
 
 import monasca_analytics.banana as banana
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
 import monasca_analytics.util.spark_func as fn
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -140,15 +141,14 @@ class MonascaCombineLDP(bt.BaseLDP):
 
     @staticmethod
     def validate_config(_config):
-        schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        monasca_comb_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
                 "metric_name": basestring,
                 "combine_period": int,
                 "lambda": basestring,
                 "metric_names_binding": {
-                    basestring: schema.Or(
+                    basestring: voluptuous.Or(
                         "apache.net.kbytes_sec",
                         "apache.net.requests_sec",
                         "apache.performance.cpu_load_perc",
@@ -211,7 +211,8 @@ class MonascaCombineLDP(bt.BaseLDP):
                     )
                 }
             }
-        }).validate(_config)
+        }, required=True)
+        monasca_comb_schema(_config)
         # Checks the expression and the environment
         handle = banana.validate_expression(_config["params"]["lambda"])
         banana.validate_name_binding(handle,

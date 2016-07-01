@@ -19,7 +19,7 @@ import logging.config
 import os
 import unittest
 
-import schema
+import voluptuous
 
 from monasca_analytics.source import iptables_markov_chain
 
@@ -71,17 +71,17 @@ class TestIPTablesSource(unittest.TestCase):
 
     def test_validate_config_extra_param(self):
         self.assertRaises(
-            schema.SchemaError, self.ips.validate_config,
+            voluptuous.Invalid, self.ips.validate_config,
             self.config_extra_param)
 
     def test_validate_config_missing_param(self):
         self.assertRaises(
-            schema.SchemaError, self.ips.validate_config,
+            voluptuous.Invalid, self.ips.validate_config,
             self.config_missing_param)
 
     def test_validate_config_wrong_type(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.ips.validate_config,
             self.config_wrong_type)
 

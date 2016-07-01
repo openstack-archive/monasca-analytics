@@ -19,7 +19,7 @@ import logging.config
 import os
 import unittest
 
-import schema
+import voluptuous
 
 from monasca_analytics.source import kafka
 from test.mocks import spark_mocks
@@ -88,25 +88,25 @@ class KafkaSourceTest(unittest.TestCase):
 
     def test_validate_config_extra_param(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.ks.validate_config,
             self.config_extra_param)
 
     def test_validate_config_missing_dir(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.ks.validate_config,
             self.config_missing_param)
 
     def test_validate_config_wrong_type(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.ks.validate_config,
             self.config_wrong_type)
 
     def test_validate_config_missing_params(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.ks.validate_config,
             self.config_missing_params)
 

@@ -17,9 +17,10 @@
 import logging
 
 from pyspark.streaming import kafka
-import schema
+import voluptuous
 
 from monasca_analytics.source import base
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -29,25 +30,19 @@ class KafkaSource(base.BaseSource):
 
     @staticmethod
     def validate_config(_config):
-        source_schema = schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        source_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
-                "zk_host": schema.And(basestring,
-                                      lambda i: not any(c.isspace()
-                                                        for c in i)),
+                "zk_host": voluptuous.And(basestring, vu.NoSpaceCharacter()),
                 "zk_port": int,
-                "group_id": schema.And(basestring,
-                                       lambda i: not any(c.isspace()
-                                                         for c in i)),
+                "group_id": voluptuous.And(basestring, vu.NoSpaceCharacter()),
                 "topics": {
-                    schema.And(basestring, lambda i: not any(c.isspace()
-                                                             for c in i)):
-                    schema.And(int, lambda p: p > 0)
+                    voluptuous.And(basestring, vu.NoSpaceCharacter()):
+                    voluptuous.And(int, voluptuous.Range(min=1))
                 }
             }
-        })
-        return source_schema.validate(_config)
+        }, required=True)
+        return source_schema(_config)
 
     @staticmethod
     def get_default_config():

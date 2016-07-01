@@ -20,7 +20,7 @@ import logging.config
 import os
 import unittest
 
-import schema
+import voluptuous
 
 from monasca_analytics.config import const
 from monasca_analytics.dsl.dsl import MonanasDSL
@@ -126,7 +126,7 @@ class TestMonanasDSL(unittest.TestCase):
 
     def test_add_component_wrong_config(self):
         del (self.testing_new_source_config["params"]["zk_port"])
-        self.assertRaises(schema.SchemaError,
+        self.assertRaises(voluptuous.Invalid,
                           self.dsl.add_component,
                           self.testing_new_source_config)
         self.assertEqual(self.original_config, self.dsl._config)

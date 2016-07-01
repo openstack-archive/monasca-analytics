@@ -16,29 +16,22 @@
 
 """A list of functions for validating sink configs."""
 
-import schema
+import voluptuous
 
-from monasca_analytics.config import const
-from monasca_analytics.util import common_util as cu
+from monasca_analytics.util import validation_utils as vu
 
 
 def validate_kafka_sink_config(config):
     """Validates the KafkaSink configuration"""
 
-    available_sink_classes = \
-        cu.get_available_classes(const.SINKS)[const.SINKS]
-    available_sink_names = [Clazz.__name__ for Clazz in available_sink_classes]
-
-    config_schema = schema.Schema({
-        "module": schema.And(basestring,
-                             lambda m: m in available_sink_names),
+    config_schema = voluptuous.Schema({
+        "module": voluptuous.And(basestring, vu.AvailableSink()),
         "params": {
-            "host": schema.And(basestring,
-                               lambda i: not any(c.isspace() for c in i)),
+            "host": voluptuous.And(
+                basestring, vu.NoSpaceCharacter()),
             "port": int,
-            "topic": schema.And(basestring,
-                                lambda i: not any(c.isspace() for c in i))
+            "topic": voluptuous.And(
+                basestring, vu.NoSpaceCharacter())
         }
-    })
-
-    return config_schema.validate(config)
+    }, required=True)
+    return config_schema(config)

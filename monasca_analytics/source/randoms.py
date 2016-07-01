@@ -19,16 +19,16 @@ import json
 import logging
 import numpy as np
 import random
-import schema
 import six
 import SocketServer
 import threading as th
 import time
 import uuid
-
+import voluptuous
 
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.source import base
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -73,36 +73,35 @@ class RandomSource(base.BaseSource):
 
     @staticmethod
     def validate_config(_config):
-        source_schema = schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        source_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
-                "host": schema.And(basestring,
-                                   lambda i: not any(c.isspace() for c in i)),
+                "host": voluptuous.And(basestring, vu.NoSpaceCharacter()),
                 "port": int,
                 "model": {
-                    "name": schema.And(basestring,
-                                       lambda i: not any(c.isspace()
-                                                         for c in i)),
+                    "name": voluptuous.And(basestring, vu.NoSpaceCharacter()),
                     "params": {
-                        "origin_types": schema.And([
+                        "origin_types": voluptuous.And([
                             {
-                                "origin_type": schema.And(
-                                    basestring,
-                                    lambda i: not any(c.isspace() for c in i)),
-                                "weight": schema.And(schema.Or(int, float),
-                                                     lambda w: w > 0.0)
+                                "origin_type": voluptuous.And(
+                                    basestring, vu.NoSpaceCharacter()),
+                                "weight": voluptuous.And(
+                                    voluptuous.Or(int, float),
+                                    voluptuous.Range(
+                                        min=0, min_included=False)),
                             }
-                        ], lambda o: len(o) > 0),
-                        schema.Optional("key_causes"): dict
+                        ], vu.NotEmptyArray()),
+                        voluptuous.Optional("key_causes"): dict
                     }
                 },
-                "alerts_per_burst": schema.And(int, lambda a: a > 0),
-                "idle_time_between_bursts": schema.And(schema.Or(int, float),
-                                                       lambda i: i > 0)
+                "alerts_per_burst": voluptuous.And(
+                    int, voluptuous.Range(min=1)),
+                "idle_time_between_bursts": voluptuous.And(
+                    voluptuous.Or(int, float),
+                    voluptuous.Range(min=0, min_included=False))
             }
-        })
-        return source_schema.validate(_config)
+        }, required=True)
+        return source_schema(_config)
 
     @staticmethod
     def get_default_config():
@@ -375,7 +374,7 @@ class MonanasTCPHandler(SocketServer.BaseRequestHandler):
                 validated_alert = self.server.validate(alert)
                 self.request.send(json.dumps(validated_alert) + "\n")
                 accumulated_alerts += 1
-            except schema.SchemaError:
+            except voluptuous.Invalid:
                 logger.warn("Invalid schema for generated alerts.")
 
             time.sleep(self.server.generate_idle_time_between_bursts)

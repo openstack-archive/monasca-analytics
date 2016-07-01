@@ -19,7 +19,7 @@ import json
 import logging
 import os
 
-import schema
+import voluptuous
 
 from monasca_analytics.config import const
 from monasca_analytics.config import validation
@@ -119,7 +119,7 @@ class MonanasDSL(object):
                 logger.debug("New validated config = " + str(new_conf))
                 self._config[comp_type][comp_id] = new_conf
                 return True
-            except schema.SchemaError as e:
+            except voluptuous.Invalid as e:
                 logger.debug(str(e))
                 continue
         return False
