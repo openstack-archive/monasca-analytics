@@ -8,3 +8,4 @@
 .pydevproject
 .vagrant
 .idea
+.tox
