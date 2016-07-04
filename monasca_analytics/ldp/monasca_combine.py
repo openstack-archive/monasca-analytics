@@ -17,7 +17,7 @@
 import logging
 import voluptuous
 
-import monasca_analytics.banana as banana
+import monasca_analytics.banana.api as banana
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
 import monasca_analytics.util.spark_func as fn

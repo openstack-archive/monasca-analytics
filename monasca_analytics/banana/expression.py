@@ -17,9 +17,9 @@
 import logging
 import types
 
+import monasca_analytics.banana.bytecode.assembler as asbl
+import monasca_analytics.banana.private as priv
 import monasca_analytics.exception.banana as exception
-import peak.util.assembler as ass
-import private as priv
 import pyparsing as p
 
 
@@ -42,7 +42,7 @@ class ExpressionParser(object):
             (p.oneOf('+ -'), 2, p.opAssoc.LEFT)
         ])
 
-    def parse(self, string, code=ass.Code()):
+    def parse(self, string, code=asbl.Code()):
         """
         Parse a given string and construct an Evaluator
         :type string: basestring
@@ -78,7 +78,7 @@ class ExpressionParser(object):
         pushed_one_stack_value = False
         for child in filter(priv.is_not_op, subtree):
             if isinstance(child, basestring):
-                code(ass.Local(child))
+                code(asbl.Local(child))
                 if not pushed_one_stack_value:
                     pushed_one_stack_value = True
                 else:
@@ -114,17 +114,17 @@ def create_fn_with_config(env, expr_string):
     :returns: Returns a function that accept one argument
               expected to be the environment.
     """
-    code = ass.Code()
+    code = asbl.Code()
     # Argument
-    code(ass.Local('__monanas__env'))
+    code(asbl.Local('__monanas__env'))
     code.co_argcount = 1
     # Create local variables
     for key, value in env.iteritems():
-        code(ass.Call(
-            ass.Getattr(
-                ass.Local('__monanas__env'), 'get'),
-            [ass.Const(value)]),
-            ass.LocalAssign(str(key)))
+        code(asbl.Call(
+            asbl.Getattr(
+                asbl.Local('__monanas__env'), 'get'),
+            [asbl.Const(value)]),
+            asbl.LocalAssign(str(key)))
     parser = ExpressionParser()
     try:
         parser.parse(expr_string, code)

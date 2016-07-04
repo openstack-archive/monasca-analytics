@@ -45,8 +45,8 @@ class MonanasHandler(web.RequestHandler):
 
         try:
             body = json.loads(self.request.body)
-            validated_body = getattr(web_service_model, "action_model")(body)
-            getattr(self._monanas, validated_body["action"])()
+            getattr(web_service_model, "action_model")(body)
+            getattr(self._monanas, body["action"])()
         except (AttributeError, voluptuous.Invalid, ValueError):
             self.set_status(400, "The request body was malformed.")
         except (err.MonanasBindSourcesError,

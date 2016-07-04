@@ -46,13 +46,13 @@ if [ "$VAGRANT_ENV" ]; then
   echo "-------------------------"
   echo "unzip spark to ~/spark"
   tar -xzf spark.tgz
-  mv spark-1.6.1/ ~/spark
-  cd ~/spark
+  mv spark-1.6.1/ ~/spark/spark-1.6.1
+  cd ~/spark/spark-1.6.1
   mvn -DskipTests clean package
   cd ~/tmp
   # config for logging in spark
-  cp ~/spark/conf/log4j.properties.template ~/spark/conf/log4j.properties
-  sed -i 's/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/g' ~/spark/conf/log4j.properties
+  cp ~/spark/spark-1.6.1/conf/log4j.properties.template ~/spark/spark-1.6.1/conf/log4j.properties
+  sed -i 's/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/g' ~/spark/spark-1.6.1/conf/log4j.properties
 
   # Kafka
   mkdir ~/kafka
@@ -81,7 +81,7 @@ if [ "$VAGRANT_ENV" ]; then
 
   # Environment setup
   set -v
-  echo 'export SPARK_HOME=~/spark' >> $HOME/.profile
+  echo 'export SPARK_HOME=~/spark/spark-1.6.1' >> $HOME/.profile
   echo 'export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.9-src.zip:$PYTHONPATH' >> $HOME/.profile
   set +v
 
