@@ -9,3 +9,5 @@
 .vagrant
 .idea
 .tox
+.coverage
+cover
