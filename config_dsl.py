@@ -17,6 +17,7 @@
 import json
 from logging import config as log_conf
 import os
+import six
 
 from monasca_analytics.dsl import interpreter
 
@@ -39,7 +40,7 @@ def main():
     inter = interpreter.DSLInterpreter()
     cmd = ""
     while("exit" != cmd.lower()):
-        cmd = raw_input(">> ")
+        cmd = six.moves.input(">> ")
         if cmd != "":
             try:
                 print inter.execute_string(cmd)
