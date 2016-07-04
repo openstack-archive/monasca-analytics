@@ -16,13 +16,13 @@
 
 """A list of functions to validate web_service models."""
 
-import schema
+import voluptuous
 
 
 def action_model(value):
     """Validates the data against action_model schema."""
-    action_model_schema = schema.Schema({
-        "action": schema.And(basestring, lambda o: not o.startswith("_"))
-    })
+    action_model_schema = voluptuous.Schema({
+        "action": voluptuous.And(basestring, lambda o: not o.startswith("_"))
+    }, required=True)
 
-    return action_model_schema.validate(value)
+    return action_model_schema(value)

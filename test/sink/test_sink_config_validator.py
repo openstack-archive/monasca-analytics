@@ -14,8 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import schema
 import unittest
+import voluptuous
 
 import monasca_analytics.sink.sink_config_validator as validator
 
@@ -34,24 +34,31 @@ class SinkConfigValidatorTest(unittest.TestCase):
             }
         }
 
-    def test_validate_kafka_sink_config(self):
+    def test_validate_kafka_sink_valid_config(self):
         try:
             kafka(self._valid_config)
-        except schema.SchemaError as e:
+        except voluptuous.Invalid as e:
             self.fail(e.__str__())
 
+    def test_validate_kafka_sink_invalid_module(self):
         invalid_config = self._valid_config
         invalid_config["module"] = "invalid_module"
-        self.assertRaises(schema.SchemaError, kafka, invalid_config)
+        self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
+
+    def test_validate_kafka_sink_invalid_host(self):
         invalid_config = self._valid_config
         invalid_config["params"]["host"] = "invalid host"
-        self.assertRaises(schema.SchemaError, kafka, invalid_config)
+        self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
+
+    def test_validate_kafka_sink_invalid_port(self):
         invalid_config = self._valid_config
         invalid_config["params"]["port"] = "invalid_port"
-        self.assertRaises(schema.SchemaError, kafka, invalid_config)
+        self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
+
+    def test_validate_kafka_sink_invalid_topic(self):
         invalid_config = self._valid_config
         invalid_config["params"]["topic"] = "invalid topic"
-        self.assertRaises(schema.SchemaError, kafka, invalid_config)
+        self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)

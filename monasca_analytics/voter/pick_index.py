@@ -16,7 +16,7 @@
 
 import logging
 
-import schema
+import voluptuous
 
 from monasca_analytics.voter import base
 
@@ -32,13 +32,14 @@ class PickIndexVoter(base.BaseVoter):
 
     @staticmethod
     def validate_config(_config):
-        schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        pick_schema = voluptuous.Schema({
+            "module": voluptuous.And(
+                basestring, lambda i: not any(c.isspace() for c in i)),
             "params": {
-                "index": schema.And(int, lambda i: i >= 0)
+                "index": voluptuous.And(int, lambda i: i >= 0)
             }
-        }).validate(_config)
+        }, required=True)
+        return pick_schema(_config)
 
     @staticmethod
     def get_default_config():

@@ -19,7 +19,7 @@ import logging.config
 import os
 import unittest
 
-import schema
+import voluptuous
 
 from monasca_analytics.source import cloud_markov_chain as cloud
 from test.mocks import spark_mocks
@@ -115,19 +115,19 @@ class MarkovChainSourceTest(unittest.TestCase):
 
     def test_validate_config_extra_param(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.mcs.validate_config,
             self.config_extra_param)
 
     def test_validate_config_missing_param(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.mcs.validate_config,
             self.config_missing_param)
 
     def test_validate_config_wrong_type(self):
         self.assertRaises(
-            schema.SchemaError,
+            voluptuous.Invalid,
             self.mcs.validate_config,
             self.config_wrong_type)
 

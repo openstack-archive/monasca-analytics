@@ -18,8 +18,8 @@ import json
 import logging
 import sys
 
-import schema
 from tornado import web
+import voluptuous
 
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.web_service import web_service_model
@@ -47,7 +47,7 @@ class MonanasHandler(web.RequestHandler):
             body = json.loads(self.request.body)
             validated_body = getattr(web_service_model, "action_model")(body)
             getattr(self._monanas, validated_body["action"])()
-        except (AttributeError, schema.SchemaError, ValueError):
+        except (AttributeError, voluptuous.Invalid, ValueError):
             self.set_status(400, "The request body was malformed.")
         except (err.MonanasBindSourcesError,
                 err.MonanasAlreadyStartedStreaming,

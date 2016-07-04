@@ -17,10 +17,11 @@
 import logging
 
 import numpy as np
-import schema
 from sklearn import svm
+import voluptuous
 
 from monasca_analytics.sml import base
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -38,10 +39,10 @@ class SvmOneClass(base.BaseSML):
 
     @staticmethod
     def validate_config(_config):
-        schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i))
-        }).validate(_config)
+        svm_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+        }, required=True)
+        return svm_schema(_config)
 
     @staticmethod
     def get_default_config():

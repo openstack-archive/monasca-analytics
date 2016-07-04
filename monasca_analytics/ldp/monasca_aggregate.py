@@ -15,12 +15,13 @@
 # under the License.
 
 import logging
-import schema
+import voluptuous
 
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
 import monasca_analytics.util.spark_func as fn
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +37,11 @@ class MonascaAggregateLDP(bt.BaseLDP):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        monasca_ag_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
                 "aggregation_period": int,
-                "aggregation_function": schema.Or(
+                "aggregation_function": voluptuous.Or(
                     "avg",
                     "max",
                     "sum",
@@ -49,7 +49,8 @@ class MonascaAggregateLDP(bt.BaseLDP):
                     "cnt"
                 )
             }
-        })
+        }, required=True)
+        return monasca_ag_schema(_config)
 
     @staticmethod
     def get_default_config():

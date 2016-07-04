@@ -18,10 +18,11 @@ import logging
 import math
 
 import numpy as np
-import schema
 from sklearn import decomposition
+import voluptuous
 
 from monasca_analytics.sml import base
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -36,13 +37,13 @@ class LiNGAM(base.BaseSML):
 
     @staticmethod
     def validate_config(_config):
-        schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
+        lingam_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
             "params": {
                 "threshold": float
             }
-        }).validate(_config)
+        }, required=True)
+        return lingam_schema(_config)
 
     @staticmethod
     def get_default_config():

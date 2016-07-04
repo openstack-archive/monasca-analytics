@@ -16,11 +16,12 @@
 
 import json
 import os.path as path
-import schema
 import tempfile
 import time
+import voluptuous
 
 import monasca_analytics.sink.base as base
+from monasca_analytics.util import validation_utils as vu
 
 
 class FileSink(base.BaseSink):
@@ -69,14 +70,10 @@ class FileSink(base.BaseSink):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
-            schema.Optional("params"): {
-                "path": schema.And(
-                    basestring,
-                    lambda i: path.exists(path.expanduser(i)) or
-                    path.exists(path.dirname(path.expanduser(i)))
-                )
+        file_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            voluptuous.Optional("params"): {
+                "path": voluptuous.And(basestring, vu.ExistingPath())
             }
-        }).validate(_config)
+        }, required=True)
+        return file_schema(_config)

@@ -14,9 +14,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import schema
+import voluptuous
 
 import monasca_analytics.sink.base_sqlite as base
+from monasca_analytics.util import validation_utils as vu
 
 
 class IptablesSQLiteSink(base.BaseSQLiteSink):
@@ -42,9 +43,9 @@ class IptablesSQLiteSink(base.BaseSQLiteSink):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
-            schema.Optional("db_name"): schema.And(
-                basestring, lambda i: not any(c.isspace() for c in i)),
-        }).validate(_config)
+        iptables_sql_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            voluptuous.Optional("db_name"): voluptuous.And(
+                basestring, vu.NoSpaceCharacter()),
+        }, required=True)
+        return iptables_sql_schema(_config)

@@ -14,9 +14,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import schema
+import voluptuous
 
 from monasca_analytics.sink import base
+from monasca_analytics.util import validation_utils as vu
 
 
 class StdoutSink(base.BaseSink):
@@ -34,7 +35,7 @@ class StdoutSink(base.BaseSink):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i))
-        }).validate(_config)
+        stdout_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+        }, required=True)
+        stdout_schema(_config)

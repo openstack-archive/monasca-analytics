@@ -16,12 +16,13 @@
 
 import logging
 
-import schema
+import voluptuous
 
 import monasca_analytics.ingestor.iptables as ip_ing
 import monasca_analytics.ldp.base as bt
 from monasca_analytics.sml import svm_one_class
 import monasca_analytics.util.spark_func as fn
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,10 @@ class IptablesLDP(bt.BaseLDP):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i)),
-        }).validate(_config)
+        iptables_ldp_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+        }, required=True)
+        return iptables_ldp_schema(_config)
 
     @staticmethod
     def get_default_config():

@@ -18,10 +18,11 @@ import json
 import logging
 
 import numpy as np
-import schema
+import voluptuous
 
 from monasca_analytics.ingestor import base
 import monasca_analytics.util.spark_func as fn
+from monasca_analytics.util import validation_utils as vu
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,10 @@ class CloudIngestor(base.BaseIngestor):
 
     @staticmethod
     def validate_config(_config):
-        return schema.Schema({
-            "module": schema.And(basestring,
-                                 lambda i: not any(c.isspace() for c in i))
-        }).validate(_config)
+        cloud_schema = voluptuous.Schema({
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+        }, required=True)
+        return cloud_schema(_config)
 
     def map_dstream(self, dstream):
         features_list = list(self._features)
