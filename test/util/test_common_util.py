@@ -122,7 +122,6 @@ class CommonUtilTest(unittest.TestCase):
         self.assertItemsEqual(["PickIndexVoter"], names)
 
     def test_get_available_ldp_class_names(self):
-        return
         names = common_util.get_available_ldp_class_names()
         self.assertItemsEqual([
             "CloudCausalityLDP", "IptablesLDP",

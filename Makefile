@@ -24,7 +24,7 @@ style:
 
 start:
 	bash -c "sleep 7; curl -H \"Content-Type: application/json\" -d '{\"action\": \"start_streaming\"}' http://localhost:3000/" &
-	$(PYTHON) run.py -p ~/spark -c ./config/metric_experiments.json -l ./config/logging.json
+	$(PYTHON) run.py -p ~/spark/spark-1.6.1 -c ./config/metric_experiments.json -l ./config/logging.json
 
 
 .PHONY: all test clean style testspec
