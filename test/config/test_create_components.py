@@ -14,34 +14,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
 import os
-import unittest
 
 from monasca_analytics.config import const
 from monasca_analytics.config import creation
 from monasca_analytics.exception import monanas as err
 import monasca_analytics.util.common_util as cu
 from test.mocks import sml_mocks
+from test.util_for_testing import MonanasTestCase
 
 
-class CreateComponentsTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class CreateComponentsTest(MonanasTestCase):
 
     def setUp(self):
         """
         Keep a copy of the original functions that will be mocked, then
         mock them, reset variables, and initialize ML_Framework.
         """
-        self.setup_logging()
+        super(CreateComponentsTest, self).setUp()
         self._backup_functions()
         self._mock_functions()
         sml_mocks.sml_mocks.reset()
@@ -51,6 +41,7 @@ class CreateComponentsTest(unittest.TestCase):
         """
         Restore the potentially mocked functions to the original ones
         """
+        super(CreateComponentsTest, self).tearDown()
         self._restore_functions()
 
     def _backup_functions(self):
@@ -129,7 +120,3 @@ class CreateComponentsTest(unittest.TestCase):
         for n in sml_mocks.sml_mocks.instantiated.keys():
             if n != name:
                 self.assertEqual(0, len(sml_mocks.sml_mocks.instantiated[n]))
-
-
-if __name__ == "__main__":
-    unittest.main()

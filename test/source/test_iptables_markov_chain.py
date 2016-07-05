@@ -14,28 +14,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 import voluptuous
 
 from monasca_analytics.source import iptables_markov_chain
+from test.util_for_testing import MonanasTestCase
 
 
-class TestIPTablesSource(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class TestIPTablesSource(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(TestIPTablesSource, self).setUp()
         self.valid_config = {
             "module": "IPTablesSource",
             "params": {
@@ -64,7 +52,7 @@ class TestIPTablesSource(unittest.TestCase):
                                                         self.valid_config)
 
     def tearDown(self):
-        pass
+        super(TestIPTablesSource, self).tearDown()
 
     def test_validate_valid_config(self):
         self.assertEqual(self.valid_config, self.ips._config)

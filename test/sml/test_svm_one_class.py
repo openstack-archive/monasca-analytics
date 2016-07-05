@@ -15,24 +15,24 @@
 # under the License.
 
 import logging
-import unittest
 
 import numpy as np
 from sklearn import svm
 
 from monasca_analytics.sml import svm_one_class
+from test.util_for_testing import MonanasTestCase
 
 logger = logging.getLogger(__name__)
 
 
-class TestSvmOneClass(unittest.TestCase):
+class TestSvmOneClass(MonanasTestCase):
 
     def setUp(self):
-        unittest.TestCase.setUp(self)
+        super(TestSvmOneClass, self).setUp()
         self.svm = svm_one_class.SvmOneClass("fakeid", {"module": "fake"})
 
     def tearDown(self):
-        unittest.TestCase.tearDown(self)
+        super(TestSvmOneClass, self).tearDown()
 
     def get_testing_data(self):
         a = np.random.uniform(size=1000)
@@ -51,6 +51,3 @@ class TestSvmOneClass(unittest.TestCase):
         data = self.get_testing_data()
         clf = self.svm.learn_structure(data)
         self.assertTrue(isinstance(clf, svm.OneClassSVM))
-
-if __name__ == "__main__":
-    unittest.main()

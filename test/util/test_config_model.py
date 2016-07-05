@@ -14,20 +14,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
+import logging
 import os
-import unittest
 
 import voluptuous
 
 from monasca_analytics.config import validation
 from monasca_analytics.util import common_util
+from test.util_for_testing import MonanasTestCase
 
 logger = logging.getLogger(__name__)
 
 
-class TestConfigModel(unittest.TestCase):
+class TestConfigModel(MonanasTestCase):
 
     def get_config(self):
         current_dir = os.path.dirname(__file__)
@@ -35,16 +34,8 @@ class TestConfigModel(unittest.TestCase):
                                       "../resources/test_json.json")
         return common_util.parse_json_file(test_json_file)
 
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
-
     def setUp(self):
-        self.setup_logging()
+        super(TestConfigModel, self).setUp()
         self.comp_types = ["sources", "ingestors", "smls",
                            "voters", "ldps", "sinks"]
         self.config = self.get_config()

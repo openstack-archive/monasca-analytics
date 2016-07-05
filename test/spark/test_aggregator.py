@@ -14,32 +14,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 from monasca_analytics.spark import aggregator
 from test.mocks import spark_mocks
+from test.util_for_testing import MonanasTestCase
 
 
-class BaseAggregatorTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class BaseAggregatorTest(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(BaseAggregatorTest, self).setUp()
         self.da = AggregatorBasicChild(None)
         self.set_mocks()
 
     def tearDown(self):
-        pass
+        super(BaseAggregatorTest, self).tearDown()
 
     def set_mocks(self):
         pass

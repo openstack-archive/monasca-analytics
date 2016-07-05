@@ -14,18 +14,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import unittest
-
 from monasca_analytics.voter import base
+from test.util_for_testing import MonanasTestCase
 
 
-class BaseVoterTest(unittest.TestCase):
+class BaseVoterTest(MonanasTestCase):
 
     def setUp(self):
+        super(BaseVoterTest, self).setUp()
         self.vot = VoterBasicChild("fake_id", "fake_config")
 
     def tearDown(self):
-        pass
+        super(BaseVoterTest, self).tearDown()
 
     def test_suggest_structure_no_smls_or_structures(self):
         self.vot.suggest_structure("who", "struct")

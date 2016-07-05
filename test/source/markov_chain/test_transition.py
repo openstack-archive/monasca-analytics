@@ -14,14 +14,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 import monasca_analytics.source.markov_chain.prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as t
+from test.util_for_testing import MonanasTestCase
 
 
 class DummyState(object):
@@ -31,21 +27,13 @@ class DummyState(object):
         self.dependencies = []
 
 
-class MarkovChainTransitionsTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class MarkovChainTransitionsTest(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(MarkovChainTransitionsTest, self).setUp()
 
     def tearDown(self):
-        pass
+        super(MarkovChainTransitionsTest, self).tearDown()
 
     def test_first_order_dep_check(self):
         state = DummyState()
@@ -156,7 +144,3 @@ class MarkovChainTransitionsTest(unittest.TestCase):
         mc.apply_on(state2, 1)
         self.assertEqual(state1.state, 2)
         self.assertEqual(state2.state, 2)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -14,29 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 import voluptuous
 
 from monasca_analytics.source import cloud_markov_chain as cloud
 from test.mocks import spark_mocks
+from test.util_for_testing import MonanasTestCase
 
 
-class MarkovChainSourceTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class MarkovChainSourceTest(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(MarkovChainSourceTest, self).setUp()
         params = {
             "server_sleep_in_seconds": 0.1
         }
@@ -108,7 +96,7 @@ class MarkovChainSourceTest(unittest.TestCase):
         self.mcs = cloud.CloudMarkovChainSource("fake_id", self.valid_config)
 
     def tearDown(self):
-        pass
+        super(MarkovChainSourceTest, self).tearDown()
 
     def test_validate_valid_config(self):
         self.assertEqual(self.valid_config, self.mcs._config)
@@ -155,7 +143,3 @@ class MarkovChainSourceTest(unittest.TestCase):
         hs2 = ws2.dependencies[0]
         self.assertEqual(len(hs2.dependencies), 1)
         self.assertEqual(hs1.dependencies[0], hs2.dependencies[0])
-
-
-if __name__ == "__main__":
-    unittest.main()

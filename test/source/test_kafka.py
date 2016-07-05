@@ -14,32 +14,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 import voluptuous
 
 from monasca_analytics.source import kafka
 from test.mocks import spark_mocks
+from test.util_for_testing import MonanasTestCase
 
 
-class KafkaSourceTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class KafkaSourceTest(MonanasTestCase):
 
     def _mock_functions(self):
         kafka.kafka.KafkaUtils = spark_mocks.MockKafkaUtils
 
     def setUp(self):
-        self.setup_logging()
+        super(KafkaSourceTest, self).setUp()
         self._mock_functions()
         self.valid_config = {
             "module": "kafka",
@@ -81,7 +69,7 @@ class KafkaSourceTest(unittest.TestCase):
         self.ks = kafka.KafkaSource("fake_id", self.valid_config)
 
     def tearDown(self):
-        pass
+        super(KafkaSourceTest, self).tearDown()
 
     def test_validate_valid_config(self):
         self.assertEqual(self.valid_config, self.ks._config)

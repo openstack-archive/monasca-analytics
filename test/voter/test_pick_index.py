@@ -14,29 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 from monasca_analytics.voter import pick_index
+from test.util_for_testing import MonanasTestCase
 
 
-class TestPickIndexVoter(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class TestPickIndexVoter(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(TestPickIndexVoter, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestPickIndexVoter, self).tearDown()
 
     def test_get_default_config(self):
         default_config = pick_index.PickIndexVoter.get_default_config()

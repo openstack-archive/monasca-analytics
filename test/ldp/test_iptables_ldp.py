@@ -14,27 +14,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-import logging.config
-import os
-import unittest
-
 from monasca_analytics.ldp import iptables_ldp
 from test.mocks import classifier_mock
+from test.util_for_testing import MonanasTestCase
 
 
-class TestIptablesLDP(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class TestIptablesLDP(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(TestIptablesLDP, self).setUp()
         self.rdd_entry = [{
             "ctime": "Mon Apr 11 19:59:12 2016",
             "event": {
@@ -53,7 +41,7 @@ class TestIptablesLDP(unittest.TestCase):
                                                {"module": "fake_config"})
 
     def tearDown(self):
-        pass
+        super(TestIptablesLDP, self).tearDown()
 
     def assert_anomalous_events(self, events, anomalous=True):
         expected_events = self.raw_events

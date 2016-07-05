@@ -15,15 +15,13 @@
 # under the License.
 
 import datetime
-import json
-import logging.config
-import os
-import unittest
 
 import monasca_analytics.source.markov_chain.events as ev
 import monasca_analytics.source.markov_chain.prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
 import test.mocks.markov as markov_mocks
+
+from test.util_for_testing import MonanasTestCase
 
 
 class DummyState(object):
@@ -36,21 +34,13 @@ class DummyState(object):
         return 0
 
 
-class TriggersTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class TriggersTest(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(TriggersTest, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TriggersTest, self).tearDown()
 
     def test_trigger_should_create_event_when_necessary(self):
         some_trigger = ev.Trigger(
@@ -72,7 +62,3 @@ class TriggersTest(unittest.TestCase):
             datetime.datetime.now(),
             markov_mocks.MockRequestBuilder(events))
         self.assertEqual(len(events), 0)
-
-
-if __name__ == "__main__":
-    unittest.main()

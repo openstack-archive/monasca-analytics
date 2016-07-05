@@ -15,22 +15,22 @@
 # under the License.
 
 import logging
-import unittest
 
 import numpy as np
 
 from monasca_analytics.sml import lingam
+from test.util_for_testing import MonanasTestCase
 
 logger = logging.getLogger(__name__)
 
 
-class LiNGAMTest(unittest.TestCase):
+class LiNGAMTest(MonanasTestCase):
 
     def setUp(self):
-        unittest.TestCase.setUp(self)
+        super(LiNGAMTest, self).setUp()
 
     def tearDown(self):
-        unittest.TestCase.tearDown(self)
+        super(LiNGAMTest, self).tearDown()
 
     def test_continuous_lingam_algorithm(self):
         b = np.random.laplace(size=500)
@@ -84,7 +84,3 @@ class LiNGAMTest(unittest.TestCase):
         default_config = lingam.LiNGAM.get_default_config()
         lingam.LiNGAM.validate_config(default_config)
         self.assertEqual("LiNGAM", default_config["module"])
-
-
-if __name__ == "__main__":
-    unittest.main()

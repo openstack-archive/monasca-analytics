@@ -15,10 +15,6 @@
 # under the License.
 
 import datetime
-import json
-import logging.config
-import os
-import unittest
 
 from monasca_analytics.source.markov_chain import base
 import monasca_analytics.source.markov_chain.events as ev
@@ -26,23 +22,16 @@ import monasca_analytics.source.markov_chain.prob_checks as pck
 import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as tr
 import test.mocks.markov as markov_mocks
+from test.util_for_testing import MonanasTestCase
 
 
-class StateNodeTest(unittest.TestCase):
-
-    def setup_logging(self):
-        current_dir = os.path.dirname(__file__)
-        logging_config_file = os.path.join(current_dir,
-                                           "../../resources/logging.json")
-        with open(logging_config_file, "rt") as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
+class StateNodeTest(MonanasTestCase):
 
     def setUp(self):
-        self.setup_logging()
+        super(StateNodeTest, self).setUp()
 
     def tearDown(self):
-        pass
+        super(StateNodeTest, self).tearDown()
 
     def test_collect_events_should_be_populated_by_trigger(self):
         some_trigger = ev.Trigger(
@@ -109,7 +98,3 @@ class StateNodeTest(unittest.TestCase):
         self.assertEqual(n1.state, 0)
         self.assertEqual(n2.state, 2)
         self.assertEqual(n3.state, 1)
-
-
-if __name__ == "__main__":
-    unittest.main()

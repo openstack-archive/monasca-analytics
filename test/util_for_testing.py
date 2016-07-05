@@ -14,19 +14,25 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from monasca_analytics.source import randoms
-from test.util_for_testing import MonanasTestCase
+import json
+import logging.config
+import os
+import unittest
 
 
-class TestRandomSource(MonanasTestCase):
+class MonanasTestCase(unittest.TestCase):
+
+    def setup_logging(self):
+        current_dir = os.path.dirname(__file__)
+        logging_config_file = os.path.join(current_dir,
+                                           "./resources/logging.json")
+        with open(logging_config_file, "rt") as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
 
     def setUp(self):
-        super(TestRandomSource, self).setUp()
+        unittest.TestCase.setUp(self)
+        self.setup_logging()
 
     def tearDown(self):
-        super(TestRandomSource, self).tearDown()
-
-    def test_get_default_config(self):
-        default_config = randoms.RandomSource.get_default_config()
-        randoms.RandomSource.validate_config(default_config)
-        self.assertEqual("RandomSource", default_config["module"])
+        unittest.TestCase.tearDown(self)

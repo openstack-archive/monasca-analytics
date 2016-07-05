@@ -40,7 +40,7 @@ class ExpressionParser(object):
         self._expr = p.infixNotation(terminal, [
             (p.oneOf('* /'), 2, p.opAssoc.LEFT),
             (p.oneOf('+ -'), 2, p.opAssoc.LEFT)
-        ])
+        ]) + p.stringEnd()
 
     def parse(self, string, code=asbl.Code()):
         """
@@ -171,7 +171,7 @@ def validate_expression(expr_string):
         res = parser.parse_tree(expr_string)
         return ExpressionHandle(res, expr_string)
     except p.ParseException as e:
-        raise exception.BananaInvalidExpression(e.message)
+        raise exception.BananaInvalidExpression(str(e))
 
 
 def validate_name_binding(expr_handle, environment):
@@ -203,14 +203,14 @@ def validate_name_binding(expr_handle, environment):
                 collect_names(child)
     names = set()
     collect_names(expr_handle.tree)
-    for name_binding in environment.keys():
-        if name_binding not in names:
+    for name in names:
+        if name not in environment.keys():
             raise exception.BananaInvalidExpression(
-                "This expression ('{}') can't be used with the provided "
-                "environment: '{}'.\nReason: '{}' is not defined.".format(
+                "The expression '{}' can't be used with the provided "
+                "environment: '{}'. Reason: '{}' is not defined.".format(
                     expr_handle.original_str,
                     environment,
-                    name_binding
+                    name
                 )
             )
 
