@@ -35,17 +35,17 @@ def setup_logging():
 
 def main():
     setup_logging()
-    print "Welcome to Monanas config command line"
-    print "Type help for help about commands"
+    print("Welcome to Monanas config command line")
+    print("Type help for help about commands")
     inter = interpreter.DSLInterpreter()
     cmd = ""
     while("exit" != cmd.lower()):
         cmd = six.moves.input(">> ")
         if cmd != "":
             try:
-                print inter.execute_string(cmd)
+                print(inter.execute_string(cmd))
             except Exception as e:
-                print "Failed : " + str(e)
+                print("Failed : " + str(e))
 
 if __name__ == "__main__":
     main()
