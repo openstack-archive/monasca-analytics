@@ -232,10 +232,3 @@ class MonascaCombineLDP(bt.BaseLDP):
                 }
             }
         }
-
-    @staticmethod
-    def select_func(_config):
-        return {
-            "prod": lambda m: m["metric"]["value"] / m["metric"]["count"],
-            "pow": lambda m: m["metric"]["max"],
-        }[_config["params"]["aggregation_function"]]

@@ -97,7 +97,8 @@ class MonascaAggregateLDP(bt.BaseLDP):
         :type all_metrics: list[dict]
         :param all_metrics: Values to aggregate mapping to a specific
                             metric name.
-        :type reducer: (float, float, float) -> float
+        :type reducer: ((float, float) -> float,
+            (float, float, float) -> float)
         :param reducer: Combine the metrics values together
         :type suffix: str
         :param suffix: Suffix to append to the metric name in its combined form
@@ -135,10 +136,12 @@ class MonascaAggregateLDP(bt.BaseLDP):
             separated_metrics)
         metric_count = len(separated_metrics)
         for index in xrange(0, len(separated_metrics[0])):
-            new_value = separated_metrics[0][index]["metric"]["value"]
+            new_value = reducer[0](
+                separated_metrics[0][index]["metric"]["value"],
+                metric_count)
             new_timestamp = separated_metrics[0][index]["metric"]["timestamp"]
             for metric_index in xrange(1, metric_count):
-                new_value = reducer(new_value, helpers.interpolate(
+                new_value = reducer[1](new_value, helpers.interpolate(
                     new_timestamp,
                     separated_metrics[metric_index],
                     all_timestamps[metric_index]
@@ -162,9 +165,24 @@ class MonascaAggregateLDP(bt.BaseLDP):
     @staticmethod
     def select_reducer(_config):
         return {
-            "avg": lambda acc, m, cnt: m["metric"]["value"] / cnt + acc,
-            "max": lambda acc, m, cnt: max(m["metric"]["value"], acc),
-            "sum": lambda acc, m, cnt: m["metric"]["value"] + acc,
-            "min": lambda acc, m, cnt: min(m["metric"]["value"], acc),
-            "cnt": lambda acc, m, cnt: cnt
+            "avg": (
+                lambda m, cnt: m / cnt,
+                lambda acc, m, cnt: m / cnt + acc,
+            ),
+            "max": (
+                lambda m, cnt: m,
+                lambda acc, m, cnt: max(m, acc),
+            ),
+            "sum": (
+                lambda m, cnt: m,
+                lambda acc, m, cnt: m + acc,
+            ),
+            "min": (
+                lambda m, cnt: m,
+                lambda acc, m, cnt: min(m, acc),
+            ),
+            "cnt": (
+                lambda m, cnt: m,
+                lambda acc, m, cnt: cnt,
+            ),
         }[_config["params"]["aggregation_function"]]

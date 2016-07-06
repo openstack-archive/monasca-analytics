@@ -45,6 +45,12 @@ class TestBananaAPI(MonanasTestCase):
                           "a n + 15")
         self.assertRaises(BananaInvalidExpression, validate_expression,
                           "a * exp(b)")
+        self.assertRaises(BananaInvalidExpression, validate_expression,
+                          "-a")
+        self.assertRaises(BananaInvalidExpression, validate_expression,
+                          "- a")
+        self.assertRaises(BananaInvalidExpression, validate_expression,
+                          "+ b")
 
     def test_validate_name_binding_is_valid(self):
         validate_name_binding(
@@ -74,3 +80,21 @@ class TestBananaAPI(MonanasTestCase):
         self.assertEqual(result, 13)
         result = fn({"foo": 2, "bar": 3, "toto": 5})
         self.assertEqual(result, 11)
+
+    def test_generated_fn_with_parentheses_in_expr1(self):
+        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
+                                   "(a - b) + c")
+        result = fn({"foo": 12, "bar": 2, "toto": -12})
+        self.assertEqual(result, -2)
+
+    def test_generated_fn_with_parentheses_in_expr2(self):
+        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
+                                   "a - (b + c)")
+        result = fn({"foo": 12, "bar": 2, "toto": -12})
+        self.assertEqual(result, 22)
+
+    def test_generated_fn_with_no_parentheses_in_expr(self):
+        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
+                                   "a - b + c")
+        result = fn({"foo": 12, "bar": 2, "toto": 12})
+        self.assertEqual(result, 22)
