@@ -54,7 +54,7 @@ def parse_json_file(filename):
             return json.load(f)
     except (IOError, ValueError) as e:
         logger.error("Exception parsing json file : " + str(e))
-        raise e
+        raise
 
 
 def setup_logging(filename):
@@ -72,8 +72,8 @@ def setup_logging(filename):
         logpy4j.setLevel(logging.ERROR)
         logkafka = logging.getLogger("kafka")
         logkafka.setLevel(logging.ERROR)
-    except (IOError, ValueError) as e:
-        raise e
+    except (IOError, ValueError):
+        raise
 
 
 def get_available_inherited_classes(pkg, base_class):
