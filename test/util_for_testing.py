@@ -36,3 +36,15 @@ class MonanasTestCase(unittest.TestCase):
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
+
+
+def gen_metric(name, value, timestamp, host):
+    return {
+        "metric": {
+            "dimensions": {"hostname": host},
+            "timestamp": timestamp,
+            "name": name,
+            "value": value
+        },
+        "meta": {},
+    }

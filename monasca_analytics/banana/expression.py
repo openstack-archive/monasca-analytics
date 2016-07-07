@@ -74,24 +74,31 @@ class ExpressionParser(object):
         :type code: ass.Code
         :param code: Generated code is written here.
         """
-        operator = filter(priv.is_op, subtree)[0]
+        current_operator = None
         pushed_one_stack_value = False
-        for child in filter(priv.is_not_op, subtree):
+        for child in subtree:
             if isinstance(child, basestring):
-                code(asbl.Local(child))
-                if not pushed_one_stack_value:
-                    pushed_one_stack_value = True
+                if priv.is_op(child):
+                    current_operator = child
                 else:
-                    ExpressionParser._push_op(operator, code)
+                    code(asbl.Local(child))
+                    if not pushed_one_stack_value:
+                        pushed_one_stack_value = True
+                    else:
+                        ExpressionParser._push_op(current_operator, code)
             else:
                 ExpressionParser._build_tree(child, code)
                 if not pushed_one_stack_value:
                     pushed_one_stack_value = True
                 else:
-                    ExpressionParser._push_op(operator, code)
+                    ExpressionParser._push_op(current_operator, code)
 
     @staticmethod
     def _push_op(operator, code):
+        if operator is None:
+            raise exception.BananaInvalidExpression(
+                "Bug found! please fill a bug report on ??"
+            )
         if operator == '+':
             code.BINARY_ADD()
         elif operator == '-':
