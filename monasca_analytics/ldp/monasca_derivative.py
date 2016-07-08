@@ -91,7 +91,7 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         :param metric_values: The list of metric_values
         :return: Returns the derivative of the provided metric.
         """
-        if len(metric_values) < 2:
+        if len(metric_values.data) < 2:
             return []
 
         metric_name = metric_values.data[0]["metric"]["name"] + "_derivative"
@@ -101,7 +101,8 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         timestamps = map(lambda m: m["metric"]["timestamp"], metric_values)
         all_values = map(lambda m: m["metric"]["value"], metric_values)
         # Sort values
-        all_values = [y for (_, y) in sorted(zip(timestamps, all_values))]
+        all_values = [y for (_, y) in
+                      sorted(zip(timestamps, all_values), key=lambda x: x[0])]
         timestamps = sorted(timestamps)
         # Remove duplicates
         last_timestamp = timestamps[0]
