@@ -26,8 +26,10 @@ class WebService(web.Application):
         """WebService constructor."""
         self._monanas = monanas
         self._config = config
+        params = {"monanas": self._monanas}
         handlers = [
-            (r"/", request_handler.MonanasHandler, {"monanas": self._monanas})
+            (r"/", request_handler.MonanasHandler, params),
+            (r"/banana", request_handler.BananaHandler, params),
         ]
 
         settings = {}

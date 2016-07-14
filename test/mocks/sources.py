@@ -35,7 +35,11 @@ class MockBaseSource(base.BaseSource):
 
     @staticmethod
     def get_default_config():
-        {"module": MockBaseSource.__name__}
+        return {"module": MockBaseSource.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def create_dstream(self, ssc):
         self.before_binding_cnt += 1

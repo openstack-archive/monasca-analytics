@@ -15,9 +15,11 @@
 # under the License.
 
 import logging
-
+import math
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 from monasca_analytics.voter import base
 
 logger = logging.getLogger(__name__)
@@ -27,7 +29,7 @@ class PickIndexVoter(base.BaseVoter):
 
     def __init__(self, _id, _config):
         super(PickIndexVoter, self).__init__(_id, _config)
-        self._index = _config["params"]["index"]
+        self._index = _config["index"]
         self._index = 0
 
     @staticmethod
@@ -35,9 +37,10 @@ class PickIndexVoter(base.BaseVoter):
         pick_schema = voluptuous.Schema({
             "module": voluptuous.And(
                 basestring, lambda i: not any(c.isspace() for c in i)),
-            "params": {
-                "index": voluptuous.And(int, lambda i: i >= 0)
-            }
+            "index": voluptuous.And(
+                voluptuous.Or(float, int),
+                lambda i: i >= 0 and math.ceil(i) == math.floor(i)
+            )
         }, required=True)
         return pick_schema(_config)
 
@@ -45,10 +48,14 @@ class PickIndexVoter(base.BaseVoter):
     def get_default_config():
         return {
             "module": PickIndexVoter.__name__,
-            "params": {
-                "index": 0
-            }
+            "index": 0
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('index', type_util.Number(), 0),
+        ]
 
     def elect_structure(self, structures):
         return structures[

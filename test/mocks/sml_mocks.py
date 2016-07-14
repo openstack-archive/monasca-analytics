@@ -82,7 +82,11 @@ class MockClass_src(base_src.BaseSource):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_src.__name__}
+        return {"module": MockClass_src.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def get_feature_list(self):
         self.get_feature_list_cnt += 1
@@ -130,7 +134,11 @@ class MockClass_ingestor_module(base_ing.BaseIngestor):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_ingestor_module.__name__}
+        return {"module": MockClass_ingestor_module.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def reset_vars(self):
         self.map_dstream_cnt = 0
@@ -152,7 +160,11 @@ class MockClass_aggr_module(aggregator.Aggregator):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_aggr_module.__name__}
+        return {"module": MockClass_aggr_module.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def reset_vars(self):
         self.accumulate_dstream_samples_cnt = 0
@@ -183,7 +195,11 @@ class MockClass_sml_module(base_sml.BaseSML):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_sml_module.__name__}
+        return {"module": MockClass_sml_module.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def reset_vars(self):
         self._voter = None
@@ -209,7 +225,11 @@ class MockClass_voter_module(base_voter.BaseVoter):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_voter_module.__name__}
+        return {"module": MockClass_voter_module.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def reset_vars(self):
         self.elect_structure_cnt = 0
@@ -234,7 +254,11 @@ class MockClass_sink(base_snk.BaseSink):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_sink.__name__}
+        return {"module": MockClass_sink.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def sink_dstream(self, _):
         self.sink_dstream_cnt += 1
@@ -270,7 +294,11 @@ class MockClass_ldp_module1(base_ldp.BaseLDP):
 
     @staticmethod
     def get_default_config():
-        {"module": MockClass_ldp_module1.__name__}
+        return {"module": MockClass_ldp_module1.__name__}
+
+    @staticmethod
+    def get_params():
+        return []
 
     def map_dstream(self, dstream):
         self.map_dstream_cnt += 1

@@ -22,6 +22,8 @@ import cPickle
 import numpy as np
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 from monasca_analytics.sink import base_sqlite as bsql
 from test.mocks import spark_mocks
 
@@ -44,6 +46,16 @@ class BaseSQLiteSinkDummyExtension(bsql.BaseSQLiteSink):
                 "db_name": "sqlite_sink.db"
             }
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor(
+                "db_name",
+                type_util.String(),
+                "sqlite_sink.db"
+            )
+        ]
 
     @staticmethod
     def validate_config(_config):

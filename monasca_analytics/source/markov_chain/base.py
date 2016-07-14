@@ -83,8 +83,7 @@ class MarkovChainSource(base.BaseSource):
         self._server.server_activate()
         self._server.terminate = False
         self._server.system = system
-        self._server.sleep_in_seconds = self._config[
-            "params"]["server_sleep_in_seconds"]
+        self._server.sleep_in_seconds = self._config["sleep"]
 
         self._server_thread = threading.Thread(target=self._serve_forever)
         self._server_thread.start()

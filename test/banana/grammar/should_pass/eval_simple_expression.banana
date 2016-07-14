@@ -1,0 +1,8 @@
+a = 23 + 2
+b = "test " + a
+c = a + 4.0 * 2
+# VAR a EQ_NUM 25
+# VAR b EQ_STR "test 25"
+# VAR c EQ_NUM 33
+
+# STMT_EQ { DotPath< Ident< a > > = Expr< [Number< 23.0 >, +, Number< 2.0 >] >, DotPath< Ident< b > > = Expr< [StringLit< "test " >, +, DotPath< Ident< a > >] >, DotPath< Ident< c > > = Expr< [DotPath< Ident< a > >, +, Expr< [Number< 4.0 >, *, Number< 2.0 >] >] > }

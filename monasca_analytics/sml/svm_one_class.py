@@ -48,6 +48,10 @@ class SvmOneClass(base.BaseSML):
     def get_default_config():
         return {"module": SvmOneClass.__name__}
 
+    @staticmethod
+    def get_params():
+        return []
+
     def number_of_samples_required(self):
         return N_SAMPLES
 

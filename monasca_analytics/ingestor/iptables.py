@@ -53,6 +53,10 @@ class IptablesIngestor(base.BaseIngestor):
     def get_default_config():
         return {"module": IptablesIngestor.__name__}
 
+    @staticmethod
+    def get_params():
+        return []
+
     def map_dstream(self, dstream):
         features_list = list(self._features)
         return dstream.map(fn.from_json)\

@@ -1,0 +1,9 @@
+# slep instead of sleep
+a = IPTablesSource(slep=0.01)
+
+# NEW_TEST
+
+# priod instead of period
+a = MonascaDerivativeLDP(priod=0.01)
+
+# RAISE BananaComponentIncorrectParamName

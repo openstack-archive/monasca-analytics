@@ -1,0 +1,8 @@
+a = 23 # LHS_EQ 23.0
+a = a - a # LHS_EQ 0.0
+a = 12 - 12 - 12 # LHS_EQ -12.0
+a = 3 * 4 - 2 # LHS_EQ 10.0
+a = 2 - 3 * 4 # LHS_EQ -10.0
+b = 21 # LHS_EQ 21.0
+d = 12 # LHS_EQ 12.0
+e = b * (d + a) # LHS_EQ 42.0

@@ -27,11 +27,9 @@ class SinkConfigValidatorTest(unittest.TestCase):
         unittest.TestCase.setUp(self)
         self._valid_config = {
             "module": "KafkaSink",
-            "params": {
-                "host": "127.0.0.1",
-                "port": 9092,
-                "topic": "transformed_data"
-            }
+            "host": "127.0.0.1",
+            "port": 9092,
+            "topic": "transformed_data"
         }
 
     def test_validate_kafka_sink_valid_config(self):
@@ -47,17 +45,17 @@ class SinkConfigValidatorTest(unittest.TestCase):
 
     def test_validate_kafka_sink_invalid_host(self):
         invalid_config = self._valid_config
-        invalid_config["params"]["host"] = "invalid host"
+        invalid_config["host"] = "invalid host"
         self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
 
     def test_validate_kafka_sink_invalid_port(self):
         invalid_config = self._valid_config
-        invalid_config["params"]["port"] = "invalid_port"
+        invalid_config["port"] = "invalid_port"
         self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
 
     def test_validate_kafka_sink_invalid_topic(self):
         invalid_config = self._valid_config
-        invalid_config["params"]["topic"] = "invalid topic"
+        invalid_config["topic"] = "invalid topic"
         self.assertRaises(voluptuous.Invalid, kafka, invalid_config)
 
     def tearDown(self):

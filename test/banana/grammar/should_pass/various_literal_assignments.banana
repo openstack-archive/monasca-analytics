@@ -1,0 +1,5 @@
+a = "some string"
+b = 12.0
+c = {"a": b}
+
+# STMT_EQ { DotPath< Ident< a > > = Expr< [StringLit< "some string" >] >, DotPath< Ident< b > > = Expr< [Number< 12.0 >] >, DotPath< Ident< c > > = JsonObj< {StringLit< "a" >: Expr< [DotPath< Ident< b > >] >} > }

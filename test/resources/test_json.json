@@ -23,9 +23,7 @@
         },
         "src3": {
             "module": "IPTablesSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            }
+            "sleep": 0.01
         }
     },
     "ingestors": {

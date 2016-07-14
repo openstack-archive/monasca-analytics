@@ -12,9 +12,7 @@
     "sources": {
         "src1": {
             "module": "CloudMarkovChainSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            },
+            "sleep": 0.01,
             "transitions": {
                 "web_service": {
                     "run=>slow": {
@@ -74,27 +72,21 @@
     "smls": {
         "sml1": {
             "module": "LiNGAM",
-            "params": {
-                "threshold": 0.5
-            }
+            "threshold": 0.5
         }
     },
     "voters": {
         "vot1": {
             "module": "PickIndexVoter",
-            "params": {
-                "index": 0
-            }
+            "index": 0
         }
     },
     "sinks": {
         "snk1": {
             "module": "KafkaSink",
-            "params": {
-                "host": "localhost",
-                "port": 9092,
-                "topic": "transformed_alerts"
-            }
+            "host": "localhost",
+            "port": 9092,
+            "topic": "transformed_alerts"
         }
     },
     "ldps": {

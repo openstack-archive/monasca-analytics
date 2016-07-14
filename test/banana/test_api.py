@@ -14,12 +14,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from monasca_analytics.banana.api import create_fn_with_config
-from monasca_analytics.banana.api import validate_environment
-from monasca_analytics.banana.api import validate_expression
-from monasca_analytics.banana.api import validate_name_binding
 from monasca_analytics.exception.banana import BananaEnvironmentError
 from monasca_analytics.exception.banana import BananaInvalidExpression
+from monasca_analytics.parsing.api import create_fn_with_config
+from monasca_analytics.parsing.api import validate_environment
+from monasca_analytics.parsing.api import validate_expression
+from monasca_analytics.parsing.api import validate_name_binding
 from test.util_for_testing import MonanasTestCase
 
 

@@ -16,6 +16,7 @@
 
 """A list of functions for validating sink configs."""
 
+import math
 import voluptuous
 
 from monasca_analytics.util import validation_utils as vu
@@ -26,12 +27,12 @@ def validate_kafka_sink_config(config):
 
     config_schema = voluptuous.Schema({
         "module": voluptuous.And(basestring, vu.AvailableSink()),
-        "params": {
-            "host": voluptuous.And(
-                basestring, vu.NoSpaceCharacter()),
-            "port": int,
-            "topic": voluptuous.And(
-                basestring, vu.NoSpaceCharacter())
-        }
+        "host": voluptuous.And(
+            basestring, vu.NoSpaceCharacter()),
+        "port": voluptuous.And(
+            voluptuous.Or(float, int),
+            lambda i: i >= 0 and math.floor(i) == math.ceil(i)),
+        "topic": voluptuous.And(
+            basestring, vu.NoSpaceCharacter())
     }, required=True)
     return config_schema(config)

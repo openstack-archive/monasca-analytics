@@ -78,6 +78,38 @@ class BaseComponent(object):
         """
         pass
 
+    @abstractstatic
+    def get_params():  # @NoSelf
+        """Abstract static method that returns the description of the params.
+
+        To be implemented by BaseComponent children. It has to return
+        a list of the params description such as:
+
+            return [
+                ParamDescriptor('param1', type_util.String(), 'default value'),
+                ParamDescriptor('param2', type_util.Object({
+                    'a': type_util.Number()
+                ), {'a': 123}),
+                ...
+            ]
+
+        This function must be kept in sync with `get_default_config` and
+        `validate_config`, otherwise banana scripts using this component
+        will get runtime errors when being evaluated.
+
+        The order in the list maps to the order the parameter must be
+        passed when the component would be created, in banana:
+
+            a = MyComponent(param1, param2)
+
+        `param1` and `param2` would be type-checked respectively against
+        the first and the second element of the returned list.
+
+        :rtype: list[monasca_analytics.component.params.ParamDescriptor]
+        :return: Returns the list of parameters accepted by this component.
+        """
+        pass
+
     def id(self):
         return self._id
 

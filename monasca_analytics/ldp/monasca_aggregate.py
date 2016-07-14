@@ -17,6 +17,8 @@
 import logging
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
@@ -31,24 +33,22 @@ class MonascaAggregateLDP(bt.BaseLDP):
 
     def __init__(self, _id, _config):
         super(MonascaAggregateLDP, self).__init__(_id, _config)
-        self._aggregation_period = _config["params"]["aggregation_period"]
+        self._aggregation_period = _config["period"]
         self._reducer_func = MonascaAggregateLDP.select_reducer(_config)
-        self._suffix = "_" + _config["params"]["aggregation_function"]
+        self._suffix = "_" + _config["func"]
 
     @staticmethod
     def validate_config(_config):
         monasca_ag_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "params": {
-                "aggregation_period": int,
-                "aggregation_function": voluptuous.Or(
-                    "avg",
-                    "max",
-                    "sum",
-                    "min",
-                    "cnt"
-                )
-            }
+            "period": voluptuous.Or(float, int),
+            "func": voluptuous.Or(
+                "avg",
+                "max",
+                "sum",
+                "min",
+                "cnt"
+            )
         }, required=True)
         return monasca_ag_schema(_config)
 
@@ -56,12 +56,20 @@ class MonascaAggregateLDP(bt.BaseLDP):
     def get_default_config():
         return {
             "module": MonascaAggregateLDP.__name__,
-            "params": {
-                # One hour
-                "aggregation_period": 60 * 60,
-                "aggregation_function": "avg"
-            }
+            "period": 60.0 * 60.0,
+            "func": "avg"
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('period', type_util.Number(), 60 * 60),
+            params.ParamDescriptor(
+                'func',
+                type_util.Enum(['avg', 'max', 'sum', 'min', 'cnt']),
+                'avg'
+            )
+        ]
 
     def map_dstream(self, dstream):
         """
@@ -185,4 +193,4 @@ class MonascaAggregateLDP(bt.BaseLDP):
                 lambda m, cnt: m,
                 lambda acc, m, cnt: cnt,
             ),
-        }[_config["params"]["aggregation_function"]]
+        }[_config["func"]]

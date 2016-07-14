@@ -18,6 +18,9 @@ import logging
 
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 from monasca_analytics.source.markov_chain import base
 from monasca_analytics.source.markov_chain import events as ev
 import monasca_analytics.source.markov_chain.prob_checks as pck
@@ -35,11 +38,9 @@ class CloudMarkovChainSource(base.MarkovChainSource):
         source_schema = voluptuous.Schema({
             "module": voluptuous.And(
                 basestring, vu.NoSpaceCharacter()),
-            "params": {
-                "server_sleep_in_seconds": voluptuous.And(
-                    float, voluptuous.Range(
-                        min=0, max=1, min_included=False, max_included=False))
-            },
+            "sleep": voluptuous.And(
+                float, voluptuous.Range(
+                    min=0, max=1, min_included=False, max_included=False)),
             "transitions": {
                 "web_service": {
                     "run=>slow": {
@@ -88,9 +89,7 @@ class CloudMarkovChainSource(base.MarkovChainSource):
     def get_default_config():
         return {
             "module": CloudMarkovChainSource.__name__,
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            },
+            "sleep": 0.01,
             "transitions": {
                 "web_service": {
                     "run=>slow": {
@@ -140,6 +139,33 @@ class CloudMarkovChainSource(base.MarkovChainSource):
                 "w2:web_service": ["h2"]
             }
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('sleep', type_util.Number(), 0.01),
+            params.ParamDescriptor('transitions', type_util.Object({
+                'web_service': type_util.Object({
+                    'run=>slow': type_util.Any(),
+                    'slow=>run': type_util.Any(),
+                    'stop=>run': type_util.Any(),
+                }),
+                'switch': type_util.Object({
+                    'on=>off': type_util.Number(),
+                    'off=>on': type_util.Number(),
+                }),
+                'host': type_util.Object({
+                    'on=>off': type_util.Number(),
+                    'off=>on': type_util.Number(),
+                })
+            })),
+            params.ParamDescriptor('triggers', type_util.Object({
+                'support': type_util.Object({
+                    'get_called': type_util.Any()
+                })
+            })),
+            params.ParamDescriptor('graph', type_util.Any())
+        ]
 
     def get_feature_list(self):
         node_names = [k.split(":")[0]

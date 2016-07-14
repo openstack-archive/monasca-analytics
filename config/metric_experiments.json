@@ -12,9 +12,7 @@
     "sources": {
         "src1": {
             "module": "MonascaMarkovChainSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            }
+            "sleep": 0.01
         }
     },
     "ingestors": {},
@@ -26,36 +24,28 @@
         },
         "snk3": {
             "module": "FileSink",
-            "params": {
-                "path": "~/monasca-aggregate.log"
-            }
+            "path": "~/monasca-aggregate.log"
         }
     },
     "ldps": {
         "ldp3": {
             "module": "MonascaAggregateLDP",
-            "params": {
-                "aggregation_period": 2,
-                "aggregation_function": "cnt"
-            }
+            "period": 2,
+            "func": "cnt"
         },
         "ldp4": {
             "module": "MonascaCombineLDP",
-            "params": {
-                "metric_name": "cpu.logical_cores_actives",
-                "combine_period": 1,
-                "lambda": "a * b",
-                "metric_names_binding": {
-                    "a": "cpu.idle_perc",
-                    "b": "cpu.total_logical_cores"
-                }
+            "metric": "cpu.logical_cores_actives",
+            "period": 1,
+            "lambda": "a * b",
+            "bindings": {
+                "a": "cpu.idle_perc",
+                "b": "cpu.total_logical_cores"
             }
         },
         "ldp5": {
             "module": "MonascaDerivativeLDP",
-            "params": {
-                "derivative_period": 1
-            }
+            "period": 1
         }
     },
     "connections": {

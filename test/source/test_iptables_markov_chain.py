@@ -26,26 +26,19 @@ class TestIPTablesSource(MonanasTestCase):
         super(TestIPTablesSource, self).setUp()
         self.valid_config = {
             "module": "IPTablesSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            }
+            "sleep": 0.01
         }
         self.config_extra_param = {
             "module": "IPTablesSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01,
-                "infiltrated": "wrong_param"
-            }
+            "sleep": 0.01,
+            "infiltrated": "wrong_param"
         }
         self.config_missing_param = {
             "module": "IPTablesSource",
-            "params": {}
         }
         self.config_wrong_type = {
             "module": "IPTablesSource",
-            "params": {
-                "server_sleep_in_seconds": "I should be an integer"
-            }
+            "sleep": "I should be an integer"
         }
         self.config_missing_params = {"module": "IPTablesSource"}
         self.ips = iptables_markov_chain.IPTablesSource("fake_id",

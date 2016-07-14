@@ -46,4 +46,8 @@ class VoterBasicChild(base.BaseVoter):
 
     @staticmethod
     def get_default_config():
-        {"module": VoterBasicChild.__name__}
+        return {"module": VoterBasicChild.__name__}
+
+    @staticmethod
+    def get_params():
+        return []

@@ -19,6 +19,8 @@ import time
 
 import kafka
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 from monasca_analytics.sink import base
 import monasca_analytics.sink.sink_config_validator as validator
 
@@ -30,13 +32,14 @@ class KafkaSink(base.BaseSink):
         self._topic = None
         self._producer = None
         super(KafkaSink, self).__init__(_id, _config)
-        host = _config["params"]["host"]
-        port = _config["params"]["port"]
-        self._topic = _config["params"]["topic"]
-        self._producer = kafka.KafkaProducer(bootstrap_servers="{0}:{1}"
-                                             .format(host, port))
+        self._host = _config["host"]
+        self._port = int(_config["port"])
+        self._topic = _config["topic"]
 
     def sink_dstream(self, dstream):
+        if self._producer is None:
+            self._producer = kafka.KafkaProducer(
+                bootstrap_servers="{0}:{1}".format(self._host, self._port))
         dstream.foreachRDD(self._persist)
 
     def _persist(self, _, rdd):
@@ -64,9 +67,16 @@ class KafkaSink(base.BaseSink):
     def get_default_config():
         return {
             "module": KafkaSink.__name__,
-            "params": {
-                "host": "localhost",
-                "port": 9092,
-                "topic": "transformed_alerts"
-            }
+            "host": "localhost",
+            "port": 9092,
+            "topic": "transformed_alerts"
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('host', type_util.String(), 'localhost'),
+            params.ParamDescriptor('port', type_util.Number(), 9092),
+            params.ParamDescriptor('topic', type_util.String(),
+                                   'transformed_alerts')
+        ]

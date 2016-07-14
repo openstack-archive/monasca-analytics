@@ -17,10 +17,12 @@
 import json
 import logging
 import sys
+import traceback
 
 from tornado import web
 import voluptuous
 
+import monasca_analytics.banana.emitter as emit
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.web_service import web_service_model
 
@@ -45,7 +47,7 @@ class MonanasHandler(web.RequestHandler):
 
         try:
             body = json.loads(self.request.body)
-            getattr(web_service_model, "action_model")(body)
+            web_service_model.action_model(body)
             getattr(self._monanas, body["action"])()
         except (AttributeError, voluptuous.Invalid, ValueError):
             self.set_status(400, "The request body was malformed.")
@@ -57,6 +59,55 @@ class MonanasHandler(web.RequestHandler):
             self.set_status(500, e.__str__())
             terminate = (True, e.__str__())
         except Exception as e:
+            logger.error("Unexpected error: {0}. {1}".
+                         format(sys.exc_info()[0], e))
+            self.set_status(500, "Internal server error.")
+
+        self.flush()
+        self.finish()
+
+        if terminate[0]:
+            logger.error(terminate[1])
+            self._monanas.stop_streaming_and_terminate()
+
+
+class BananaHandler(web.RequestHandler):
+    """
+    Request handler to manage the active config using
+    the banana configuration language.
+    """
+
+    def initialize(self, monanas):
+        """Initialize the handler.
+
+        :param monanas: A Monana's instance.
+        """
+        self._monanas = monanas
+
+    @web.asynchronous
+    def post(self):
+        """Performs a Monanas's action."""
+        terminate = (False, "")
+
+        try:
+            body = json.loads(self.request.body)
+            web_service_model.banana_model(body)
+            emitter = emit.JsonEmitter()
+            # TODO(Joan): Change that
+            self._monanas.try_change_configuration(body["content"], emitter)
+            self.write(emitter.result)
+        except (AttributeError, voluptuous.Invalid, ValueError):
+            self.set_status(400, "The request body was malformed.")
+        except (err.MonanasBindSourcesError,
+                err.MonanasAlreadyStartedStreaming,
+                err.MonanasAlreadyStoppedStreaming) as e:
+            self.set_status(400, e.__str__())
+        except err.MonanasStreamingError as e:
+            self.set_status(500, e.__str__())
+            terminate = (True, e.__str__())
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(tb)
             logger.error("Unexpected error: {0}. {1}".
                          format(sys.exc_info()[0], e))
             self.set_status(500, "Internal server error.")

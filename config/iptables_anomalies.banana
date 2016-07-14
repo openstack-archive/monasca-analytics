@@ -1,0 +1,16 @@
+##############################
+# IP Tables anomalies
+#
+
+sleep = 0.01
+src = IPTablesSource(sleep=sleep)
+ing1 = IptablesIngestor()
+svm = SvmOneClass()
+voter = PickIndexVoter(0)
+ldp1 = IptablesLDP()
+stdout = StdoutSink()
+sqlite = IptablesSQLiteSink()
+
+src -> [ing1, ldp1]
+ing1 -> svm -> voter -> ldp1
+ldp1 -> [sqlite, stdout]

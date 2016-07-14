@@ -19,6 +19,9 @@ import logging
 from pyspark.streaming import kafka
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 from monasca_analytics.source import base
 from monasca_analytics.util import validation_utils as vu
 
@@ -57,6 +60,19 @@ class KafkaSource(base.BaseSource):
                 }
             }
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('zk_host', type_util.String(),
+                                   'localhost'),
+            params.ParamDescriptor('zk_port', type_util.Number(),
+                                   2181),
+            params.ParamDescriptor('group_id', type_util.String(),
+                                   'my_group_id'),
+            params.ParamDescriptor('topics',
+                                   type_util.Object(strict_checking=False))
+        ]
 
     def create_dstream(self, ssc):
         """Dstream creation

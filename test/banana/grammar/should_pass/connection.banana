@@ -1,0 +1,13 @@
+# This example would not pass later pass
+# but exercise the grammar
+
+a = Test()
+b = Test()
+
+a -> [b, c]
+a -> b -> c
+a -> [a -> b, b] -> e
+a -> b
+[[a]] -> b
+
+# CONN_EQ Connection< [('Ident< a >', 'Ident< b >'), ('Ident< a >', 'Ident< c >'), ('Ident< b >', 'Ident< c >'), ('Ident< a >', 'Ident< a >'), ('Ident< b >', 'Ident< e >')] >

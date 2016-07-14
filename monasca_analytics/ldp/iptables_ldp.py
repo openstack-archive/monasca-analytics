@@ -44,6 +44,10 @@ class IptablesLDP(bt.BaseLDP):
     def get_default_config():
         return {"module": IptablesLDP.__name__}
 
+    @staticmethod
+    def get_params():
+        return []
+
     def map_dstream(self, dstream):
         """Detect anomalies in a dstream using the learned classifier
 

@@ -12,9 +12,7 @@
     "sources": {
         "src1": {
             "module": "MonascaMarkovChainSource",
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            }
+            "sleep": 0.01
         }
     },
     "ingestors": {},
@@ -23,11 +21,9 @@
     "sinks": {
         "snk1": {
             "module": "KafkaSink",
-            "params": {
-                "host": "localhost",
-                "port": 9092,
-                "topic": "monasca_experiments"
-            }
+            "host": "localhost",
+            "port": 9092,
+            "topic": "monasca_experiments"
         },
         "snk2": {
             "module": "StdoutSink"
@@ -36,31 +32,23 @@
     "ldps": {
         "ldp1": {
             "module": "MonascaAggregateLDP",
-            "params": {
-                "aggregation_period": 2,
-                "aggregation_function": "max"
-            }
+            "period": 2,
+            "func": "max"
         },
         "ldp2": {
             "module": "MonascaAggregateLDP",
-            "params": {
-                "aggregation_period": 2,
-                "aggregation_function": "min"
-            }
+            "period": 2,
+            "func": "min"
         },
         "ldp3": {
             "module": "MonascaAggregateLDP",
-            "params": {
-                "aggregation_period": 2,
-                "aggregation_function": "avg"
-            }
+            "period": 2,
+            "func": "avg"
         },
         "ldp4": {
             "module": "MonascaAggregateLDP",
-            "params": {
-                "aggregation_period": 2,
-                "aggregation_function": "sum"
-            }
+            "period": 2,
+            "func": "sum"
         }
     },
     "connections": {

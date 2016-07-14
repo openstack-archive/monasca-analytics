@@ -26,6 +26,9 @@ import time
 import uuid
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 import monasca_analytics.exception.monanas as err
 from monasca_analytics.source import base
 from monasca_analytics.util import validation_utils as vu
@@ -125,6 +128,22 @@ class RandomSource(base.BaseSource):
                 "idle_time_between_bursts": 1.0
             }
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('host', type_util.String(), 'localhost'),
+            params.ParamDescriptor('port', type_util.Number(), 1010),
+            params.ParamDescriptor('model', type_util.Object({
+                'name': type_util.String(),
+                'params': type_util.Object({
+                    'origin_types': type_util.Object(strict_checking=False)
+                })
+            })),
+            params.ParamDescriptor('alert_per_burst', type_util.Number(), 1),
+            params.ParamDescriptor('idle_time_between_bursts',
+                                   type_util.Number(), 1.0),
+        ]
 
     def _start_server(self):
         if not self._is_server_running:

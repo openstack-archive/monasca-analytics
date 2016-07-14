@@ -16,6 +16,8 @@
 
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 import monasca_analytics.sink.base_sqlite as base
 from monasca_analytics.util import validation_utils as vu
 
@@ -36,10 +38,16 @@ class IptablesSQLiteSink(base.BaseSQLiteSink):
     def get_default_config():
         return {
             "module": IptablesSQLiteSink.__name__,
-            "params": {
-                "db_name": "sqlite_sink.db"
-            }
+            "db_name": "sqlite_sink.db"
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('db_name',
+                                   type_util.String(),
+                                   'sqlite_sink.db')
+        ]
 
     @staticmethod
     def validate_config(_config):

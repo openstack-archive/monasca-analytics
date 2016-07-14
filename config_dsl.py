@@ -15,11 +15,11 @@
 # under the License.
 
 import json
-from logging import config as log_conf
 import os
 import six
+from logging import config as log_conf
 
-from monasca_analytics.dsl import interpreter
+from monasca_analytics.banana.cli import interpreter
 
 DEFAULT_LOGGING_CONFIG_FILE = "config/logging.json"
 
@@ -35,11 +35,14 @@ def setup_logging():
 
 def main():
     setup_logging()
+    print(">>>>>         DEPRECATED TOOL         <<<<<")
+    print(">>>>> Use the banana language instead <<<<<")
+    print("")
     print("Welcome to Monanas config command line")
     print("Type help for help about commands")
     inter = interpreter.DSLInterpreter()
     cmd = ""
-    while("exit" != cmd.lower()):
+    while "exit" != cmd.lower():
         cmd = six.moves.input(">> ")
         if cmd != "":
             try:

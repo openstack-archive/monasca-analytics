@@ -189,8 +189,6 @@ class DriverExecutorTest(MonanasTestCase):
     def assert_stopped_streaming_state(self, ssc=None):
         if ssc:
             self.assertEqual(1, ssc.stopped_cnt)
-        self.assertEqual(None, self.mlf._sc)
-        self.assertEqual(None, self.mlf._ssc)
 
     def test_stop_pipeline(self):
         self.mlf.start_pipeline()

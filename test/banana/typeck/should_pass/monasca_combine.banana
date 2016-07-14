@@ -1,0 +1,22 @@
+# Checking that parameters are working as expected
+
+a = MonascaCombineLDP()
+a.metric = "cpu.logical_cores_actives"
+a.lambda = "a * b - b - a + c"
+a.bindings = {
+    a: "cpu.idle_perc",
+    b: "cpu.total_logical_cores",
+    c: "some_val"
+}
+
+# NEW_TEST
+
+# Same test as above
+
+a = MonascaCombineLDP(
+    metric = "cpu.logical_cores_actives",
+    lambda = "a * b",
+    bindings = {a:"cpu.idle_perc", b:"cpu.total_logical_cores", c:"some_val"}
+)
+
+# TYPE_TABLE_EQ {Ident< a >: MonascaCombineLDP(metric=TypeString,period=TypeNumber,lambda=TypeString,bindings=TypeAny)}

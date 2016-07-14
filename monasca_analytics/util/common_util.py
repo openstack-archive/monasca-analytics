@@ -36,9 +36,6 @@ from monasca_analytics import voter
 logger = logging.getLogger(__name__)
 
 
-available_classes = None
-
-
 def parse_json_file(filename):
     """Parses json and return a dict.
 

@@ -1,0 +1,9 @@
+a = IPTablesSource(sleep=0.01)
+a.test = "foobar"
+
+# NEW_TEST
+
+a = CloudMarkovChainSource()
+a.transitions.web_servic = {}
+
+# RAISE BananaPropertyDoesNotExists

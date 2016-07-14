@@ -1,0 +1,4 @@
+a = {a.b.c: 12} # LHS_EQ {'a': {'b': {'c': 12.0}}}
+b = a.a.b.c # LHS_EQ 12.0
+a = {a.b: 21, a.c: "test"} # LHS_EQ {'a': {'b': 21.0, 'c': 'test'}}
+d = a.a.c + " " + a.a.b # LHS_EQ 'test 21.0'

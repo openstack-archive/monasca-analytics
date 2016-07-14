@@ -39,9 +39,10 @@ class DriverExecutor(object):
     """
 
     def __init__(self, _config):
-        self._links = config.instantiate_components(_config)
-        self._sources = config.collect_sources(self._links)
-        self._orchestrator = agg.Aggregator(self)
+        self._links = None
+        self._sources = None
+        self._orchestrator = None
+        self.set_links(config.instantiate_components(_config))
 
         def restart_spark():
             self._ssc = streamingctx.create_streaming_context(
@@ -52,6 +53,18 @@ class DriverExecutor(object):
         self._sc = pyspark.SparkContext(
             appName=_config["spark_config"]["appName"])
         self._ssc = streamingctx.create_streaming_context(self._sc, _config)
+
+    def set_links(self, links):
+        """Set new set of links
+
+        This function has no effect on the current pipeline.
+        In order to use them, you need to restart the pipeline.
+        """
+        self._links = links
+        logger.debug("Collect sources...")
+        self._sources = config.collect_sources(self._links)
+        logger.debug("New list of sources: {}".format(self._sources))
+        self._orchestrator = agg.Aggregator(self)
         logger.debug("Propagating feature list...")
         self._propagate_feature_list()
 
@@ -81,10 +94,12 @@ class DriverExecutor(object):
         self._ssc.start()
 
     def stop_pipeline(self):
+        logger.debug("Stop spark context.")
+        self._ssc.stop(False, False)
+        logger.debug("Terminate sources.")
         self._terminate_sources()
-        self._ssc.awaitTermination()
-        self._ssc = None
-        self._sc = None
+        logger.debug("Restart spark context.")
+        self._restart_spark()
 
     def move_to_phase2(self):
         if self._ssc is not None:

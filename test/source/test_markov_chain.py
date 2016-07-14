@@ -25,9 +25,6 @@ class MarkovChainSourceTest(MonanasTestCase):
 
     def setUp(self):
         super(MarkovChainSourceTest, self).setUp()
-        params = {
-            "server_sleep_in_seconds": 0.1
-        }
         transitions = {
             "web_service": {
                 "run=>slow": {
@@ -72,7 +69,7 @@ class MarkovChainSourceTest(MonanasTestCase):
                     }
                 }
             },
-            "params": dict(params),
+            "sleep": 0.1,
             "graph": {
                 "h1:host": ["s1"],
                 "h2:host": ["s1"],
@@ -82,15 +79,14 @@ class MarkovChainSourceTest(MonanasTestCase):
             }
         }
         self.config_extra_param = dict(self.valid_config)
-        self.config_extra_param["params"] = dict(params)
-        self.config_extra_param["params"]["extra_param"] = "john doe"
+        self.config_extra_param["extra_param"] = "john doe"
         self.config_missing_param = dict(self.valid_config)
         self.config_missing_param["transitions"] = dict(transitions)
         self.config_missing_param["transitions"].pop("host")
         self.config_wrong_type = {
             "module": 123,
             "transitions": dict(self.valid_config["transitions"]),
-            "params": dict(params),
+            "sleep": 0.1,
             "graph": {}
         }
         self.mcs = cloud.CloudMarkovChainSource("fake_id", self.valid_config)

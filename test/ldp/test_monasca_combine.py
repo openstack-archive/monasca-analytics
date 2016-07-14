@@ -14,8 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from monasca_analytics.banana.api import create_fn_with_config
 from monasca_analytics.ldp.monasca_combine import MonascaCombineLDP
+from monasca_analytics.parsing.api import create_fn_with_config
 from test.util_for_testing import gen_metric
 from test.util_for_testing import MonanasTestCase
 

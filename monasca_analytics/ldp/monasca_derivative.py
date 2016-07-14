@@ -15,7 +15,11 @@
 # under the License.
 
 import logging
+import math
 import voluptuous
+
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
@@ -38,16 +42,16 @@ class MonascaDerivativeLDP(bt.BaseLDP):
 
     def __init__(self, _id, _config):
         super(MonascaDerivativeLDP, self).__init__(_id, _config)
-        self._period = _config["params"]["derivative_period"]
+        self._period = _config["period"]
 
     @staticmethod
     def validate_config(_config):
         monasca_der_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "params": {
-                # Derivative period in multiple of batch interval
-                "derivative_period": int
-            }
+            # Derivative period in multiple of batch interval
+            "period": voluptuous.And(
+                voluptuous.Or(float, int),
+                lambda i: i >= 0 and math.floor(i) == math.ceil(i))
         }, required=True)
         return monasca_der_schema(_config)
 
@@ -55,10 +59,14 @@ class MonascaDerivativeLDP(bt.BaseLDP):
     def get_default_config():
         return {
             "module": MonascaDerivativeLDP.__name__,
-            "params": {
-                "derivative_period": 1
-            }
+            "period": 1
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('period', type_util.Number(), 1)
+        ]
 
     def map_dstream(self, dstream):
         """

@@ -15,11 +15,15 @@
 # under the License.
 
 import logging
+import math
 import voluptuous
 
-import monasca_analytics.banana.api as banana
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
+import monasca_analytics.parsing.api as parsing
 import monasca_analytics.util.spark_func as fn
 from monasca_analytics.util import validation_utils as vu
 
@@ -31,16 +35,15 @@ class MonascaCombineLDP(bt.BaseLDP):
 
     def __init__(self, _id, _config):
         super(MonascaCombineLDP, self).__init__(_id, _config)
-        logger.debug(_config["params"]["metric_names_binding"])
-        logger.debug(_config["params"]["lambda"])
-        self._combine_function = banana.create_fn_with_config(
-            env=_config["params"]["metric_names_binding"],
-            expr_string=_config["params"]["lambda"]
+        logger.debug(_config["bindings"])
+        logger.debug(_config["lambda"])
+        self._combine_function = parsing.create_fn_with_config(
+            env=_config["bindings"],
+            expr_string=_config["lambda"]
         )
-        self._combine_period = _config["params"]["combine_period"]
-        self._combine_metric_name = _config["params"]["metric_name"]
-        self._metrics_of_interest = _config["params"][
-            "metric_names_binding"].values()
+        self._combine_period = _config["period"]
+        self._combine_metric_name = _config["metric"]
+        self._metrics_of_interest = _config["bindings"].values()
 
     def map_dstream(self, dstream):
         """
@@ -143,92 +146,115 @@ class MonascaCombineLDP(bt.BaseLDP):
     def validate_config(_config):
         monasca_comb_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "params": {
-                "metric_name": basestring,
-                "combine_period": int,
-                "lambda": basestring,
-                "metric_names_binding": {
-                    basestring: voluptuous.Or(
-                        "apache.net.kbytes_sec",
-                        "apache.net.requests_sec",
-                        "apache.performance.cpu_load_perc",
-                        "cpu.idle_perc",
-                        "cpu.stolen_perc",
-                        "cpu.system_perc",
-                        "cpu.total_logical_cores",
-                        "cpu.user_perc",
-                        "cpu.wait_perc",
-                        "disk.allocation",
-                        "disk.inode_used_perc",
-                        "disk.space_used_perc",
-                        "disk.total_space_mb",
-                        "disk.total_used_space_mb",
-                        "host_alive_status",
-                        "io.read_kbytes_sec",
-                        "io.read_req_sec",
-                        "io.write_time_sec",
-                        "kafka.consumer_lag",
-                        "load.avg_1_min",
-                        "load.avg_5_min",
-                        "mem.free_mb",
-                        "mem.swap_free_mb",
-                        "mem.swap_total_mb",
-                        "mem.total_mb",
-                        "mem.usable_mb",
-                        "mem.used_cache",
-                        "metrics-added-to-batch-counter[0]",
-                        "mysql.innodb.buffer_pool_free",
-                        "mysql.innodb.buffer_pool_used",
-                        "mysql.innodb.data_reads",
-                        "mysql.innodb.mutex_spin_rounds",
-                        "mysql.performance.com_delete_multi",
-                        "mysql.performance.com_insert",
-                        "mysql.performance.com_insert_select",
-                        "mysql.performance.com_select",
-                        "mysql.performance.com_update",
-                        "mysql.performance.created_tmp_disk_tables",
-                        "mysql.performance.created_tmp_files",
-                        "mysql.performance.open_files",
-                        "mysql.performance.questions",
-                        "mysql.performance.user_time",
-                        "net.in_bytes_sec",
-                        "net.in_errors_sec",
-                        "net.in_packets_dropped_sec",
-                        "net.in_packets_sec",
-                        "net.out_bytes_sec",
-                        "net.out_errors_sec",
-                        "net.out_packets_dropped_sec",
-                        "net.out_packets_sec",
-                        "nova.vm.disk.total_allocated_gb",
-                        "process.pid_count",
-                        "raw-sql.time.max",
-                        "vcpus",
-                        "vm.cpu.utilization_perc",
-                        "vm.host_alive_status",
-                        "vm.mem.total_mb",
-                        "zookeeper.out_bytes",
-                        "zookeeper.outstanding_bytes"
-                    )
-                }
+            "metric": basestring,
+            "period": voluptuous.And(
+                voluptuous.Or(float, int),
+                lambda i: i >= 0 and math.floor(i) == math.ceil(i)),
+            "lambda": basestring,
+            "bindings": {
+                basestring: voluptuous.Or(
+                    "apache.net.kbytes_sec",
+                    "apache.net.requests_sec",
+                    "apache.performance.cpu_load_perc",
+                    "cpu.idle_perc",
+                    "cpu.stolen_perc",
+                    "cpu.system_perc",
+                    "cpu.total_logical_cores",
+                    "cpu.user_perc",
+                    "cpu.wait_perc",
+                    "disk.allocation",
+                    "disk.inode_used_perc",
+                    "disk.space_used_perc",
+                    "disk.total_space_mb",
+                    "disk.total_used_space_mb",
+                    "host_alive_status",
+                    "io.read_kbytes_sec",
+                    "io.read_req_sec",
+                    "io.write_time_sec",
+                    "kafka.consumer_lag",
+                    "load.avg_1_min",
+                    "load.avg_5_min",
+                    "mem.free_mb",
+                    "mem.swap_free_mb",
+                    "mem.swap_total_mb",
+                    "mem.total_mb",
+                    "mem.usable_mb",
+                    "mem.used_cache",
+                    "metrics-added-to-batch-counter[0]",
+                    "mysql.innodb.buffer_pool_free",
+                    "mysql.innodb.buffer_pool_used",
+                    "mysql.innodb.data_reads",
+                    "mysql.innodb.mutex_spin_rounds",
+                    "mysql.performance.com_delete_multi",
+                    "mysql.performance.com_insert",
+                    "mysql.performance.com_insert_select",
+                    "mysql.performance.com_select",
+                    "mysql.performance.com_update",
+                    "mysql.performance.created_tmp_disk_tables",
+                    "mysql.performance.created_tmp_files",
+                    "mysql.performance.open_files",
+                    "mysql.performance.questions",
+                    "mysql.performance.user_time",
+                    "net.in_bytes_sec",
+                    "net.in_errors_sec",
+                    "net.in_packets_dropped_sec",
+                    "net.in_packets_sec",
+                    "net.out_bytes_sec",
+                    "net.out_errors_sec",
+                    "net.out_packets_dropped_sec",
+                    "net.out_packets_sec",
+                    "nova.vm.disk.total_allocated_gb",
+                    "process.pid_count",
+                    "raw-sql.time.max",
+                    "vcpus",
+                    "vm.cpu.utilization_perc",
+                    "vm.host_alive_status",
+                    "vm.mem.total_mb",
+                    "zookeeper.out_bytes",
+                    "zookeeper.outstanding_bytes"
+                )
             }
         }, required=True)
         monasca_comb_schema(_config)
         # Checks the expression and the environment
-        handle = banana.validate_expression(_config["params"]["lambda"])
-        banana.validate_name_binding(handle,
-                                     _config["params"]["metric_names_binding"])
+        handle = parsing.validate_expression(_config["lambda"])
+        parsing.validate_name_binding(handle,
+                                      _config["bindings"])
 
     @staticmethod
     def get_default_config():
         return {
             "module": MonascaCombineLDP.__name__,
-            "params": {
-                "metric_name": "cpu.logical_cores_actives",
-                "combine_period": 1,
-                "lambda": "a * b",
-                "metric_names_binding": {
-                    "a": "cpu.idle_perc",
-                    "b": "cpu.total_logical_cores"
-                }
+            "metric": "cpu.logical_cores_actives",
+            "period": 1,
+            "lambda": "a * b",
+            "bindings": {
+                "a": "cpu.idle_perc",
+                "b": "cpu.total_logical_cores"
             }
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor(
+                'metric',
+                type_util.String(),
+                'cpu.logcal_cores_actives'
+            ),
+            params.ParamDescriptor(
+                'period',
+                type_util.Number(),
+                1
+            ),
+            params.ParamDescriptor(
+                'lambda',
+                type_util.String(),
+                'a * b'
+            ),
+            params.ParamDescriptor(
+                'bindings',
+                type_util.Any(),
+                {'a': 'cpu.ilde_perc', 'b': 'cpu.total_logical_cores'}
+            )
+        ]

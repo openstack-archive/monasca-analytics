@@ -17,7 +17,6 @@
 import logging
 
 import monasca_analytics.config.const as const
-import monasca_analytics.config.validation as validation
 import monasca_analytics.exception.monanas as err
 
 
@@ -54,7 +53,7 @@ def _perform_all_connections(connection_kind, _config, components):
     """
     links = {}
     for origin_id in _config[connection_kind].keys():
-        for comp_type in validation.valid_connection_types.keys():
+        for comp_type in const.components_types:
             if origin_id in components[comp_type]:
                 component = components[comp_type][origin_id]
                 connections_list = _config[connection_kind][origin_id]

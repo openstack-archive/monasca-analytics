@@ -1,0 +1,10 @@
+a = {}
+a.param1 = 23
+a."param3" = 1
+a."param4"."para   mmm" = a."param3"
+a.param2 = {
+    "a": 34 + 12,
+    a.b.c: a.param1
+}
+
+# STMT_EQ { DotPath< Ident< a > > = JsonObj< {} >, DotPath< Ident< a >.Ident< param1 > > = Expr< [Number< 23.0 >] >, DotPath< Ident< a >.StringLit< "param3" > > = Expr< [Number< 1.0 >] >, DotPath< Ident< a >.StringLit< "param4" >.StringLit< "para   mmm" > > = Expr< [DotPath< Ident< a >.StringLit< "param3" > >] >, DotPath< Ident< a >.Ident< param2 > > = JsonObj< {DotPath< Ident< a >.Ident< b >.Ident< c > >: Expr< [DotPath< Ident< a >.Ident< param1 > >] >, StringLit< "a" >: Expr< [Number< 34.0 >, +, Number< 12.0 >] >} > }

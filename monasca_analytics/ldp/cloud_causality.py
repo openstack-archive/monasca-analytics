@@ -40,6 +40,10 @@ class CloudCausalityLDP(bt.BaseLDP):
     def get_default_config():
         return {"module": CloudCausalityLDP.__name__}
 
+    @staticmethod
+    def get_params():
+        return []
+
     def map_dstream(self, dstream):
         """Executes _aggregate for each RDD in the dstream
 

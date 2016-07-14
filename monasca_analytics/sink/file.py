@@ -20,6 +20,8 @@ import tempfile
 import time
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 import monasca_analytics.sink.base as base
 from monasca_analytics.util import validation_utils as vu
 
@@ -32,8 +34,8 @@ class FileSink(base.BaseSink):
 
     def __init__(self, _id, _config):
         super(FileSink, self).__init__(_id, _config)
-        if "params" in _config:
-            _path = path.expanduser(_config["params"]["path"])
+        if _config["path"] is not None:
+            _path = path.expanduser(_config["path"])
             if path.isdir(_path):
                 _path = path.join(_path, time.time() + '.log')
             self._file_path = _path
@@ -63,17 +65,19 @@ class FileSink(base.BaseSink):
     def get_default_config():
         return {
             "module": FileSink.__name__,
-            "params": {
-                "path": None
-            }
+            "path": None
         }
+
+    @staticmethod
+    def get_params():
+        return [params.ParamDescriptor('path', type_util.String())]
 
     @staticmethod
     def validate_config(_config):
         file_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            voluptuous.Optional("params"): {
-                "path": voluptuous.And(basestring, vu.ExistingPath())
-            }
+            "path": voluptuous.Or(
+                voluptuous.And(basestring, vu.ExistingPath()),
+                None)
         }, required=True)
         return file_schema(_config)

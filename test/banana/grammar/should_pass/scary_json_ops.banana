@@ -1,0 +1,4 @@
+a = { b.c: 21 }
+b = { a: { a.b: { a.b.c: 10 }}, b.c: 20 }
+
+# STMT_EQ { DotPath< Ident< a > > = JsonObj< {DotPath< Ident< b >.Ident< c > >: Expr< [Number< 21.0 >] >} >, DotPath< Ident< b > > = JsonObj< {DotPath< Ident< a > >: JsonObj< {DotPath< Ident< a >.Ident< b > >: JsonObj< {DotPath< Ident< a >.Ident< b >.Ident< c > >: Expr< [Number< 10.0 >] >} >} >, DotPath< Ident< b >.Ident< c > >: Expr< [Number< 20.0 >] >} > }

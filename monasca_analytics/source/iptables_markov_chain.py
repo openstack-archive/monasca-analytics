@@ -18,6 +18,9 @@ import logging
 
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 from monasca_analytics.source.markov_chain import base
 from monasca_analytics.source.markov_chain import events
 from monasca_analytics.source.markov_chain import prob_checks as pck
@@ -65,11 +68,10 @@ class IPTablesSource(base.MarkovChainSource):
     def validate_config(_config):
         source_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "params": {
-                "server_sleep_in_seconds": voluptuous.And(
-                    float, voluptuous.Range(
-                        min=0, max=1, min_included=False, max_included=False))
-            }
+            "sleep": voluptuous.And(
+                float,
+                voluptuous.Range(
+                    min=0, max=1, min_included=False, max_included=False)),
         }, required=True)
         return source_schema(_config)
 
@@ -77,10 +79,14 @@ class IPTablesSource(base.MarkovChainSource):
     def get_default_config():
         return {
             "module": IPTablesSource.__name__,
-            "params": {
-                "server_sleep_in_seconds": 0.01
-            }
+            "sleep": 0.01,
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('sleep', type_util.Number(), 0.01)
+        ]
 
     def get_feature_list(self):
         return iptable_types

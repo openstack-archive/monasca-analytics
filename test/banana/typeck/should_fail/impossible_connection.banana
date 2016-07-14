@@ -1,0 +1,5 @@
+a -> b
+
+a = IPTablesSource(sleep=0.01)
+b = IPTablesSource(sleep=0.01)
+# RAISE BananaConnectionError

@@ -1,0 +1,6 @@
+a = {}
+b = { "a": a }
+c = { a.b: "b" }
+d = { a.v."t t": 12 + 23 }
+
+# STMT_EQ { DotPath< Ident< a > > = JsonObj< {} >, DotPath< Ident< b > > = JsonObj< {StringLit< "a" >: Expr< [DotPath< Ident< a > >] >} >, DotPath< Ident< c > > = JsonObj< {DotPath< Ident< a >.Ident< b > >: Expr< [StringLit< "b" >] >} >, DotPath< Ident< d > > = JsonObj< {DotPath< Ident< a >.Ident< v >.StringLit< "t t" > >: Expr< [Number< 12.0 >, +, Number< 23.0 >] >} > }

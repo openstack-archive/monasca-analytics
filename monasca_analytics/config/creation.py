@@ -16,7 +16,7 @@
 
 import logging
 
-from monasca_analytics.config import validation
+from monasca_analytics.config import const
 from monasca_analytics.util import common_util
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ def create_components(_config):
     :returns: Created components indexed by type and ID
     """
     components = {}
-    for component_type in validation.valid_connection_types.keys():
+    for component_type in const.components_types:
         components[component_type] = \
             _create_comps_by_module(component_type, _config)
     return components

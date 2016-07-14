@@ -1,0 +1,14 @@
+a = "test"
+a = a - a
+
+# NEW_TEST
+
+a = "test"
+a = a * a
+
+# NEW_TEST
+
+a = "test"
+a = a / a
+
+# RAISE BananaUnknownOperator

@@ -39,3 +39,7 @@ class StdoutSink(base.BaseSink):
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
         }, required=True)
         stdout_schema(_config)
+
+    @staticmethod
+    def get_params():
+        return []

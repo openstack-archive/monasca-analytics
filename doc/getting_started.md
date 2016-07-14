@@ -61,7 +61,7 @@ python $HOME/monanas/run.py -p $HOME/spark -c $HOME/monanas/config/config.json \
 MoNanas consumes two configuration files, one for orchestrating data execution
 and the other for logging. A Domain Specific Language (DSL) has been implemented in order to manipulate configurations.
 Please, see [MoNanas/Configuration](configuration.md) for more details on MoNanas configuration;
-and [MoNanas/Dsl](dsl.md) for more details on MoNanas DSL.
+and [MoNanas/Banana](banana.md) for more details on `banana` the language to write recipes.
 
 ## Examples
 

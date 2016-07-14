@@ -40,6 +40,10 @@ class CloudIngestor(base.BaseIngestor):
         }, required=True)
         return cloud_schema(_config)
 
+    @staticmethod
+    def get_params():
+        return []
+
     def map_dstream(self, dstream):
         features_list = list(self._features)
         return dstream.map(fn.from_json)\

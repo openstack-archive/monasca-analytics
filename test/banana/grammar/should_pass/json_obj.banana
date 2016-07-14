@@ -1,0 +1,8 @@
+# Various check for edge cases
+a = {}
+b = { a: {} }
+c = { "a": {} }
+d = { "": {} }
+e = { "": "" }
+
+# STMT_EQ { DotPath< Ident< a > > = JsonObj< {} >, DotPath< Ident< b > > = JsonObj< {DotPath< Ident< a > >: JsonObj< {} >} >, DotPath< Ident< c > > = JsonObj< {StringLit< "a" >: JsonObj< {} >} >, DotPath< Ident< d > > = JsonObj< {StringLit< "" >: JsonObj< {} >} >, DotPath< Ident< e > > = JsonObj< {StringLit< "" >: Expr< [StringLit< "" >] >} > }

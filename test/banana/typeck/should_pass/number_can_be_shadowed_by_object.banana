@@ -1,0 +1,4 @@
+a = {a: "test"}
+a = 23
+
+# TYPE_TABLE_EQ {Ident< a >: TypeNumber}

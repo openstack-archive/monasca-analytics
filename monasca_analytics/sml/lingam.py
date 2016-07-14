@@ -21,6 +21,9 @@ import numpy as np
 from sklearn import decomposition
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
+
 from monasca_analytics.sml import base
 from monasca_analytics.util import validation_utils as vu
 
@@ -32,16 +35,14 @@ class LiNGAM(base.BaseSML):
 
     def __init__(self, _id, _config):
         super(LiNGAM, self).__init__(_id, _config)
-        self._threshold = _config["params"]["threshold"]
+        self._threshold = _config["threshold"]
         self._threshold = 0.1
 
     @staticmethod
     def validate_config(_config):
         lingam_schema = voluptuous.Schema({
             "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "params": {
-                "threshold": float
-            }
+            "threshold": float
         }, required=True)
         return lingam_schema(_config)
 
@@ -49,10 +50,14 @@ class LiNGAM(base.BaseSML):
     def get_default_config():
         return {
             "module": LiNGAM.__name__,
-            "params": {
-                "threshold": 0.1
-            }
+            "threshold": 0.1
         }
+
+    @staticmethod
+    def get_params():
+        return [
+            params.ParamDescriptor('threshold', type_util.Number(), 0.1)
+        ]
 
     def number_of_samples_required(self):
         return 5000

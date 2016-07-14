@@ -26,3 +26,12 @@ def action_model(value):
     }, required=True)
 
     return action_model_schema(value)
+
+
+def banana_model(value):
+    """Validates the data against the banana_model schema."""
+    banana_model_schema = voluptuous.Schema({
+        "content": basestring
+    }, required=True)
+
+    return banana_model_schema(value)

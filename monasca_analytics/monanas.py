@@ -21,10 +21,12 @@ import sys
 from tornado import ioloop
 import voluptuous
 
-from monasca_analytics.exception import monanas as err
-from monasca_analytics.spark import driver
-from monasca_analytics.util import common_util as cu
-from monasca_analytics.web_service import web_service as ws
+import monasca_analytics.banana.emitter as emit
+import monasca_analytics.banana.pass_manager as executor
+import monasca_analytics.exception.monanas as err
+import monasca_analytics.spark.driver as driver
+import monasca_analytics.util.common_util as cu
+import monasca_analytics.web_service.web_service as ws
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,19 @@ class Monanas(object):
         :returns: `True` if Monanas is streaming,`False` otherwise.
         """
         return self._is_streaming
+
+    def try_change_configuration(self, banana_str, emitter):
+        """Try to change the configuration to the provided one.
+
+        :type banana_str: str
+        :param banana_str: New configuration.
+        :type emitter: emit.JsonEmitter
+        :param emitter: a Json emitter instance
+        """
+        if not isinstance(emitter, emit.JsonEmitter):
+            raise err.MonanasException()
+        # Try to change the configuration.
+        executor.execute_banana_string(banana_str, self._driver, emitter)
 
     def start_streaming(self):
         """Starts streaming data.

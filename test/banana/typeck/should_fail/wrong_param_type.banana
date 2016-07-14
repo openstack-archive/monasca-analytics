@@ -1,0 +1,7 @@
+a = IPTablesSource(sleep="foobar")
+
+# NEW_TEST
+
+a = IPTablesSource(sleep={})
+
+# RAISE BananaArgumentTypeError

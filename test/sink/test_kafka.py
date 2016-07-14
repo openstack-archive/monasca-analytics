@@ -39,11 +39,9 @@ class KafkaSinkTest(unittest.TestCase):
     def testKafkaSinkInit(self):
         kf.KafkaSink("id", {
             "module": "KafkaSink",
-            "params": {
-                "host": "localhost",
-                "port": 00,
-                "topic": "boom",
-            }
+            "host": "localhost",
+            "port": 00,
+            "topic": "boom",
         })
         self.assertTrue(self.mock_kafka)
 

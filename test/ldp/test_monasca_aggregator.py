@@ -43,9 +43,7 @@ class TestMonascaAggregateLDP(MonanasTestCase):
 
     def _conf(self, fn_name):
         return {
-            "params": {
-                "aggregation_function": fn_name
-            }
+            "func": fn_name
         }
 
     def test_reducer_avg(self):
