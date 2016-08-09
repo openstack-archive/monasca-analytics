@@ -105,7 +105,7 @@ function unstack_spark {
 function clean_monasca_analytics {
     set +o errexit
     unstack_monasca_analytics
-    clean_monasca_analytics
+    unistall_pkgs
     set -o errexit
 }
 
@@ -117,6 +117,24 @@ function delete_spark_directories {
         done
 
     sudo rm -rf /var/log/spark-events || true
+}
+
+###
+function unistall_pkgs {
+    sudo apt-get -y purge ipython python-scipy python-numpy
+    sudo apt-get -y purge python-setuptools
+
+    sudo apt-get -y purge sbt
+    sudo apt-key del $KEYID
+    sudo sed -i -e '/deb https\:\/\/dl.bintray.com\/sbt\/debian \//d' /etc/apt/sources.list.d/sbt.list
+    sudo dpkg -r scala
+
+    sudo apt-get -y purge openjdk-7-jdk
+    sudo apt-get -y purge openjdk-7-jre-headless
+
+    sudo rm -rf ~/.m2
+
+    sudo rm -rf $SPARK_DIR
 }
 
 ###
@@ -161,9 +179,9 @@ function install_pkg {
     sudo -E curl $SCALA_URL -o $SPARK_DOWNLOAD/$SCALA
     sudo -E dpkg -i $SPARK_DOWNLOAD/$SCALA
     echo "deb https://dl.bintray.com/sbt/debian /" | sudo -E tee -a /etc/apt/sources.list.d/sbt.list
-    sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+    sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv $KEYID
     sudo -E apt-get update
-    sudo -E apt-get -y install sbt 
+    sudo -E apt-get -y install sbt
 
     ## other pkg
     sudo -E apt-get -y install python-setuptools
