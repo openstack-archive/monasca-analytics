@@ -51,7 +51,7 @@ python $MONANAS_HOME/run.py -p $SPARK_HOME -c <config_file> \
 e.g.
 ```bash
 python $HOME/monanas/run.py -p $HOME/spark -c $HOME/monanas/config/config.json \
-    $HOME/monanas/config/logging.json
+    -l $HOME/monanas/config/logging.json
 ```
 
 > Note:
