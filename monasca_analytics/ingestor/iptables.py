@@ -58,10 +58,20 @@ class IptablesIngestor(base.BaseIngestor):
         return []
 
     def map_dstream(self, dstream):
+        """
+        Map the provided dstream into another dstream.
+
+        :type dstream: pyspark.streaming.DStream
+        :param dstream: DStream to transform.
+        :rtype: pyspark.streaming.DStream
+        :return: Returns a new dstream.
+        """
         features_list = list(self._features)
         return dstream.map(fn.from_json)\
+            .map(lambda x: (x['ctime'], x))\
+            .groupByKey()\
             .map(lambda rdd_entry: IptablesIngestor._process_data(
-                rdd_entry,
+                rdd_entry[1],
                 features_list))
 
     @staticmethod
@@ -79,10 +89,10 @@ class IptablesIngestor(base.BaseIngestor):
         events = []
         for event in rdd_entry:
             events.append(event[RDD_EVENT])
-        return IptablesIngestor._vectorize_events(events, feature_list)
+        return IptablesIngestor.vectorize_events(events, feature_list)
 
     @staticmethod
-    def _vectorize_events(events, feature_list):
+    def vectorize_events(events, feature_list):
         """Event vectorizing logic.
 
         For each event, we get the message,
@@ -91,6 +101,8 @@ class IptablesIngestor(base.BaseIngestor):
         Finally, we increase the index of the vector corresponding to
         that feature.
 
+        :type events: list[dict]
+        :param events: List of collected events.
         :type feature_list: list[str]
         :param feature_list: features to extract, in order
         """

@@ -71,7 +71,7 @@ class MarkovChainSource(base.BaseSource):
         self._server.terminate = True
         self._server.shutdown()
         self._server.server_close()
-        self._server_thread.join(0.1)
+        self._server_thread.join()
 
     def _start_thread(self, system):
         self._server = SocketServer.ThreadingTCPServer(

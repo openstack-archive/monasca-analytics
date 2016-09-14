@@ -56,10 +56,12 @@ class IptablesLDP(bt.BaseLDP):
         """
         data = self._data
         return dstream.map(fn.from_json)\
-            .flatMap(lambda r:
-                     self._detect_anomalies(r, data))
+            .map(lambda x: (x['ctime'], x))\
+            .groupByKey()\
+            .flatMap(lambda r: IptablesLDP._detect_anomalies(r[1], data))
 
-    def _detect_anomalies(self, rdd_entry, data):
+    @staticmethod
+    def _detect_anomalies(rdd_entry, data):
         """Classifies and marks the RDD entry as anomalous or non-anomalous
 
         :type rdd_entry: list[dict]
@@ -79,7 +81,7 @@ class IptablesLDP(bt.BaseLDP):
         if features is None or classifier is None:
             return events
 
-        X = ip_ing.IptablesIngestor._vectorize_events(events, features)
+        X = ip_ing.IptablesIngestor.vectorize_events(events, features)
         Y = classifier.predict(X)
         for i in range(len(events)):
             event = events[i]
