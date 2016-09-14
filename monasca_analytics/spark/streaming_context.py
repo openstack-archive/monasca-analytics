@@ -81,7 +81,11 @@ def create_streaming_context(spark_context, config):
     ssc.addStreamingListener(DriverStreamingListener)
     directory = os_path.expanduser("~/checkpointing")
     logger.info("Checkpointing to `{}`".format(directory))
-    ssc.checkpoint(directory)
+    # Commented out to fix a crash occurring when
+    # phase 1 is used. The reason of the crash is still unclear
+    # but Spark complains about the SSC being transferred
+    # to workers.
+    # ssc.checkpoint(directory)
     return ssc
 
 
