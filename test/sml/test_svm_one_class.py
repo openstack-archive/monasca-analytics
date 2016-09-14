@@ -29,7 +29,10 @@ class TestSvmOneClass(MonanasTestCase):
 
     def setUp(self):
         super(TestSvmOneClass, self).setUp()
-        self.svm = svm_one_class.SvmOneClass("fakeid", {"module": "fake"})
+        self.svm = svm_one_class.SvmOneClass("fakeid", {
+            "module": "fake",
+            "nb_samples": 1000
+        })
 
     def tearDown(self):
         super(TestSvmOneClass, self).tearDown()
