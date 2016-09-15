@@ -45,6 +45,7 @@ if [ "$VAGRANT_ENV" ]; then
   curl http://apache.claz.org/spark/spark-1.6.1/spark-1.6.1.tgz > spark.tgz
   echo "-------------------------"
   echo "unzip spark to ~/spark"
+  mkdir ~/spark/
   tar -xzf spark.tgz
   mv spark-1.6.1/ ~/spark/spark-1.6.1
   cd ~/spark/spark-1.6.1
