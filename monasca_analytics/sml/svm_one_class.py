@@ -20,6 +20,8 @@ import numpy as np
 from sklearn import svm
 import voluptuous
 
+import monasca_analytics.banana.typeck.type_util as type_util
+import monasca_analytics.component.params as params
 from monasca_analytics.sml import base
 from monasca_analytics.util import validation_utils as vu
 
@@ -36,24 +38,31 @@ class SvmOneClass(base.BaseSML):
 
     def __init__(self, _id, _config):
         super(SvmOneClass, self).__init__(_id, _config)
+        self._nb_samples = int(_config["nb_samples"])
 
     @staticmethod
     def validate_config(_config):
         svm_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "nb_samples": voluptuous.Or(float, int)
         }, required=True)
         return svm_schema(_config)
 
     @staticmethod
     def get_default_config():
-        return {"module": SvmOneClass.__name__}
+        return {
+            "module": SvmOneClass.__name__,
+            "nb_samples": N_SAMPLES
+        }
 
     @staticmethod
     def get_params():
-        return []
+        return [
+            params.ParamDescriptor("nb_samples", type_util.Number(), N_SAMPLES)
+        ]
 
     def number_of_samples_required(self):
-        return N_SAMPLES
+        return self._nb_samples
 
     def _generate_train_test_sets(self, samples, ratio_train):
         num_samples_train = int(len(samples) * ratio_train)
