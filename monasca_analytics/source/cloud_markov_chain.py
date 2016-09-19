@@ -38,6 +38,7 @@ class CloudMarkovChainSource(base.MarkovChainSource):
         source_schema = voluptuous.Schema({
             "module": voluptuous.And(
                 basestring, vu.NoSpaceCharacter()),
+            "min_event_per_burst": voluptuous.Or(float, int),
             "sleep": voluptuous.And(
                 float, voluptuous.Range(
                     min=0, max=1, min_included=False, max_included=False)),
@@ -90,6 +91,7 @@ class CloudMarkovChainSource(base.MarkovChainSource):
         return {
             "module": CloudMarkovChainSource.__name__,
             "sleep": 0.01,
+            "min_event_per_burst": 500,
             "transitions": {
                 "web_service": {
                     "run=>slow": {
@@ -144,6 +146,8 @@ class CloudMarkovChainSource(base.MarkovChainSource):
     def get_params():
         return [
             params.ParamDescriptor('sleep', type_util.Number(), 0.01),
+            params.ParamDescriptor('min_event_per_burst', type_util.Number(),
+                                   500),
             params.ParamDescriptor('transitions', type_util.Object({
                 'web_service': type_util.Object({
                     'run=>slow': type_util.Any(),
