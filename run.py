@@ -60,6 +60,7 @@ class RunnerError(Exception):
 
 def main(arguments):
     spark_submit = "{0}/bin/spark-submit".format(arguments["<spark_path>"])
+    monanas_path = os.environ.get('MONANAS_HOME', "")
     kafka_jar = None
 
     try:
@@ -79,7 +80,7 @@ def main(arguments):
                       format(arguments["<spark_path>"], kafka_jar)
     command = [
         spark_submit, "--master", "local[2]",
-        "--jars", spark_kafka_jar, "monasca_analytics/monanas.py",
+        "--jars", spark_kafka_jar, monanas_path + "/monasca_analytics/monanas.py",
         arguments["<config>"], arguments["<log_config>"]
     ]
     command += arguments["<sources>"]
