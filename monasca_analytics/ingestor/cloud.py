@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import logging
 
 import numpy as np
@@ -47,30 +46,25 @@ class CloudIngestor(base.BaseIngestor):
     def map_dstream(self, dstream):
         features_list = list(self._features)
         return dstream.map(fn.from_json)\
-            .map(lambda rdd_entry: CloudIngestor._process_data(
-                rdd_entry,
+            .map(lambda x: (x['ctime'], x['event']))\
+            .groupByKey()\
+            .map(lambda rdd_entry: CloudIngestor._parse_and_vectorize(
+                rdd_entry[1],
                 features_list))
 
     @staticmethod
     def get_default_config():
         return {"module": CloudIngestor.__name__}
 
-    # TODO(David): With the new model, this can now be method, and the lambda
-    #       can be removed.
     @staticmethod
-    def _process_data(rdd_entry, feature_list):
-        json_value = json.loads(rdd_entry)
-        return CloudIngestor._parse_and_vectorize(json_value, feature_list)
-
-    @staticmethod
-    def _parse_and_vectorize(json_value, feature_list):
+    def _parse_and_vectorize(iterable, feature_list):
         values = {
-            "support_1": 0
+            "support_1": 0.0
         }
         for feature in feature_list:
-            values[feature] = 0
-        for e in json_value["events"]:
+            values[feature] = 0.0
+        for e in iterable:
             if e["id"] in values:
-                values[e["id"]] += 1
+                values[e["id"]] += 1.0
         res = [values[f] for f in feature_list]
         return np.array(res)

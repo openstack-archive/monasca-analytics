@@ -14,13 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import logging
 
 import voluptuous
 
 import monasca_analytics.ldp.base as bt
-from monasca_analytics.util import validation_utils as vu
+import monasca_analytics.util.spark_func as fn
+import monasca_analytics.util.validation_utils as vu
 
 
 logger = logging.getLogger(__name__)
@@ -51,33 +51,32 @@ class CloudCausalityLDP(bt.BaseLDP):
         :param dstream: DStream created by the source.
         """
         data = self._data
-        return dstream.flatMap(lambda r: self._aggregate(r, data))
+        return dstream.map(fn.from_json)\
+            .map(lambda x: (x['ctime'], x))\
+            .groupByKey()\
+            .flatMap(lambda r: CloudCausalityLDP._aggregate(r[1], data))
 
-    def _aggregate(self, rdd_entry, data):
-        rdd_entry = json.loads(rdd_entry)
+    @staticmethod
+    def _aggregate(rdd_entry, data):
         new_entries = []
-        events = rdd_entry["events"]
         features = data["features"]
         matrix = data["matrix"]
 
-        for event in events:
-            event["ctime"] = rdd_entry["ctime"]
-
         if features is None or matrix is None:
-            return events
+            return rdd_entry
 
-        for event in events:
+        for event in rdd_entry:
             causes = []
 
             try:
-                cause = features.index(event["id"])
-                for other_event in events:
-                    if other_event["id"] != event["id"]:
+                cause = features.index(event["event"]["id"])
+                for other_event in rdd_entry:
+                    if other_event["event"]["id"] != event["event"]["id"]:
                         try:
-                            caused = features.index(other_event["id"])
+                            caused = features.index(other_event["event"]["id"])
 
                             if matrix[caused][cause]:
-                                causes.append(other_event["id"])
+                                causes.append(other_event["event"]["id"])
                         except ValueError:
                             pass
             except ValueError:
