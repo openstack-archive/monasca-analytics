@@ -83,6 +83,7 @@ if [ "$VAGRANT_ENV" ]; then
   # Environment setup
   set -v
   echo 'export SPARK_HOME=~/spark/spark-1.6.1' >> $HOME/.profile
+  echo 'export KAFKA_HOME=~/kafka' >> $HOME/.profile
   echo 'export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.9-src.zip:$PYTHONPATH' >> $HOME/.profile
   set +v
 
