@@ -24,7 +24,7 @@ To test this example, perform the following steps.
 
 #### Configuration File
 Before running MoNanas, we need to create a configuration file describing how
-we want MoNanas to orchestrate the data execution (creating a pipeline). You can find the following configuration in `$HOME/config/markov_source_config.json`:
+we want MoNanas to orchestrate the data execution (creating a pipeline). You can find the following configuration in `$MONANAS_HOME/config/markov_source_config.json`:
 
 
 ```json
@@ -174,7 +174,7 @@ $KAFKA_HOME/bin/kafka-server-start.sh \
 After that, start MoNanas as follows.
 
 ```bash
-python $MONANAS_HOME/run.py -p $SPARK_HOME -c $HOME/tmp/alert_example.json \
+python $MONANAS_HOME/run.py -p $SPARK_HOME -c $MONANAS_HOME/config/markov_source_config.json \
   -l $MONANAS_HOME/config/logging.json
 ```
 
@@ -276,7 +276,7 @@ To test this example, perform the following steps.
 
 #### Configuration File
 Before running MoNanas, we need to create a configuration file describing how
-we want MoNanas to orchestrate the data execution (creating a pipeline). You can find the following configuration in `$HOME/config/iptables_anomalies.json`:
+we want MoNanas to orchestrate the data execution (creating a pipeline). You can find the following configuration in `$MONANAS_HOME/config/iptables_anomalies.json`:
 
 ```json
 {
@@ -349,7 +349,7 @@ As you can see, the flow described in the previous section is mapped to the conf
 Start MoNanas as follows:
 
 ```bash
-python $MONANAS_HOME/run.py -p $SPARK_HOME -c $HOME/config/iptables_anomalies.json \
+python $MONANAS_HOME/run.py -p $SPARK_HOME -c $MONANAS_HOME/config/iptables_anomalies.json \
   -l $MONANAS_HOME/config/logging.json
 ```
 If you want to run your own configuration you will need to change the value of the -c parameter.
