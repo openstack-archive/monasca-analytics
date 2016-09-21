@@ -22,7 +22,8 @@
     },
     "smls": {
         "sml1": {
-            "module": "SvmOneClass"
+            "module": "SvmOneClass",
+            "nb_samples": 500
         }
     },
     "voters": {
