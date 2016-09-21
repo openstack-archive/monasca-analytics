@@ -55,5 +55,6 @@ def typeck_connections(connection, type_table):
                 possible_types = map(lambda x: x.__name__,
                                      valid_connections_types[type(type_from)])
                 raise exception.BananaConnectionError(
+                    connection.span,
                     ident_from, ident_to, type_from, possible_types
                 )

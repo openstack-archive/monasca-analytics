@@ -77,11 +77,10 @@ class BananaArgumentTypeError(BananaException):
     def __init__(self, where, expected_type, received_type):
         if isinstance(where, ast.ASTNode):
             self._span = where.span
-            where = where.span
         else:
             self._span = where
-        self._value = "'{}': Wrong type of argument. Expected '{}' got '{}'"\
-            .format(where.get_line(), expected_type, received_type)
+        self._value = "Wrong type of argument. Expected '{}' got '{}'."\
+            .format(expected_type, received_type)
 
     def __str__(self):
         return self._value
@@ -93,7 +92,7 @@ class BananaArgumentTypeError(BananaException):
 class BananaComponentTooManyParams(BananaException):
     def __init__(self, span):
         self._span = span
-        self._value = "Too many params provided to '{}' (line {})".format(
+        self._value = "Too many params provided to '{}'.".format(
             span, span.get_lineno()
         )
 
@@ -145,7 +144,7 @@ class BananaComponentAlreadyDefined(BananaException):
     def __init__(self, first_def, second_def):
         self._value = "Component already defined!\n" \
                       "  First definition:  '{}'\n" \
-                      "  Second definition: '{}'"\
+                      "  Second definition: '{}'."\
             .format(first_def, second_def)
 
     def __str__(self):
@@ -171,7 +170,7 @@ class BananaShadowingComponentError(BananaException):
 
 class BananaAssignmentError(BananaException):
     def __init__(self, lhs, rhs):
-        self._value = "You can't assign '{}' to '{}'".format(lhs, rhs)
+        self._value = "You can't assign '{}' to '{}'.".format(lhs, rhs)
 
     def __str__(self):
         return self._value
@@ -196,7 +195,7 @@ class BananaGrammarBug(BananaException, p.ParseFatalException):
 class BananaJsonObjShadowingError(BananaException, p.ParseFatalException):
     def __init__(self, span, error):
         self._span = span
-        error = "Can't shadow property already defined in {}".format(error)
+        error = "Can't shadow property already defined in {}.".format(error)
         super(BananaJsonObjShadowingError, self).__init__(pstr=error)
 
     def __str__(self):
@@ -233,7 +232,7 @@ class BananaEvalBug(BananaException):
 class BananaUnknown(BananaException):
     def __init__(self, ident):
         self._span = ident.span
-        self._value = "Unknown '{}'".format(
+        self._value = "Unknown '{}'.".format(
             ident.into_unmodified_str()
         )
 
@@ -247,7 +246,7 @@ class BananaUnknown(BananaException):
 class BananaUnknownOperator(BananaException):
     def __init__(self, span, operator, for_type):
         self._span = span
-        self._value = "Unknown operator '{}' for type '{}'".format(
+        self._value = "Unknown operator '{}' for type '{}'.".format(
             operator,
             for_type
         )
@@ -263,17 +262,15 @@ class BananaPropertyDoesNotExists(BananaException):
     def __init__(self, dotpath, on_type=None):
         self._span = dotpath.span
         if on_type is None:
-            self._value = "Error at '{}': Property '{}' " \
-                          "does not exists"\
+            self._value = "Property '{}' " \
+                          "does not exists."\
                 .format(
-                    dotpath.span.get_line(),
                     dotpath.into_unmodified_str()
                 )
         else:
-            self._value = "Error at '{}': Property '{}' " \
-                          "does not exists on type '{}'"\
+            self._value = "Property '{}' " \
+                          "does not exists on type '{}'."\
                 .format(
-                    dotpath.span.get_line(),
                     dotpath.into_unmodified_str(),
                     str(on_type)
                 )
@@ -296,21 +293,21 @@ class BananaTypeError(BananaException):
         if found_type is None:
             if isinstance(expected_type, list):
                 self._value = "Type error found. Expected" \
-                              " one among '{}'"\
+                              " one among '{}'."\
                     .format(', '.join(map(lambda x: str(x), expected_type)))
             else:
-                self._value = "Type error found. Expected '{}'".format(
+                self._value = "Type error found. Expected '{}'.".format(
                     str(expected_type)
                 )
         else:
             if isinstance(expected_type, list):
                 self._value = "Type error found. Expected" \
-                              " one among '{}', found '{}'"\
+                              " one among '{}', found '{}'."\
                     .format(', '.join(map(lambda x: str(x), expected_type)),
                             str(found_type))
             else:
                 self._value = "Type error found. Expected" \
-                              " '{}', found '{}'"\
+                              " '{}', found '{}'."\
                     .format(str(expected_type), str(found_type))
 
     def __str__(self):
@@ -327,7 +324,7 @@ class BananaAssignCompError(BananaException):
         self._span = span
         self._value = "Component objects " \
                       "can't be assigned to " \
-                      "properties of other objects"
+                      "properties of other objects."
 
     def __str__(self):
         return self._value
@@ -338,15 +335,16 @@ class BananaAssignCompError(BananaException):
 
 class BananaConnectionError(BananaException):
 
-    def __init__(self, ident_from, ident_to, type_from, possible_connections):
-        self._span = ident_to.span
-        self._value = "Can't connect '{}' (line:{})" \
-                      " to '{}' (line:{})," \
-                      " '{}' can only be connected to {}"\
+    def __init__(self, span, ident_from, ident_to, type_from,
+                 possible_connections):
+        self._value = "Can't connect '{}'" \
+                      " to '{}'," \
+                      " '{}' can only be connected to a {}."\
             .format(
-                ident_from.val, ident_from.span.get_lineno(),
-                ident_to.val, ident_to.span.get_lineno(),
-                type_from, possible_connections)
+                ident_from.val,
+                ident_to.val,
+                type_from.class_name, ' or a '.join(possible_connections))
+        self._span = span
 
     def __str__(self):
         return self._value

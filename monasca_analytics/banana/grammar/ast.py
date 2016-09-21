@@ -128,10 +128,25 @@ class BananaFile(object):
 
 
 def make_span(s, l, t):
+
+    def compute_hi(init_loc, tokens):
+        hi = init_loc
+        for tok in tokens:
+            if isinstance(tok, ASTNode):
+                hi = max(hi, tok.span.hi)
+            elif isinstance(tok, basestring):
+                hi += len(tok)
+            elif isinstance(tok, p.ParseResults):
+                hi = max(hi, compute_hi(init_loc, tok))
+            else:
+                raise exception.BananaGrammarBug(
+                    "Couldn't create span for: {}".format(tok)
+                )
+        return hi
+
     if len(t) > 0:
-        if isinstance(t[0], ASTNode):
-            return Span(s, l, t[0].span.hi)
-        return Span(s, l, len(t[0]) + l)
+        span_hi = compute_hi(l, t)
+        return Span(s, l, span_hi)
     else:
         return Span(s, l, 2)
 
@@ -238,7 +253,7 @@ class DotPath(ASTNode):
         :return: Returns the next dot path.
         """
         return DotPath(
-            self.span.new_with_offset(len(self.varname.val)),
+            self.span.new_with_lo(self.properties[0].span.lo),
             self.properties[0],
             self.properties[1:]
         )
@@ -415,6 +430,8 @@ class Connection(ASTNode):
         :type emitter: emit.Emitter
         :param emitter: Emitter.
         """
+        self.span.hi = max(other_con.span.hi, self.span.hi)
+        self.span.lo = min(other_con.span.lo, self.span.lo)
         old_outputs = self.outputs
         self.outputs = other_con.outputs
 

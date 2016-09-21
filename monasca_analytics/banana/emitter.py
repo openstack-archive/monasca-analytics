@@ -74,17 +74,21 @@ class JsonEmitter(Emitter):
         }
 
     def emit_error(self, span, message):
-        self.result["errors"].append({
-            "line": span.get_lineno(),
-            "col": 0,
-            "byteRange": [span.lo, span.hi],
-            "message": message
-        })
+        error = JsonEmitter._gen_message_structure(span, message)
+        self.result["errors"].append(error)
 
     def emit_warning(self, span, message):
-        self.result["warnings"].append({
-            "line": span.get_lineno(),
-            "col": 0,
+        warning = JsonEmitter._gen_message_structure(span, message)
+        self.result["warnings"].append(warning)
+
+    @staticmethod
+    def _gen_message_structure(span, message):
+        spanrange = span.get_range()
+        return {
+            "startLineNumber": spanrange[0][0],
+            "startColumn": spanrange[0][1],
+            "endLineNumber": spanrange[1][0],
+            "endColumn": spanrange[1][1],
             "byteRange": [span.lo, span.hi],
             "message": message
-        })
+        }
