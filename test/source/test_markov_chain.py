@@ -70,6 +70,7 @@ class MarkovChainSourceTest(MonanasTestCase):
                 }
             },
             "sleep": 0.1,
+            "min_event_per_burst": 500,
             "graph": {
                 "h1:host": ["s1"],
                 "h2:host": ["s1"],
@@ -87,6 +88,7 @@ class MarkovChainSourceTest(MonanasTestCase):
             "module": 123,
             "transitions": dict(self.valid_config["transitions"]),
             "sleep": 0.1,
+            "min_event_per_burst": 500,
             "graph": {}
         }
         self.mcs = cloud.CloudMarkovChainSource("fake_id", self.valid_config)

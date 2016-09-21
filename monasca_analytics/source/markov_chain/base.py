@@ -84,6 +84,11 @@ class MarkovChainSource(base.BaseSource):
         self._server.terminate = False
         self._server.system = system
         self._server.sleep_in_seconds = self._config["sleep"]
+        if "min_event_per_burst" in self._config:
+            self._server.min_event_per_burst = \
+                int(self._config["min_event_per_burst"])
+        else:
+            self._server.min_event_per_burst = 500
 
         self._server_thread = threading.Thread(target=self._serve_forever)
         self._server_thread.start()
@@ -233,9 +238,17 @@ class FMSTCPHandler(SocketServer.BaseRequestHandler):
         fake_date = datetime.datetime.today()
         hour_of_day = fake_date.hour
         while not self.server.terminate:
-            self.server.system.next_state(hour_of_day)
             request = RequestBuilder(self.request)
-            self.server.system.collect_events(hour_of_day, fake_date, request)
+
+            # Collect some events
+            while request.nb_events() < self.server.min_event_per_burst:
+                self.server.system.next_state(hour_of_day)
+                self.server.system.collect_events(hour_of_day, fake_date,
+                                                  request)
+                hour_of_day += 1
+                fake_date += datetime.timedelta(hours=1)
+                if hour_of_day > 24:
+                    hour_of_day = 0
 
             try:
                 request.finalize()
@@ -244,11 +257,6 @@ class FMSTCPHandler(SocketServer.BaseRequestHandler):
                 self.server.terminate = True
 
             time.sleep(self.server.sleep_in_seconds)
-
-            hour_of_day += 1
-            fake_date += datetime.timedelta(hours=1)
-            if hour_of_day > 24:
-                hour_of_day = 0
 
 
 class RequestBuilder(object):
@@ -263,6 +271,9 @@ class RequestBuilder(object):
         :param data: Object to send.
         """
         self._collected_data.append(data)
+
+    def nb_events(self):
+        return len(self._collected_data)
 
     def finalize(self):
         for data in self._collected_data:

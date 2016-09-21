@@ -3,7 +3,7 @@
 # (cloud-like data model)
 #
 
-src = CloudMarkovChainSource(sleep=0.01)
+src = CloudMarkovChainSource(sleep=0.01, min_event_per_burst=500)
 
 src.transitions.web_service = {
   "run=>slow": {

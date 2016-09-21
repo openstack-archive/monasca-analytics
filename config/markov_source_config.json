@@ -13,6 +13,7 @@
         "src1": {
             "module": "CloudMarkovChainSource",
             "sleep": 0.01,
+            "min_event_per_burst": 500,
             "transitions": {
                 "web_service": {
                     "run=>slow": {
