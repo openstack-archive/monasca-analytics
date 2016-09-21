@@ -76,6 +76,29 @@ class Monanas(object):
         # Try to change the configuration.
         executor.execute_banana_string(banana_str, self._driver, emitter)
 
+    def typeck_configuration(self, banana_str, emitter):
+        """Only type check the provided configuration.
+
+        :type banana_str: str
+        :param banana_str: New configuration.
+        :type emitter: emit.JsonEmitter
+        :param emitter: a Json emitter instance
+        """
+        executor.execute_banana_string(banana_str, None, emitter)
+
+    def compute_type_table(self, banana_str):
+        """Compute the type table for the provided configuration.
+
+        :type banana_str: str
+        :param banana_str: Configuration to test.
+        :rtype: dict
+        :return: Returns the type table
+        """
+        type_table = executor.try_compute_type_table(banana_str)
+        if type_table is not None:
+            return type_table.to_json()
+        return {}
+
     def start_streaming(self):
         """Starts streaming data.
 

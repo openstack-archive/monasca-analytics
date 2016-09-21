@@ -47,7 +47,7 @@ SPARK_DIR="/opt/spark"
 SPARK_DOWNLOAD="$SPARK_DIR/download"
 SPARK_VERSION=${SPARK_VERSION:-1.6.1}
 SPARK_TARBALL_NAME="spark-${SPARK_VERSION}.tgz"
-SPARK_URL="http://apache.claz.org/spark/spark-$SPARK_VERSION/$SPARK_TARBALL_NAME"
+SPARK_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_TARBALL_NAME"
 
 BASE_KAFKA_VERSION=${BASE_KAFKA_VERSION:-0.9.0.0}
 KAFKA_DIR="/opt/kafka"

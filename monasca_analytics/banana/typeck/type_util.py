@@ -59,6 +59,10 @@ class IsType(object):
     def default_value(self):
         pass
 
+    @abc.abstractmethod
+    def to_json(self):
+        pass
+
 
 class Any(IsType):
     """
@@ -84,6 +88,9 @@ class Any(IsType):
     def default_value(self):
         return {}
 
+    def to_json(self):
+        return {"id": "any"}
+
 
 class String(IsType):
     """
@@ -102,6 +109,9 @@ class String(IsType):
     def default_value(self):
         return ""
 
+    def to_json(self):
+        return {"id": "string"}
+
 
 class Number(String):
     """
@@ -119,6 +129,9 @@ class Number(String):
 
     def default_value(self):
         return 0
+
+    def to_json(self):
+        return {"id": "number"}
 
 
 class Enum(String):
@@ -141,6 +154,12 @@ class Enum(String):
 
     def default_value(self):
         return ""
+
+    def to_json(self):
+        return {
+            "id": "enum",
+            "variants": self.variants
+        }
 
 
 def attach_to_root(root_obj, obj1, span, erase_existing=False):
@@ -281,6 +300,12 @@ class Object(String):
             default_value[key] = val.default_value()
         return default_value
 
+    def to_json(self):
+        res = {"id": "object", "props": {}}
+        for key, val in self.props.iteritems():
+            res["props"][key] = val.to_json()
+        return res
+
 
 class Component(IsType):
     """
@@ -397,7 +422,13 @@ class Component(IsType):
         return hash(str(self))
 
     def default_value(self):
-        return {}
+        return None
+
+    def to_json(self):
+        res = {"id": "component", "name": self.class_name, "args": []}
+        for arg in self.ctor_properties:
+            res["args"].append(arg.to_json())
+        return res
 
 
 class Source(Component):
