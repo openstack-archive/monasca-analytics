@@ -41,6 +41,13 @@ def deadpathck(banana_file, type_table, emitter=emit.PrintEmitter()):
     # Look first for all branch that are "dead"
     connections = banana_file.connections  # type: ast.Connection
 
+    # If there are no connections everything is considered
+    # as dead.
+    if connections is None:
+        class EmptyConnections(object):
+            connections = []
+        connections = EmptyConnections()
+
     # Collect the nodes and connect them.
     dag_nodes = {}
     # Create all the nodes
