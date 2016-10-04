@@ -70,17 +70,17 @@ class Span(object):
         else:
             return '?SPAN?'
 
-    def new_with_offset(self, offset):
+    def new_with_lo(self, lo_val):
         """
-        Construct a new Span with an offset applied
-        to lo.
+        Construct a new Span with an new value for
+        lo.
 
-        :type offset: int
-        :param offset: Offset to apply to lo.
+        :type lo_val: int
+        :param lo_val: New value for lo.
         :rtype: Span
         :return: Returns a new span
         """
-        return Span(self._text, self.lo + offset, self.hi)
+        return Span(self._text, lo_val, self.hi)
 
     def str_from_to(self, to_span):
         """
@@ -106,6 +106,30 @@ class Span(object):
                     current_pos += len(line)
         else:
             return '?LINE?'
+
+    def get_range(self):
+        """
+        Returns the start and end (line number, column number) of this span.
+        """
+        if self._text is not None:
+            splitted = self._text.splitlines()
+            current_pos = 0
+            startlineno = 0
+            startcolno = 0
+            endlineno = 0
+            endcolno = 0
+            for lineno in xrange(0, len(splitted)):
+                line = splitted[lineno]
+                if current_pos <= self.lo <= len(line) + current_pos:
+                    startlineno = lineno + 1
+                    startcolno = self.lo - current_pos + 1
+                if current_pos <= self.hi <= len(line) + current_pos:
+                    endlineno = lineno + 1
+                    endcolno = self.hi - current_pos + 1
+                current_pos += len(line) + 1
+            return (startlineno, startcolno), (endlineno, endcolno)
+        else:
+            return (0, 0), (0, 0)
 
     def get_lineno(self):
         """
