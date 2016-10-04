@@ -215,7 +215,7 @@ class DSLInterpreter(object):
         """Print the configuration of the module/s defined by varname
 
         If varname is a variable or ID associated to a particular component,
-        the configuration of that component will be printed. If if is a type
+        the configuration of that component will be printed. If it is a type
         of components, the configurations of all components of that type
         will be printed.
 
