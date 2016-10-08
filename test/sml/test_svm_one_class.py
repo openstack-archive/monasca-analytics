@@ -53,4 +53,4 @@ class TestSvmOneClass(MonanasTestCase):
     def test_learn_structure(self):
         data = self.get_testing_data()
         clf = self.svm.learn_structure(data)
-        self.assertTrue(isinstance(clf, svm.OneClassSVM))
+        self.assertIsInstance(clf, svm.OneClassSVM)
