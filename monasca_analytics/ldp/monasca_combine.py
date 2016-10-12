@@ -113,13 +113,13 @@ class MonascaCombineLDP(bt.BaseLDP):
             lambda l: map(
                 lambda x: x["metric"]["timestamp"], l[1]),
             separated_metrics)
-        for index in xrange(0, len(separated_metrics[0][1])):
+        for index in range(0, len(separated_metrics[0][1])):
             current_env = {
                 separated_metrics[0][0]:
                     separated_metrics[0][1][index]["metric"]["value"]
             }
             timestamp = all_timestamp[0][index]
-            for metric_index in xrange(1, len(separated_metrics)):
+            for metric_index in range(1, len(separated_metrics)):
                 metric_prop = separated_metrics[metric_index]
                 metric_name = metric_prop[0]
                 current_env[metric_name] = helpers.interpolate(

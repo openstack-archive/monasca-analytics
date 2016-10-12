@@ -143,12 +143,12 @@ class MonascaAggregateLDP(bt.BaseLDP):
                 lambda x: x["metric"]["timestamp"], l),
             separated_metrics)
         metric_count = len(separated_metrics)
-        for index in xrange(0, len(separated_metrics[0])):
+        for index in range(0, len(separated_metrics[0])):
             new_value = reducer[0](
                 separated_metrics[0][index]["metric"]["value"],
                 metric_count)
             new_timestamp = separated_metrics[0][index]["metric"]["timestamp"]
-            for metric_index in xrange(1, metric_count):
+            for metric_index in range(1, metric_count):
                 new_value = reducer[1](new_value, helpers.interpolate(
                     new_timestamp,
                     separated_metrics[metric_index],

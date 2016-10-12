@@ -118,7 +118,7 @@ class Span(object):
             startcolno = 0
             endlineno = 0
             endcolno = 0
-            for lineno in xrange(0, len(splitted)):
+            for lineno in range(0, len(splitted)):
                 line = splitted[lineno]
                 if current_pos <= self.lo <= len(line) + current_pos:
                     startlineno = lineno + 1
@@ -139,7 +139,7 @@ class Span(object):
             splitted = self._text.splitlines()
             current_pos = 0
             lineno = 0
-            for _ in xrange(0, len(splitted)):
+            for _ in range(0, len(splitted)):
                 line = splitted[lineno]
                 if current_pos < self.lo < len(line) + current_pos:
                     return lineno + 1

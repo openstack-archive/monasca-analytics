@@ -37,7 +37,7 @@ class TestMonascaAggregateLDP(MonanasTestCase):
         # iterable = map(lambda i: {"metric": {"value": i}}, iterable)
         cnt = len(iterable)
         acc = fn[0](iterable[0], cnt)
-        for index in xrange(1, cnt):
+        for index in range(1, cnt):
             acc = fn[1](acc, iterable[index], cnt)
         return acc
 

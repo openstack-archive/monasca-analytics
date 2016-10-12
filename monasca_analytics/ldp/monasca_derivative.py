@@ -116,7 +116,7 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         last_timestamp = timestamps[0]
         tmp_all_values = [all_values[0]]
         tmp_timestamps = [last_timestamp]
-        for index in xrange(1, len(timestamps)):
+        for index in range(1, len(timestamps)):
             if timestamps[index] == last_timestamp:
                 continue
             else:
@@ -135,7 +135,7 @@ class MonascaDerivativeLDP(bt.BaseLDP):
             float(all_values[1] - all_values[0]) /
             float(timestamps[1] - timestamps[0])
         ]
-        for index in xrange(1, n):
+        for index in range(1, n):
             new_values.append(
                 float(all_values[index + 1] - all_values[index - 1]) /
                 float(timestamps[index + 1] - timestamps[index - 1])

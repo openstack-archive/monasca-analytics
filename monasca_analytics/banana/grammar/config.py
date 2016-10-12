@@ -93,7 +93,7 @@ def banana_grammar(emitter=emit.PrintEmitter()):
     def action_create_connections(s, l, t):
         ast_conn = ast.into_connection(t[0])
         ast_conn.span = ast.make_span(s, l, t)
-        for i in xrange(1, len(t)):
+        for i in range(1, len(t)):
             next_conn = ast.into_connection(t[i])
             ast_conn.connect_to(next_conn, emitter)
         return ast_conn

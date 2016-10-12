@@ -296,7 +296,7 @@ class Expr(ASTNode):
         if isinstance(expr_tree, p.ParseResults):
             expr_tree = expr_tree.asList()
         if isinstance(expr_tree, list):
-            for i in xrange(0, len(expr_tree)):
+            for i in range(0, len(expr_tree)):
                 if isinstance(expr_tree[i], list):
                     expr_tree[i] = Expr(span, expr_tree[i])
             self.expr_tree = expr_tree
