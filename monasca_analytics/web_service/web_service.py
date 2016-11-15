@@ -29,7 +29,17 @@ class WebService(web.Application):
         params = {"monanas": self._monanas}
         handlers = [
             (r"/", request_handler.MonanasHandler, params),
-            (r"/banana", request_handler.BananaHandler, params),
+            (r"/banana", request_handler.BananaHandler, {
+                "monanas": self._monanas,
+                "typeck_only": False
+            }),
+            (r"/banana/typeck", request_handler.BananaHandler, {
+                "monanas": self._monanas,
+                "typeck_only": True
+            }),
+            (r"/banana/metadata", request_handler.BananaMetaDataHandler, {
+                "monanas": self._monanas,
+            })
         ]
 
         settings = {}

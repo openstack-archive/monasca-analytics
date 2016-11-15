@@ -26,13 +26,13 @@ import monasca_analytics.banana.typeck.config as typeck
 import monasca_analytics.exception.banana as exception
 
 
-def execute_banana_string(banana_str, driver, emitter=emit.PrintEmitter()):
+def execute_banana_string(banana, driver=None, emitter=emit.PrintEmitter()):
     """
     Execute the provided banana string.
     It will run the parse phase, and the typechecker.
-    :type banana_str: str
-    :param banana_str: The string to parse and type check.
-    :type driver: monasca_analytics.spark.driver.DriverExecutor
+    :type banana: str
+    :param banana: The string to parse and type check.
+    :type driver: monasca_analytics.spark.driver.DriverExecutor | None
     :param driver: Driver that will manage the created
         components and connect them together.
     :type emitter: emit.Emitter
@@ -41,7 +41,7 @@ def execute_banana_string(banana_str, driver, emitter=emit.PrintEmitter()):
     try:
         # Convert the grammar into an AST
         parser = grammar.banana_grammar(emitter)
-        ast = parser.parse(banana_str)
+        ast = parser.parse(banana)
         # Compute the type table for the given AST
         type_table = typeck.typeck(ast)
         # Remove from the tree path that are "dead"
@@ -49,30 +49,56 @@ def execute_banana_string(banana_str, driver, emitter=emit.PrintEmitter()):
         # Check that there's at least one path to be executed
         deadpathck.contains_at_least_one_path_to_a_sink(ast, type_table)
         # Evaluate the script
-        ev.eval_ast(ast, type_table, driver)
+        if driver is not None:
+            ev.eval_ast(ast, type_table, driver)
     except exception.BananaException as err:
         emitter.emit_error(err.get_span(), str(err))
     except p.ParseSyntaxException as err:
-        emitter.emit_error(span_util.from_parse_fatal(err), err.msg)
+        emitter.emit_error(span_util.from_pyparsing_exception(err), err.msg)
     except p.ParseFatalException as err:
-        emitter.emit_error(span_util.from_parse_fatal(err), err.msg)
+        emitter.emit_error(span_util.from_pyparsing_exception(err), err.msg)
+    except p.ParseException as err:
+        emitter.emit_error(span_util.from_pyparsing_exception(err), err.msg)
 
 
-def compute_type_table(banana_str):
+def try_compute_type_table(banana):
+    """
+    Compute the type table for the provided banana string
+    if possible. Does not throw any exception if it fails.
+    :type banana: str
+    :param banana: The string to parse and type check.
+    """
+    try:
+        # Convert the grammar into an AST
+        parser = grammar.banana_grammar()
+        ast = parser.parse(banana)
+        # Compute the type table for the given AST
+        return typeck.typeck(ast)
+    except exception.BananaException:
+        return None
+    except p.ParseSyntaxException:
+        return None
+    except p.ParseFatalException:
+        return None
+    except p.ParseException:
+        return None
+
+
+def compute_type_table(banana):
     """
     Compute the type table for the provided banana string
     if possible.
-    :type banana_str: str
-    :param banana_str: The string to parse and type check.
+    :type banana: str
+    :param banana: The string to parse and type check.
     """
     # Convert the grammar into an AST
     parser = grammar.banana_grammar()
-    ast = parser.parse(banana_str)
+    ast = parser.parse(banana)
     # Compute the type table for the given AST
     return typeck.typeck(ast)
 
 
-def compute_evaluation_context(banana_str, cb=lambda *a, **k: None):
+def compute_evaluation_context(banana, cb=lambda *a, **k: None):
     """
     Compute the evaluation context for the provided
     banana string.
@@ -81,7 +107,7 @@ def compute_evaluation_context(banana_str, cb=lambda *a, **k: None):
     :param cb: Callback called after each statement
     """
     parser = grammar.banana_grammar()
-    ast = parser.parse(banana_str)
+    ast = parser.parse(banana)
     type_table = typeck.typeck(ast)
     context = ctx.EvaluationContext()
 

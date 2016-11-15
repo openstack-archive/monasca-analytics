@@ -153,11 +153,11 @@ class Span(object):
 DUMMY_SPAN = Span(None, 0, 0)
 
 
-def from_parse_fatal(parse_fatal_exception):
+def from_pyparsing_exception(parse_fatal_exception):
     """
     Convert the provided ParseFatalException into a Span.
 
-    :type parse_fatal_exception: pyparsing.ParseFatalException
+    :type parse_fatal_exception: pyparsing.ParseBaseException
     :param parse_fatal_exception: Exception to convert.
     :rtype: Span
     :return: Returns the span mapping to that fatal exception.

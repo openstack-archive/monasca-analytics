@@ -164,6 +164,19 @@ class TypeTable(object):
         ))
         self._variables = new_snapshot
 
+    def to_json(self):
+        """
+        Convert this type table into a dictionary.
+        Useful to serialize the type table.
+
+        :rtype: dict
+        :return: Returns this type table as a dict.
+        """
+        res = {}
+        for key, val in self._variables.iteritems():
+            res[key.inner_val()] = val.to_json()
+        return res
+
     def __contains__(self, key):
         """
         Test if the type table contains or not the provided

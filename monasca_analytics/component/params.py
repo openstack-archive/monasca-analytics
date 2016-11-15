@@ -45,3 +45,10 @@ class ParamDescriptor(object):
         self.default_value = default
         self.param_type = _type
         self.validator = validator
+
+    def to_json(self):
+        return {
+            "name": self.param_name,
+            "default_value": self.default_value,
+            "type": self.param_type.to_json(),
+        }
