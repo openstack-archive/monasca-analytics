@@ -189,6 +189,9 @@ class StringLit(ASTNode):
         return (isinstance(other, StringLit) or isinstance(other, Ident))\
             and self.inner_val() == other.inner_val()
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return "StringLit< {} >".format(self.val)
 
@@ -217,6 +220,9 @@ class Ident(ASTNode):
     def __eq__(self, other):
         return (isinstance(other, StringLit) or isinstance(other, Ident))\
             and self.val == other.inner_val()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __str__(self):
         return "Ident< {} >".format(self.val)
@@ -273,6 +279,9 @@ class DotPath(ASTNode):
 
     def __eq__(self, other):
         return self.__key() == other.__key()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.__key())
