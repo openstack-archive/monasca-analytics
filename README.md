@@ -1,3 +1,10 @@
+Team and repository tags
+========================
+
+[![Team and repository tags](http://governance.openstack.org/badges/monasca-analytics.svg)](http://governance.openstack.org/reference/tags/index.html)
+
+<!-- Change things from this point on -->
+
 # MoNanas - Monasca Analytics Framework
 
 ![MoNanas Logo](doc/images/monanas-logo.png)
