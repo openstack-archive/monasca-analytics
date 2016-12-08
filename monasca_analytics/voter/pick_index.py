@@ -30,7 +30,6 @@ class PickIndexVoter(base.BaseVoter):
     def __init__(self, _id, _config):
         super(PickIndexVoter, self).__init__(_id, _config)
         self._index = _config["index"]
-        self._index = 0
 
     @staticmethod
     def validate_config(_config):
