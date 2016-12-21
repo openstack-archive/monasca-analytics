@@ -42,18 +42,18 @@ if [ "$VAGRANT_ENV" ]; then
   sudo -E apt-get -y install sbt
 
   # Spark
-  curl http://apache.claz.org/spark/spark-1.6.1/spark-1.6.1.tgz > spark.tgz
+  curl http://apache.claz.org/spark/spark-1.6.2/spark-1.6.2.tgz > spark.tgz
   echo "-------------------------"
   echo "unzip spark to ~/spark"
   mkdir ~/spark/
   tar -xzf spark.tgz
-  mv spark-1.6.1/ ~/spark/spark-1.6.1
-  cd ~/spark/spark-1.6.1
+  mv spark-1.6.2/ ~/spark/spark-1.6.2
+  cd ~/spark/spark-1.6.2
   mvn -DskipTests clean package
   cd ~/tmp
   # config for logging in spark
-  cp ~/spark/spark-1.6.1/conf/log4j.properties.template ~/spark/spark-1.6.1/conf/log4j.properties
-  sed -i 's/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/g' ~/spark/spark-1.6.1/conf/log4j.properties
+  cp ~/spark/spark-1.6.2/conf/log4j.properties.template ~/spark/spark-1.6.2/conf/log4j.properties
+  sed -i 's/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/g' ~/spark/spark-1.6.2/conf/log4j.properties
 
   # Kafka
   mkdir ~/kafka
