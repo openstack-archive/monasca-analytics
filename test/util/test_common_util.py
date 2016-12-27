@@ -109,7 +109,7 @@ class CommonUtilTest(unittest.TestCase):
     def test_get_available_sml_class_names(self):
         names = common_util.get_available_sml_class_names()
         self.assertItemsEqual(
-            ['LiNGAM', "SvmOneClass"],
+            ['LiNGAM', "SvmOneClass", "IsolationForest"],
             names)
 
     def test_get_voter_class_by_name(self):
