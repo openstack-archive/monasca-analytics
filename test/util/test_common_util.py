@@ -112,7 +112,8 @@ class CommonUtilTest(unittest.TestCase):
             ['LiNGAM',
              "SvmOneClass",
              "IsolationForest",
-             "EllipticEnvelope"],
+             "EllipticEnvelope",
+             "DecisionTreeClassifier"],
             names)
 
     def test_get_voter_class_by_name(self):
