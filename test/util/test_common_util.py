@@ -114,7 +114,8 @@ class CommonUtilTest(unittest.TestCase):
              "IsolationForest",
              "EllipticEnvelope",
              "DecisionTreeClassifier",
-             "LogisticRegression"],
+             "LogisticRegression",
+             "RandomForestClassifier"],
             names)
 
     def test_get_voter_class_by_name(self):
