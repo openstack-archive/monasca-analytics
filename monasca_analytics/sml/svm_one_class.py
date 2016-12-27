@@ -72,7 +72,7 @@ class SvmOneClass(base.BaseSML):
 
     def learn_structure(self, samples):
         X_train, X_test = self._generate_train_test_sets(samples, 0.75)
-        logger.info("Trainig with " + str(len(X_train)) +
+        logger.info("Training with " + str(len(X_train)) +
                     "samples; testing with " + str(len(X_test)) + " samples.")
         svm_detector = svm.OneClassSVM(nu=0.95 * OUTLIERS_FRACTION + 0.05,
                                        kernel="rbf", gamma=0.1)
