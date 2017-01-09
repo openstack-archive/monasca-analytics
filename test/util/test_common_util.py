@@ -110,12 +110,13 @@ class CommonUtilTest(unittest.TestCase):
         names = common_util.get_available_sml_class_names()
         self.assertItemsEqual(
             ['LiNGAM',
-             "SvmOneClass",
-             "IsolationForest",
-             "EllipticEnvelope",
-             "DecisionTreeClassifier",
-             "LogisticRegression",
-             "RandomForestClassifier"],
+             'SvmOneClass',
+             'IsolationForest',
+             'EllipticEnvelope',
+             'DecisionTreeClassifier',
+             'LogisticRegression',
+             'RandomForestClassifier',
+             'Svc'],
             names)
 
     def test_get_voter_class_by_name(self):
