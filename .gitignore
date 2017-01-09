@@ -4,6 +4,7 @@
 *.log
 *.pyc
 *.pyo
+.eggs
 .project
 .pydevproject
 .vagrant
