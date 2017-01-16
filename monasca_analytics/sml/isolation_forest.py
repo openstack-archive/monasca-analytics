@@ -75,7 +75,7 @@ class IsolationForest(BaseSML):
 
     def learn_structure(self, samples):
         X_train, X_test = self._generate_train_test_sets(samples, 0.75)
-        logger.info('Trainig with ' + str(len(X_train)) +
+        logger.info('Training with ' + str(len(X_train)) +
                     'samples; testing with ' + str(len(X_test)) + ' samples.')
 
         if_detector = self._get_best_detector(X_train)

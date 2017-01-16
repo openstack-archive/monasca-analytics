@@ -82,7 +82,7 @@ class Svc(BaseSML):
     def learn_structure(self, samples):
         X_train, X_train_label, X_test, X_test_label = \
             self._generate_train_test_sets(samples, 0.75)
-        logger.info('Trainig with ' + str(len(X_train)) +
+        logger.info('Training with ' + str(len(X_train)) +
                     'samples; testing with ' + str(len(X_test)) + ' samples.')
 
         svc_detector = self._get_best_detector(X_train, X_train_label)
