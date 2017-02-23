@@ -28,13 +28,15 @@ enable_service monasca-analytics
 # Dependent Software Versions
 #
 
+DOWNLOAD_FILE_TIMEOUT=${DOWNLOAD_FILE_TIMEOUT:-1800}
+
 # spark vars
 SPARK_DIRECTORIES=("/var/spark" "/var/log/spark" "/var/run/spark/work" "/etc/spark/conf" "/etc/spark/init" )
 
 JDK_PKG="openjdk-8-jre-headless openjdk-8-jdk"
 
 MAVEN="apache-maven-3.5.3"
-MAVEN_TARBAL="$MAVEN-bin.tar.gz"
+MAVEN_TARBALL="$MAVEN-bin.tar.gz"
 MAVEN_URL="https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/$MAVEN_TARBALL"
 
 SCALA_VERSION=${SCALA_VERSION:-2.11}
