@@ -79,6 +79,9 @@ class Any(IsType):
         # Any type is equal to nothing not even itself.
         return False
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __getitem__(self, _):
         return Any()
 
@@ -103,6 +106,9 @@ class String(IsType):
     def __eq__(self, other):
         return isinstance(other, String)
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(str(self))
 
@@ -123,6 +129,9 @@ class Number(String):
 
     def __eq__(self, other):
         return isinstance(other, Number)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(str(self))
@@ -145,6 +154,9 @@ class Enum(String):
 
     def __eq__(self, other):
         return isinstance(other, Enum) and self.variants == other.variants
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.variants)
@@ -291,6 +303,9 @@ class Object(String):
     def __eq__(self, other):
         return self.props == other
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(self.props)
 
@@ -418,6 +433,9 @@ class Component(IsType):
     def __eq__(self, other):
         return isinstance(other, Component)
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(str(self))
 
@@ -442,6 +460,9 @@ class Source(Component):
     def __eq__(self, other):
         return self.class_name == other.class_name
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(self.class_name)
 
@@ -456,6 +477,9 @@ class Ingestor(Component):
 
     def __eq__(self, other):
         return self.class_name == other.class_name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.class_name)
@@ -472,6 +496,9 @@ class Sink(Component):
     def __eq__(self, other):
         return self.class_name == other.class_name
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(self.class_name)
 
@@ -486,6 +513,9 @@ class Voter(Component):
 
     def __eq__(self, other):
         return self.class_name == other.class_name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.class_name)
@@ -502,6 +532,9 @@ class Ldp(Component):
     def __eq__(self, other):
         return self.class_name == other.class_name
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return hash(self.class_name)
 
@@ -516,6 +549,9 @@ class Sml(Component):
 
     def __eq__(self, other):
         return self.class_name == other.class_name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.class_name)
