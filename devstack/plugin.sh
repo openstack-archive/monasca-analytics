@@ -155,9 +155,9 @@ function install_pkg {
 ###
 function build_spark {
     ## install maven
-    sudo -E curl $MAVEN_URL -o $SPARK_DOWNLOAD/$MAVEN_TARBAL
-    sudo chown stack:stack $SPARK_DOWNLOAD/$MAVEN_TARBAL
-    sudo -u stack tar -xzf $SPARK_DOWNLOAD/$MAVEN_TARBAL -C $SPARK_DIR
+    sudo -E curl $MAVEN_URL -o $SPARK_DOWNLOAD/$MAVEN_TARBALL
+    sudo chown stack:stack $SPARK_DOWNLOAD/$MAVEN_TARBALL
+    sudo -u stack tar -xzf $SPARK_DOWNLOAD/$MAVEN_TARBALL -C $SPARK_DIR
 
     if [ ${http_proxy} ];then
         read HTTP_PROXY_USER_NAME HTTP_PROXY_PASSWORD HTTP_PROXY_HOST<< END
