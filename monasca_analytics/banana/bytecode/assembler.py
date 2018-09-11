@@ -497,7 +497,7 @@ class Code(object):
 
     stack_size = property(get_stack_size, set_stack_size)
 
-    def stackchange(self, (inputs, outputs)):
+    def stackchange(self, inputs, outputs):
         if self._ss is None:
             raise AssertionError("Unknown stack size at this location")
         self.stack_size -= inputs  # check underflow

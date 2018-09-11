@@ -1,6 +1,6 @@
 # mock object framework
 coverage>=3.6 # Apache-2.0
 hacking>=0.10.2
-flake8>=2.5.4,<2.6.0 # MIT
+flake8>=2.5.4,<=3.5.0 # MIT
 nose==1.3.0
 mock>=1.0.1

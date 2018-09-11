@@ -561,7 +561,7 @@ class Connection(ASTNode):
 
     def __str__(self):
         res = "Connection<"
-        res += " {} ".format(map(lambda (x, y): (str(x), str(y)),
+        res += " {} ".format(map(lambda x, y: (str(x), str(y)),
                                  self.connections))
         res += ">"
         return res
