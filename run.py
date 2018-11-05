@@ -20,22 +20,6 @@ This script checks for appropriate arguments and starts Monanas to use
 data coming from one or more given sources. The source(s) can be configured
 using the optional argument --sources. However, a default source using random
 data generator is provided in the config folder.
-
-Usage:
-    run.py -p <spark_path> -c <config> -l <log_config> [-s <sources>...
-        [<sources>]] [-dvh]
-    run.py -v | --version
-    run.py -h | --help
-
-Options:
-    -c --config          Config file.
-    -d --debug           Show debug messages.
-    -h --help            Show this screen.
-    -l --log_config      Log config file's path.
-    -p --spark_path      Spark's path.
-    -s --sources         A list of data sources.
-    -v --version         Show version.
-
 """
 
 import json
@@ -45,7 +29,8 @@ import os
 import subprocess
 import sys
 
-import docopt
+import argparse
+import textwrap
 
 import setup_property
 
@@ -59,13 +44,13 @@ class RunnerError(Exception):
 
 
 def main(arguments):
-    spark_submit = "{0}/bin/spark-submit".format(arguments["<spark_path>"])
+    spark_submit = "{0}/bin/spark-submit".format(arguments.spark_path)
     monanas_path = os.environ.get('MONANAS_HOME', "")
     kafka_jar = None
 
     try:
         for filename in os.listdir("{0}/external/kafka-assembly/target".
-                                   format(arguments["<spark_path>"])):
+                                   format(arguments.spark_path)):
             if filename.startswith("spark-streaming-kafka-assembly") and\
                not any(s in filename for s in ["source", "test"]):
                 kafka_jar = filename
@@ -77,13 +62,15 @@ def main(arguments):
         raise RunnerError(e.__str__())
 
     spark_kafka_jar = "{0}/external/kafka-assembly/target/{1}".\
-                      format(arguments["<spark_path>"], kafka_jar)
+                      format(arguments.spark_path, kafka_jar)
     command = [
         spark_submit, "--master", "local[2]",
         "--jars", spark_kafka_jar, monanas_path + "/monasca_analytics/monanas.py",
-        arguments["<config>"], arguments["<log_config>"]
+        arguments.config, arguments.log_config
     ]
-    command += arguments["<sources>"]
+
+    if arguments.sources is not None:
+        command += arguments.sources
 
     try:
         logger.info("Executing `{}`...".format(" ".join(command)))
@@ -99,17 +86,42 @@ def setup_logging(filename):
 
     log_conf.dictConfig(config)
 
+def setup_parser():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(__doc__.strip()),
+        add_help=False)
+
+    parser.add_argument('-c', '--config',
+                        help='Config file.', required=True)
+    # "-d" currently unused
+    parser.add_argument('-d', '--debug',
+                        help='Show debug messages.', action='store_true')
+    parser.add_argument('-h', '--help',
+                        help='Show this screen.', action='help')
+    parser.add_argument('-l', '--log_config',
+                        help='Log config file\'s path.', required=True)
+    parser.add_argument('-p', '--spark_path',
+                        help='Spark\'s path.', required=True)
+    parser.add_argument('-s', '--sources',
+                        help='A list of data sources.', nargs='*')
+    parser.add_argument('-v', '--version',
+                        help='Show version.', action='version',
+                        version=setup_property.VERSION)
+
+    return parser
+
 if __name__ == "__main__":
-    arguments = docopt.docopt(__doc__, version=setup_property.VERSION)
+    arguments = setup_parser().parse_args()
 
     try:
-        setup_logging(arguments["<log_config>"])
+        setup_logging(arguments.log_config)
     except IOError:
         raise RunnerError("File not found: {0}.".
-                          format(arguments["<log_config>"]))
+                          format(arguments.log_config))
     except ValueError:
         raise RunnerError("{0} is not a valid logging config file.".
-                          format(arguments["<log_config>"]))
+                          format(arguments.log_config))
 
     logger = logging.getLogger(__name__)
 

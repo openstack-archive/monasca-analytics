@@ -1,10 +1,7 @@
-docopt
-findspark
-libpgm
 numpy
-scipy
+scipy < 1.2.0
 tornado
-sklearn
+scikit-learn
 kafka-python
 pyparsing
 voluptuous>=0.8.9  # BSD License
