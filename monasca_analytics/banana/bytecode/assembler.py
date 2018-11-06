@@ -388,7 +388,7 @@ class Code(object):
         return self.emit(YIELD_VALUE)
 
     def LOAD_CONST(self, const):
-        self.stackchange((0, 1))
+        self.stackchange(0, 1)
         pos = 0
         hashable = True
         try:
@@ -411,7 +411,7 @@ class Code(object):
         return self.emit_arg(LOAD_CONST, arg)
 
     def CALL_FUNCTION(self, argc=0, kwargc=0, op=CALL_FUNCTION, extra=0):
-        self.stackchange((1 + argc + 2 * kwargc + extra, 1))
+        self.stackchange(1 + argc + 2 * kwargc + extra, 1)
         emit = self.emit
         emit(op)
         emit(argc)
@@ -439,44 +439,44 @@ class Code(object):
             2)  # 2 *args,**kw
 
     def BUILD_TUPLE(self, count):
-        self.stackchange((count, 1))
+        self.stackchange(count, 1)
         self.emit_arg(BUILD_TUPLE, count)
 
     def BUILD_LIST(self, count):
-        self.stackchange((count, 1))
+        self.stackchange(count, 1)
         self.emit_arg(BUILD_LIST, count)
 
     def UNPACK_SEQUENCE(self, count):
-        self.stackchange((1, count))
+        self.stackchange(1, count)
         self.emit_arg(UNPACK_SEQUENCE, count)
 
     def RETURN_VALUE(self):
-        self.stackchange((1, 0))
+        self.stackchange(1, 0)
         self.emit(RETURN_VALUE)
         self.stack_unknown()
 
     def BUILD_SLICE(self, count):
         assert count in (2, 3), "Invalid number of arguments for BUILD_SLICE"
-        self.stackchange((count, 1))
+        self.stackchange(count, 1)
         self.emit_arg(BUILD_SLICE, count)
 
     def DUP_TOPX(self, count):
-        self.stackchange((count, count * 2))
+        self.stackchange(count, count * 2)
         self.emit_arg(DUP_TOPX, count)
 
     def RAISE_VARARGS(self, argc):
         assert 0 <= argc <= 3, "Invalid number of arguments for RAISE_VARARGS"
-        self.stackchange((argc, 0))
+        self.stackchange(argc, 0)
         self.emit_arg(RAISE_VARARGS, argc)
 
     def MAKE_FUNCTION(self, ndefaults):
-        self.stackchange((1 + ndefaults, 1))
+        self.stackchange(1 + ndefaults, 1)
         self.emit_arg(MAKE_FUNCTION, ndefaults)
 
     def MAKE_CLOSURE(self, ndefaults, freevars):
         if sys.version >= '2.5':
             freevars = 1
-        self.stackchange((1 + freevars + ndefaults, 1))
+        self.stackchange(1 + freevars + ndefaults, 1)
         self.emit_arg(MAKE_CLOSURE, ndefaults)
 
     def here(self):
@@ -566,7 +566,7 @@ class Code(object):
         return lbl
 
     def COMPARE_OP(self, op):
-        self.stackchange((2, 1))
+        self.stackchange(2, 1)
         self.emit_arg(COMPARE_OP, compares[op])
 
     def setup_block(self, op):
@@ -641,7 +641,7 @@ class Code(object):
 
     if 'LIST_APPEND' in opcode and LIST_APPEND >= HAVE_ARGUMENT:
         def LIST_APPEND(self, depth):
-            self.stackchange((depth + 1, depth))
+            self.stackchange(depth + 1, depth)
             self.emit_arg(LIST_APPEND, depth)
 
     def assert_loop(self):
@@ -848,7 +848,7 @@ class Code(object):
 for op in hasfree:
     if not hasattr(Code, opname[op]):
         def do_free(self, varname, op=op):
-            self.stackchange(stack_effects[op])
+            self.stackchange(stack_effects[op][0], stack_effects[op][1])
             try:
                 arg = list(self.co_cellvars + self.co_freevars).index(varname)
             except ValueError:
@@ -865,7 +865,7 @@ compares['<>'] = compares['!=']
 for op in hasname:
     if not hasattr(Code, opname[op]):
         def do_name(self, name, op=op):
-            self.stackchange(stack_effects[op])
+            self.stackchange(stack_effects[op][0], stack_effects[op][1])
             try:
                 arg = self.co_names.index(name)
             except ValueError:
@@ -884,7 +884,7 @@ for op in haslocal:
                 raise AssertionError(
                     "co_flags must include CO_OPTIMIZED to use fast locals"
                 )
-            self.stackchange(stack_effects[op])
+            self.stackchange(stack_effects[op][0], stack_effects[op][1])
             try:
                 arg = self.co_varnames.index(varname)
             except ValueError:
@@ -896,7 +896,7 @@ for op in haslocal:
 for op in hasjrel + hasjabs:
     if not hasattr(Code, opname[op]):
         def do_jump(self, address=None, op=op):
-            self.stackchange(stack_effects[op])
+            self.stackchange(stack_effects[op][0], stack_effects[op][1])
             return self.jump(op, address)
         setattr(Code, opname[op], with_name(do_jump, opname[op]))
 
@@ -994,11 +994,11 @@ for opcode_name in opcode:
         # Create default method for Code class
         if op >= HAVE_ARGUMENT:
             def do_op(self, arg, op=op, se=stack_effects[op]):
-                self.stackchange(se)
+                self.stackchange(se[0], se[1])
                 self.emit_arg(op, arg)
         else:
             def do_op(self, op=op, se=stack_effects[op]):
-                self.stackchange(se)
+                self.stackchange(se[0], se[1])
                 self.emit(op)
 
         setattr(Code, opcode_name, with_name(do_op, opcode_name))
