@@ -69,8 +69,6 @@ function pre_install_monasca_analytics {
 function unstack_monasca_analytics {
     echo_summary "Unstack Monasca-analytics"
 
-    sudo service monasca-analytics stop || true
-
     delete_monasca_analytics_files
 
     sudo userdel monasca-analytics || true
@@ -129,8 +127,7 @@ function unistall_pkgs {
     sudo sed -i -e '/deb https\:\/\/dl.bintray.com\/sbt\/debian \//d' /etc/apt/sources.list.d/sbt.list
     sudo dpkg -r scala
 
-    sudo apt-get -y purge openjdk-7-jdk
-    sudo apt-get -y purge openjdk-7-jre-headless
+    sudo apt-get -y purge $JDK_PKG
 
     sudo rm -rf ~/.m2
 
@@ -243,7 +240,7 @@ function install_zookeeper {
         sudo mkdir -p /var/log/zookeeper || true
         sudo chmod 755 /var/log/zookeeper
 
-        sudo start zookeeper || sudo restart zookeeper
+        sudo systemctl start zookeeper || sudo systemctl restart zookeeper
     else
         echo_summary "SKIP:Install Monasca Zookeeper"
     fi
@@ -290,7 +287,11 @@ function install_kafka {
             sudo sed -i "s/zookeeper\.connect=127\.0\.0\.1:2181/zookeeper.connect=${SERVICE_HOST}:2181/g" /etc/kafka/server.properties
         fi
 
-        sudo start kafka || sudo restart kafka
+        sudo cp -f "${MONASCA_ANALYTICS_BASE}"/devstack/files/kafka/kafka.service /etc/systemd/system/kafka.service
+        sudo chmod 644 /etc/systemd/system/kafka.service
+
+        sudo systemctl enable kafka
+        sudo systemctl start kafka || sudo systemctl restart kafka
     else
         echo_summary "SKIP:Install Monasca Kafka"
     fi
@@ -328,7 +329,7 @@ function post_config_monasca_analytics {
 
 ###
 function extra_monasca_analytics {
-    sudo service monasca-analytics start
+:
 }
 
 
