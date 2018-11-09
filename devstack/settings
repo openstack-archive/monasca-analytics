@@ -33,9 +33,9 @@ SPARK_DIRECTORIES=("/var/spark" "/var/log/spark" "/var/run/spark/work" "/etc/spa
 
 JDK_PKG="openjdk-8-jre-headless openjdk-8-jdk"
 
-MAVEN="apache-maven-3.3.9"
+MAVEN="apache-maven-3.5.3"
 MAVEN_TARBAL="$MAVEN-bin.tar.gz"
-MAVEN_URL="ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.3.9/binaries/$MAVEN_TARBAL"
+MAVEN_URL="https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/$MAVEN_TARBAL"
 
 SCALA_VERSION=${SCALA_VERSION:-2.11}
 SCALA_MIN_VERSION=${SCALA_MIN_VERSION:-.7}
@@ -45,7 +45,7 @@ KEYID=642AC823
 
 SPARK_DIR="/opt/spark"
 SPARK_DOWNLOAD="$SPARK_DIR/download"
-SPARK_VERSION=${SPARK_VERSION:-1.6.1}
+SPARK_VERSION=${SPARK_VERSION:-2.1.0}
 SPARK_TARBALL_NAME="spark-${SPARK_VERSION}.tgz"
 SPARK_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_TARBALL_NAME"
 
