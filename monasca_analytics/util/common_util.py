@@ -168,12 +168,12 @@ def get_class_by_name(class_name, class_type=None):
     """
     classes = get_available_classes(class_type)
     if class_type:
-        clazz = filter(lambda t_class: t_class.__name__ == class_name,
-                       classes[class_type])
+        clazz = list(filter(lambda t_class: t_class.__name__ == class_name,
+                            classes[class_type]))
     else:
         for c_type in classes.keys():
-            clazz = filter(lambda t_class: t_class.__name__ == class_name,
-                           classes[c_type])
+            clazz = list(filter(lambda t_class: t_class.__name__ == class_name,
+                                classes[c_type]))
             if clazz:
                 break
     if not clazz:

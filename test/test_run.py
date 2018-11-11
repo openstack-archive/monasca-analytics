@@ -15,7 +15,7 @@
 # under the License.
 
 import run
-from util_for_testing import MonanasTestCase
+from test.util_for_testing import MonanasTestCase
 
 
 class ParserTest(MonanasTestCase):

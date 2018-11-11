@@ -84,29 +84,29 @@ class TestMonascaAggregateLDP(MonanasTestCase):
     def test_aggregate_with_avg(self):
         reducer = MonascaAggregateLDP.select_reducer(self._conf("avg"))
         res = MonascaAggregateLDP.aggregate(self.all_metrics, reducer, "_avg")
-        res = map(lambda m: m["metric"]["value"], res)
+        res = [m["metric"]["value"] for m in res]
         self.assertEqual(res, [1.25, 2.5])
 
     def test_aggregate_with_min(self):
         reducer = MonascaAggregateLDP.select_reducer(self._conf("min"))
         res = MonascaAggregateLDP.aggregate(self.all_metrics, reducer, "_min")
-        res = map(lambda m: m["metric"]["value"], res)
+        res = [m["metric"]["value"] for m in res]
         self.assertEqual(res, [1.0, 2.0])
 
     def test_aggregate_with_max(self):
         reducer = MonascaAggregateLDP.select_reducer(self._conf("max"))
         res = MonascaAggregateLDP.aggregate(self.all_metrics, reducer, "_max")
-        res = map(lambda m: m["metric"]["value"], res)
+        res = [m["metric"]["value"] for m in res]
         self.assertEqual(res, [1.5, 3.0])
 
     def test_aggregate_with_sum(self):
         reducer = MonascaAggregateLDP.select_reducer(self._conf("sum"))
         res = MonascaAggregateLDP.aggregate(self.all_metrics, reducer, "_sum")
-        res = map(lambda m: m["metric"]["value"], res)
+        res = [m["metric"]["value"] for m in res]
         self.assertEqual(res, [2.5, 5.0])
 
     def test_aggregate_with_cnt(self):
         reducer = MonascaAggregateLDP.select_reducer(self._conf("cnt"))
         res = MonascaAggregateLDP.aggregate(self.all_metrics, reducer, "_cnt")
-        res = map(lambda m: m["metric"]["value"], res)
+        res = [m["metric"]["value"] for m in res]
         self.assertEqual(res, [2, 2])

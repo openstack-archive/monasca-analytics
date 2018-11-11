@@ -36,7 +36,7 @@ class TestMonascaAggregateLDP(MonanasTestCase):
         ]
 
     def _values(self, values):
-        return map(lambda m: m["metric"]["value"], values)
+        return [m["metric"]["value"] for m in values]
 
     def tearDown(self):
         super(TestMonascaAggregateLDP, self).tearDown()

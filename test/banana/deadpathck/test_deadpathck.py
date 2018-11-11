@@ -52,7 +52,7 @@ class DeadPathTestCase(MonanasTestCase):
         self.assertEqual(emitter.nb_errors, 0)
         self.assertEqual(emitter.nb_warnings, 4)
         self.assertEqual(len(ast.components), 0)
-        self.assertEqual(len(ast.connections.connections), 0)
+        self.assertEqual(len(list(ast.connections.connections)), 0)
 
     def test_banana_should_remove_one(self):
         banana_str = "" +\
@@ -72,7 +72,7 @@ class DeadPathTestCase(MonanasTestCase):
         self.assertEqual(emitter.nb_errors, 0)
         self.assertEqual(emitter.nb_warnings, 1)
         self.assertEqual(len(ast.components), 3)
-        self.assertEqual(len(ast.connections.connections), 2)
+        self.assertEqual(len(list(ast.connections.connections)), 2)
 
     def test_banana_should_not_remove_anything(self):
         banana_str = "" +\
@@ -92,7 +92,7 @@ class DeadPathTestCase(MonanasTestCase):
         self.assertEqual(emitter.nb_errors, 0)
         self.assertEqual(emitter.nb_warnings, 0)
         self.assertEqual(len(ast.components), 4)
-        self.assertEqual(len(ast.connections.connections), 3)
+        self.assertEqual(len(list(ast.connections.connections)), 3)
 
 
 class CustomEmitter(emit.Emitter):

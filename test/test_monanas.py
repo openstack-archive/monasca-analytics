@@ -22,7 +22,7 @@ import monasca_analytics.spark.driver as driver
 import monasca_analytics.util.common_util as cu
 from test.mocks import sml_mocks
 from test.mocks import spark_mocks
-from util_for_testing import MonanasTestCase
+from test.util_for_testing import MonanasTestCase
 
 
 class MonanasTest(MonanasTestCase):

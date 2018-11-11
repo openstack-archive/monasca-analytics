@@ -28,6 +28,9 @@ import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as tr
 from monasca_analytics.util import validation_utils as vu
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 STATE_STOP = "stop"
@@ -67,7 +70,8 @@ class IPTablesSource(base.MarkovChainSource):
     @staticmethod
     def validate_config(_config):
         source_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "sleep": voluptuous.And(
                 float,
                 voluptuous.Range(
@@ -149,7 +153,7 @@ class IPTablesSource(base.MarkovChainSource):
         and a little bit of ssh traffic
         """
         tr = []
-        for iptable, feature in iptables.iteritems():
+        for iptable, feature in six.iteritems(iptables):
             if feature.startswith("ssh"):
                 tr.append(self._create_trigger(0.1, STATE_NORMAL, iptable))
             elif feature.startswith("http"):
@@ -165,7 +169,7 @@ class IPTablesSource(base.MarkovChainSource):
         but the ping traffic is dramatically increased
         """
         tr = []
-        for iptable, feature in iptables.iteritems():
+        for iptable, feature in six.iteritems(iptables):
             if feature.startswith("ssh"):
                 tr.append(self._create_trigger(0.1, STATE_ATTACK, iptable))
             elif feature.startswith("http"):

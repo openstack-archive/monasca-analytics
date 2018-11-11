@@ -19,10 +19,14 @@
 import voluptuous
 
 
+import six
+
+
 def action_model(value):
     """Validates the data against action_model schema."""
     action_model_schema = voluptuous.Schema({
-        "action": voluptuous.And(basestring, lambda o: not o.startswith("_"))
+        "action": voluptuous.And(six.string_types[0],
+                                 lambda o: not o.startswith("_"))
     }, required=True)
 
     return action_model_schema(value)
@@ -31,7 +35,7 @@ def action_model(value):
 def banana_model(value):
     """Validates the data against the banana_model schema."""
     banana_model_schema = voluptuous.Schema({
-        "content": basestring
+        "content": six.string_types[0]
     }, required=True)
 
     return banana_model_schema(value)

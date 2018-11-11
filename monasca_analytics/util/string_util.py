@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import six
+
 
 def array_to_str(array, multiline=False, indent=None):
     """
@@ -77,7 +79,7 @@ def dict_to_str(dictionary, multiline=False, indent=None):
     if multiline:
         res += "\n"
     multiline = multiline or indent is not None
-    for k, v in sorted(dictionary.iteritems(), key=lambda ke: str(ke[0])):
+    for k, v in sorted(six.iteritems(dictionary), key=lambda ke: str(ke[0])):
         if indent is not None:
             res += " " * indent
         if isinstance(v, dict):
@@ -115,7 +117,7 @@ def stable_repr(obj):
 
     res = "{"
 
-    for k, v in sorted(obj.iteritems(), key=lambda ke: str(ke[0])):
+    for k, v in sorted(six.iteritems(obj), key=lambda ke: str(ke[0])):
         res += "{}: {}, ".format(repr(k), stable_repr(v))
 
     res = res[0:-2]

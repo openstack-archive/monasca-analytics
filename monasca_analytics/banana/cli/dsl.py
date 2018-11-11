@@ -19,6 +19,7 @@ import json
 import logging
 import os
 
+import six
 import voluptuous
 
 from monasca_analytics.config import const
@@ -307,7 +308,8 @@ class MonanasDSL(object):
         :returns: True if the component is connected to another component
                   according to the configuration, False otherwise
         """
-        for origin_id, dest_ids in self._config[const.CONNECTIONS].iteritems():
+        cons = self._config[const.CONNECTIONS]
+        for origin_id, dest_ids in six.iteritems(cons):
             if dest_ids == []:
                 continue
             if origin_id == component_id:

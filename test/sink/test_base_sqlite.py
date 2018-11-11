@@ -18,8 +18,9 @@ import os
 import sqlite3
 import unittest
 
-import cPickle
 import numpy as np
+import six
+from six.moves import cPickle
 import voluptuous
 
 import monasca_analytics.banana.typeck.type_util as type_util
@@ -61,9 +62,11 @@ class BaseSQLiteSinkDummyExtension(bsql.BaseSQLiteSink):
     def validate_config(_config):
         base_schema = voluptuous.Schema({
             "module": voluptuous.And(
-                basestring, lambda i: not any(c.isspace() for c in i)),
+                six.string_types[0],
+                lambda i: not any(c.isspace() for c in i)),
             voluptuous.Optional("db_name"): voluptuous.And(
-                basestring, lambda i: not any(c.isspace() for c in i)),
+                six.string_types[0],
+                lambda i: not any(c.isspace() for c in i)),
         }, required=True)
         return base_schema(_config)
 
@@ -103,7 +106,10 @@ class TestSQLiteSink(unittest.TestCase):
             c.execute('SELECT sml FROM smls WHERE voter_id = "' +
                       voter_id + '"')
             fetched_sml = c.fetchone()
-            fetched_sml = cPickle.loads(str(fetched_sml[0]))
+            if six.PY2:
+                fetched_sml = cPickle.loads(str(fetched_sml[0]))
+            else:
+                fetched_sml = cPickle.loads(fetched_sml[0])
             self.assertEqual(len(sml), len(fetched_sml))
             self.assertTrue((sml == fetched_sml).all())
 

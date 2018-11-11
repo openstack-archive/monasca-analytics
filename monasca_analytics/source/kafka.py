@@ -25,6 +25,9 @@ import monasca_analytics.component.params as params
 from monasca_analytics.source import base
 from monasca_analytics.util import validation_utils as vu
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,13 +37,17 @@ class KafkaSource(base.BaseSource):
     @staticmethod
     def validate_config(_config):
         source_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "params": {
-                "zk_host": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+                "zk_host": voluptuous.And(six.string_types[0],
+                                          vu.NoSpaceCharacter()),
                 "zk_port": int,
-                "group_id": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+                "group_id": voluptuous.And(six.string_types[0],
+                                           vu.NoSpaceCharacter()),
                 "topics": {
-                    voluptuous.And(basestring, vu.NoSpaceCharacter()):
+                    voluptuous.And(six.string_types[0],
+                                   vu.NoSpaceCharacter()):
                     voluptuous.And(int, voluptuous.Range(min=1))
                 }
             }

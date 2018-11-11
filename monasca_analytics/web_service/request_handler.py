@@ -19,6 +19,7 @@ import logging
 import sys
 import traceback
 
+import six
 from tornado import web
 import voluptuous
 
@@ -132,7 +133,7 @@ class BananaMetaDataHandler(web.RequestHandler):
     def get(self):
         all_components = introspect.get_available_classes()
         result = {"components": []}
-        for kind, components in all_components.iteritems():
+        for kind, components in six.iteritems(all_components):
             for component in components:
                 result["components"].append({
                     "name": component.__name__,

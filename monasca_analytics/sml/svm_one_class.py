@@ -17,6 +17,7 @@
 import logging
 
 import numpy as np
+import six
 from sklearn import svm
 import voluptuous
 
@@ -43,7 +44,8 @@ class SvmOneClass(base.BaseSML):
     @staticmethod
     def validate_config(_config):
         svm_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "nb_samples": voluptuous.Or(float, int)
         }, required=True)
         return svm_schema(_config)

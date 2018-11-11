@@ -22,17 +22,20 @@ import voluptuous
 from monasca_analytics.util import validation_utils as vu
 
 
+import six
+
+
 def validate_kafka_sink_config(config):
     """Validates the KafkaSink configuration"""
 
     config_schema = voluptuous.Schema({
-        "module": voluptuous.And(basestring, vu.AvailableSink()),
+        "module": voluptuous.And(six.string_types[0], vu.AvailableSink()),
         "host": voluptuous.And(
-            basestring, vu.NoSpaceCharacter()),
+            six.string_types[0], vu.NoSpaceCharacter()),
         "port": voluptuous.And(
             voluptuous.Or(float, int),
             lambda i: i >= 0 and math.floor(i) == math.ceil(i)),
         "topic": voluptuous.And(
-            basestring, vu.NoSpaceCharacter())
+            six.string_types[0], vu.NoSpaceCharacter())
     }, required=True)
     return config_schema(config)

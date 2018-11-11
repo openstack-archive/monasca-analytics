@@ -20,6 +20,7 @@ import voluptuous
 
 import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.component.params as params
+import six
 
 import monasca_analytics.source.markov_chain.base as base
 import monasca_analytics.source.markov_chain.events as ev
@@ -38,7 +39,8 @@ class MonascaMarkovChainSource(base.MarkovChainSource):
     @staticmethod
     def validate_config(_config):
         markov_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "sleep": voluptuous.And(
                 float, voluptuous.Range(
                     min=0, max=1, min_included=False, max_included=False)),

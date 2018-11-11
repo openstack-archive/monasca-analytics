@@ -22,6 +22,9 @@ import monasca_analytics.sink.base_sqlite as base
 from monasca_analytics.util import validation_utils as vu
 
 
+import six
+
+
 class IptablesSQLiteSink(base.BaseSQLiteSink):
     """IPTables SQLite Sink implementation."""
 
@@ -52,8 +55,9 @@ class IptablesSQLiteSink(base.BaseSQLiteSink):
     @staticmethod
     def validate_config(_config):
         iptables_sql_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             voluptuous.Optional("db_name"): voluptuous.And(
-                basestring, vu.NoSpaceCharacter()),
+                six.string_types[0], vu.NoSpaceCharacter()),
         }, required=True)
         return iptables_sql_schema(_config)

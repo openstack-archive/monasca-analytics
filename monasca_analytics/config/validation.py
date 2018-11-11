@@ -18,6 +18,7 @@
 
 import logging
 
+import six
 import voluptuous
 
 from monasca_analytics.config import const
@@ -94,7 +95,7 @@ def _validate_schema(config):
     """
     config_schema = voluptuous.Schema({
         "spark_config": {
-            "appName": basestring,
+            "appName": six.string_types[0],
             "streaming": {
                 "batch_interval": voluptuous.And(int, voluptuous.Range(min=1))
             }
@@ -104,28 +105,34 @@ def _validate_schema(config):
             "debug": bool
         },
         "sources": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "ingestors": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "smls": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "voters": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "sinks": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "ldps": {
-            voluptuous.Optional(basestring): {basestring: object}
+            voluptuous.Optional(six.string_types[0]): {six.string_types[0]:
+                                                       object}
         },
         "connections": {
-            voluptuous.Optional(basestring): [basestring]
+            voluptuous.Optional(six.string_types[0]): [six.string_types[0]]
         },
         "feedback": {
-            voluptuous.Optional(basestring): [basestring]
+            voluptuous.Optional(six.string_types[0]): [six.string_types[0]]
         }
     }, required=True)
     return config_schema(config)

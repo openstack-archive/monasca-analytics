@@ -17,6 +17,7 @@
 import logging
 
 import numpy as np
+import six
 from sklearn import covariance
 import voluptuous
 
@@ -40,8 +41,8 @@ class EllipticEnvelope(BaseSML):
     @staticmethod
     def validate_config(_config):
         elliptic_schema = voluptuous.Schema({
-            'module': voluptuous.And(
-                basestring, NoSpaceCharacter()),
+            'module': voluptuous.And(six.string_types[0],
+                                     NoSpaceCharacter()),
             'nb_samples': voluptuous.Or(float, int)
         }, required=True)
         return elliptic_schema(_config)

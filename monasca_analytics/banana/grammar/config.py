@@ -122,7 +122,7 @@ def banana_grammar(emitter=emit.PrintEmitter()):
     # TODO(Joan): Remove once it is no longer needed
     def print_stmt(s, l, t):
         print("\nPRINT AST")
-        print(l, map(lambda x: str(x), t))
+        print((l, [str(x) for x in t]))
         print("END PRINT AST\n")
 
     def action_unimplemented(s, l, t):

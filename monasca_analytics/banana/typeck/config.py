@@ -30,6 +30,9 @@ import monasca_analytics.exception.monanas as exception_monanas
 import monasca_analytics.util.common_util as introspect
 
 
+import six
+
+
 def typeck(banana_file):
     """
     Type-check the provided BananaFile instance.
@@ -93,7 +96,7 @@ def typeck_jsonobj(json_obj, type_table):
     """
     root_type = u.Object(strict_checking=False)
 
-    for k, v in json_obj.props.iteritems():
+    for k, v in six.iteritems(json_obj.props):
         sub_type = u.create_object_tree(k, typeck_rhs(v, type_table))
         u.attach_to_root(root_type, sub_type, json_obj.span)
 
@@ -175,7 +178,7 @@ def typeck_expr(expr, type_table):
             _type = check_type(_type, dotpath_type)
         elif isinstance(el, ast.Expr):
             _type = check_type(_type, typeck_expr(el, type_table))
-        elif isinstance(el, basestring):
+        elif isinstance(el, six.string_types):
             if el not in allowed_symbol(_type):
                 raise exception.BananaUnknownOperator(expr.span, el, _type)
             if el in ['-', '*', '/']:
@@ -252,8 +255,9 @@ def typeck_component(component, type_table):
 
     if all_named == 1:
         for arg in component.args:
-            param = filter(lambda x: x.param_name == arg.arg_name.inner_val(),
-                           comp_params)
+            param = list(filter(lambda x:
+                                x.param_name == arg.arg_name.inner_val(),
+                                comp_params))
             if len(param) != 1:
                 raise exception.BananaComponentIncorrectParamName(
                     component=component.type_name,

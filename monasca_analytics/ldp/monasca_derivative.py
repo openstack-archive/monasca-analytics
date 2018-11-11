@@ -20,6 +20,7 @@ import voluptuous
 
 import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.component.params as params
+import six
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
@@ -47,7 +48,8 @@ class MonascaDerivativeLDP(bt.BaseLDP):
     @staticmethod
     def validate_config(_config):
         monasca_der_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             # Derivative period in multiple of batch interval
             "period": voluptuous.And(
                 voluptuous.Or(float, int),
@@ -81,7 +83,7 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         return dstream.map(fn.from_json) \
             .window(period, period) \
             .map(lambda m: ((frozenset(
-                m["metric"]["dimensions"].items()),
+                list(m["metric"]["dimensions"].items())),
                 m["metric"]["name"]),
                 m)) \
             .groupByKey() \
@@ -106,8 +108,8 @@ class MonascaDerivativeLDP(bt.BaseLDP):
         meta = metric_values.data[0]["meta"]
         dims = metric_values.data[0]["metric"]["dimensions"]
         # All values
-        timestamps = map(lambda m: m["metric"]["timestamp"], metric_values)
-        all_values = map(lambda m: m["metric"]["value"], metric_values)
+        timestamps = [m["metric"]["timestamp"] for m in metric_values]
+        all_values = [m["metric"]["value"] for m in metric_values]
         # Sort values
         all_values = [y for (_, y) in
                       sorted(zip(timestamps, all_values), key=lambda x: x[0])]

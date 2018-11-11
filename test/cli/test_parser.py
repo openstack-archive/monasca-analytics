@@ -17,6 +17,7 @@
 import json
 import logging.config
 import os
+import six
 import unittest
 
 from monasca_analytics.banana.cli import const
@@ -74,50 +75,50 @@ class TestMonanasDSL(unittest.TestCase):
     def test_parse_create(self):
         info = parser.get_parser().parseString("A = my_module")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.CREATE], info[0].keys())
+        six.assertCountEqual(self, [const.CREATE], info[0].keys())
         self.assert_create(info[0], "A", "my_module")
 
     def test_parse_modify(self):
         info = parser.get_parser().parseString("_A1.params.123._inf- = my.val")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.MODIFY], info[0].keys())
+        six.assertCountEqual(self, [const.MODIFY], info[0].keys())
         self.assert_modify(info[0], "_A1", ["params", "123", "_inf-"],
                            "my.val")
 
     def test_parse_connect(self):
         info = parser.get_parser().parseString("_A1->B")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.CONNECT], info[0].keys())
+        six.assertCountEqual(self, [const.CONNECT], info[0].keys())
         self.assert_connect(info[0], "_A1", "B")
 
     def test_parse_disconnect(self):
         info = parser.get_parser().parseString("_A1!->B")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.DISCONNECT], info[0].keys())
+        six.assertCountEqual(self, [const.DISCONNECT], info[0].keys())
         self.assert_disconnect(info[0], "_A1", "B")
 
     def test_parse_remove(self):
         info = parser.get_parser().parseString("rM(A)")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.REMOVE], info[0].keys())
+        six.assertCountEqual(self, [const.REMOVE], info[0].keys())
         self.assert_remove(info[0], "A")
 
     def test_parse_load(self):
         info = parser.get_parser().parseString("LoAd(_some/path/123.json)")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.LOAD], info[0].keys())
+        six.assertCountEqual(self, [const.LOAD], info[0].keys())
         self.assert_load(info[0], "_some/path/123.json")
 
     def test_parse_save(self):
         info = parser.get_parser().parseString("sAVe()")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.SAVE], info[0].keys())
+        six.assertCountEqual(self, [const.SAVE], info[0].keys())
         self.assert_save(info[0])
 
     def test_parse_save_as(self):
         info = parser.get_parser().parseString("sAVE(/root/0/path_/f.conf)")
         self.assertEqual(1, len(info))
-        self.assertItemsEqual([const.SAVE_AS], info[0].keys())
+        six.assertCountEqual(self, [const.SAVE_AS], info[0].keys())
         self.assert_save_as(info[0], "/root/0/path_/f.conf")
 
     def test_parse_multiline(self):

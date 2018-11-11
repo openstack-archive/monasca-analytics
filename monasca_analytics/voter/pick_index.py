@@ -22,6 +22,9 @@ import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.component.params as params
 from monasca_analytics.voter import base
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +38,8 @@ class PickIndexVoter(base.BaseVoter):
     def validate_config(_config):
         pick_schema = voluptuous.Schema({
             "module": voluptuous.And(
-                basestring, lambda i: not any(c.isspace() for c in i)),
+                six.string_types[0],
+                lambda i: not any(c.isspace() for c in i)),
             "index": voluptuous.And(
                 voluptuous.Or(float, int),
                 lambda i: i >= 0 and math.ceil(i) == math.floor(i)

@@ -18,6 +18,7 @@ import logging
 import math
 
 import numpy as np
+import six
 from sklearn import decomposition
 import voluptuous
 
@@ -41,7 +42,8 @@ class LiNGAM(base.BaseSML):
     @staticmethod
     def validate_config(_config):
         lingam_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "threshold": float
         }, required=True)
         return lingam_schema(_config)

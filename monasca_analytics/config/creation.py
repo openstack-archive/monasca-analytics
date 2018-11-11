@@ -19,6 +19,9 @@ import logging
 from monasca_analytics.config import const
 from monasca_analytics.util import common_util
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,7 +54,7 @@ def _create_comps_by_module(comp_type, _config):
     """
     logger.debug("Creating components of type : " + comp_type)
     ret = {}
-    for comp_id, comp_config in _config[comp_type].iteritems():
+    for comp_id, comp_config in six.iteritems(_config[comp_type]):
         comp = _create_component_by_module(
             comp_id, comp_config, comp_type)
         ret[comp_id] = comp

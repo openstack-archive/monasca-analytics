@@ -17,10 +17,10 @@
 import abc
 import logging
 import six
+from six.moves import cPickle
 import sqlite3
 import time
 
-import cPickle
 
 from monasca_analytics.sink import base
 

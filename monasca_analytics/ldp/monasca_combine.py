@@ -20,6 +20,7 @@ import voluptuous
 
 import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.component.params as params
+import six
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
@@ -100,7 +101,7 @@ class MonascaCombineLDP(bt.BaseLDP):
         if len(separated_metrics.keys()) != nb_of_metrics:
             return []
 
-        separated_metrics = sorted(list(separated_metrics.iteritems()),
+        separated_metrics = sorted(list(six.iteritems(separated_metrics)),
                                    key=lambda x: len(x[1]))
         separated_metrics = separated_metrics  # type: list[(str, list[dict])]
 
@@ -109,10 +110,8 @@ class MonascaCombineLDP(bt.BaseLDP):
             metric[1].sort(key=lambda v: v["metric"]["timestamp"])
 
         temp_values = []
-        all_timestamp = map(
-            lambda l: map(
-                lambda x: x["metric"]["timestamp"], l[1]),
-            separated_metrics)
+        all_timestamp = [[x["metric"]["timestamp"] for x in l[1]]
+                         for l in separated_metrics]
         for index in range(0, len(separated_metrics[0][1])):
             current_env = {
                 separated_metrics[0][0]:
@@ -145,14 +144,15 @@ class MonascaCombineLDP(bt.BaseLDP):
     @staticmethod
     def validate_config(_config):
         monasca_comb_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
-            "metric": basestring,
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
+            "metric": six.string_types[0],
             "period": voluptuous.And(
                 voluptuous.Or(float, int),
                 lambda i: i >= 0 and math.floor(i) == math.ceil(i)),
-            "lambda": basestring,
+            "lambda": six.string_types[0],
             "bindings": {
-                basestring: voluptuous.Or(
+                six.string_types[0]: voluptuous.Or(
                     "apache.net.kbytes_sec",
                     "apache.net.requests_sec",
                     "apache.performance.cpu_load_perc",

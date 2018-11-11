@@ -188,7 +188,7 @@ def attach_to_root(root_obj, obj1, span, erase_existing=False):
     :param erase_existing: Set to true if the root type should
                            always be erased.
     """
-    for key, child_type in obj1.props.iteritems():
+    for key, child_type in six.iteritems(obj1.props):
         if key in root_obj.props:
             root_sub_type = root_obj.props[key]
             # Both are object -> recurse
@@ -311,13 +311,13 @@ class Object(String):
 
     def default_value(self):
         default_value = {}
-        for key, val in self.props.iteritems():
+        for key, val in six.iteritems(self.props):
             default_value[key] = val.default_value()
         return default_value
 
     def to_json(self):
         res = {"id": "object", "props": {}}
-        for key, val in self.props.iteritems():
+        for key, val in six.iteritems(self.props):
             res["props"][key] = val.to_json()
         return res
 
@@ -617,7 +617,7 @@ def can_be_cast_to(_type1, _type2):
         if not _type2.strict_checking:
             return True
         else:
-            for prop_name, prop_type in _type2.props.iteritems():
+            for prop_name, prop_type in six.iteritems(_type2.props):
                 if prop_name not in _type1.props:
                     return False
                 if not can_be_cast_to(_type1.props[prop_name], prop_type):

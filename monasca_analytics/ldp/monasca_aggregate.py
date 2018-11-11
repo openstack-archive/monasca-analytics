@@ -19,6 +19,7 @@ import voluptuous
 
 import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.component.params as params
+import six
 
 import monasca_analytics.ldp.base as bt
 import monasca_analytics.ldp.monasca.helpers as helpers
@@ -40,7 +41,8 @@ class MonascaAggregateLDP(bt.BaseLDP):
     @staticmethod
     def validate_config(_config):
         monasca_ag_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "period": voluptuous.Or(float, int),
             "func": voluptuous.Or(
                 "avg",
@@ -123,25 +125,23 @@ class MonascaAggregateLDP(bt.BaseLDP):
         # Collect all dimensions
         dims = {}
         for metric_dims in separated_metrics.keys():
-            for prop, val in dict(metric_dims).iteritems():
+            for prop, val in six.iteritems(dict(metric_dims)):
                 if prop in dims:
                     dims[prop].add(val)
                 else:
                     dims[prop] = set(val)
 
         # Sort each metric
-        for _, metric in separated_metrics.iteritems():
+        for _, metric in six.iteritems(separated_metrics):
             metric.sort(key=lambda v: v["metric"]["timestamp"])
 
-        separated_metrics = sorted(separated_metrics.values(), key=len)
+        separated_metrics = sorted(list(separated_metrics.values()), key=len)
         separated_metrics.reverse()
 
         # Compute the new values
         new_values = []
-        all_timestamps = map(
-            lambda l: map(
-                lambda x: x["metric"]["timestamp"], l),
-            separated_metrics)
+        all_timestamps = [[x["metric"]["timestamp"] for x in l]
+                          for l in separated_metrics]
         metric_count = len(separated_metrics)
         for index in range(0, len(separated_metrics[0])):
             new_value = reducer[0](

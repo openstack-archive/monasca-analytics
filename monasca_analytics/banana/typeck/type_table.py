@@ -22,6 +22,9 @@ import monasca_analytics.exception.banana as exception
 import monasca_analytics.util.string_util as strut
 
 
+import six
+
+
 class TypeTable(object):
     """
     Type table. Support lookup for JsonLike object.
@@ -173,7 +176,7 @@ class TypeTable(object):
         :return: Returns this type table as a dict.
         """
         res = {}
-        for key, val in self._variables.iteritems():
+        for key, val in six.iteritems(self._variables):
             res[key.inner_val()] = val.to_json()
         return res
 
@@ -182,12 +185,12 @@ class TypeTable(object):
         Test if the type table contains or not the provided
         path. This function is more permissive than the other two.
         It will never raise any exception (or should aim not to).
-        :type key: basestring | ast.Ident | ast.DothPath
+        :type key: six.string_types | ast.Ident | ast.DothPath
         :param key: The key to test.
         :return: Returns True if the TypeTable contains a type for the
                  given path or identifier.
         """
-        if isinstance(key, basestring):
+        if isinstance(key, six.string_types):
             return key in self._variables
 
         if isinstance(key, ast.Ident):

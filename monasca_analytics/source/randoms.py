@@ -20,7 +20,7 @@ import logging
 import numpy as np
 import random
 import six
-import SocketServer
+from six.moves import socketserver
 import threading as th
 import time
 import uuid
@@ -54,7 +54,7 @@ class RandomSource(base.BaseSource):
         The server object is configured according to
         the configuration of this source module
         """
-        self._server = SocketServer.ThreadingTCPServer(
+        self._server = socketserver.ThreadingTCPServer(
             (self._config["params"]["host"],
              self._config["params"]["port"]),
             MonanasTCPHandler, False)
@@ -77,17 +77,21 @@ class RandomSource(base.BaseSource):
     @staticmethod
     def validate_config(_config):
         source_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "params": {
-                "host": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+                "host": voluptuous.And(six.string_types[0],
+                                       vu.NoSpaceCharacter()),
                 "port": int,
                 "model": {
-                    "name": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+                    "name": voluptuous.And(six.string_types[0],
+                                           vu.NoSpaceCharacter()),
                     "params": {
                         "origin_types": voluptuous.And([
                             {
                                 "origin_type": voluptuous.And(
-                                    basestring, vu.NoSpaceCharacter()),
+                                    six.string_types[0],
+                                    vu.NoSpaceCharacter()),
                                 "weight": voluptuous.And(
                                     voluptuous.Or(int, float),
                                     voluptuous.Range(
@@ -379,7 +383,7 @@ class UncorrelatedDataSourceGenerator(BaseDataSourceGenerator):
                 return i
 
 
-class MonanasTCPHandler(SocketServer.BaseRequestHandler):
+class MonanasTCPHandler(socketserver.BaseRequestHandler):
     """A TCP server handler for the alert generation."""
 
     def handle(self):

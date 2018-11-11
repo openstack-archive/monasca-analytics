@@ -16,6 +16,7 @@
 
 import logging
 
+import six
 import voluptuous
 
 import monasca_analytics.ldp.base as bt
@@ -32,7 +33,8 @@ class CloudCausalityLDP(bt.BaseLDP):
     @staticmethod
     def validate_config(_config):
         cloud_causality_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter())
         }, required=True)
         return cloud_causality_schema(_config)
 

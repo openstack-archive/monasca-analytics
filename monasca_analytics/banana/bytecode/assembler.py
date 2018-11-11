@@ -20,10 +20,10 @@
 #
 # It has been adapted to match the requirements of monasca_analytics
 
+import six
 import sys
 
 from array import array
-from decorators import decorate_assignment
 from dis import cmp_op
 from dis import EXTENDED_ARG
 from dis import hasfree
@@ -33,10 +33,11 @@ from dis import haslocal
 from dis import hasname
 from dis import HAVE_ARGUMENT
 from dis import opname
-from symbols import Symbol
 from types import CodeType
 from types import FunctionType
 
+from monasca_analytics.banana.bytecode.decorators import decorate_assignment
+from monasca_analytics.banana.bytecode.symbols import Symbol
 
 opcode = {}
 for op in range(256):
@@ -79,7 +80,12 @@ BUILD_LIST = opcode["BUILD_LIST"]
 UNPACK_SEQUENCE = opcode["UNPACK_SEQUENCE"]
 RETURN_VALUE = opcode["RETURN_VALUE"]
 BUILD_SLICE = opcode["BUILD_SLICE"]
-DUP_TOPX = opcode["DUP_TOPX"]
+if six.PY2:
+    DUP_TOPX = opcode["DUP_TOPX"]
+else:
+    # DUP_TOPX no longer in use from python3.3
+    DUP_TOP_TWO = opcode["DUP_TOP_TWO"]
+
 RAISE_VARARGS = opcode["RAISE_VARARGS"]
 MAKE_FUNCTION = opcode["MAKE_FUNCTION"]
 MAKE_CLOSURE = opcode["MAKE_CLOSURE"]
@@ -460,9 +466,14 @@ class Code(object):
         self.stackchange(count, 1)
         self.emit_arg(BUILD_SLICE, count)
 
-    def DUP_TOPX(self, count):
-        self.stackchange(count, count * 2)
-        self.emit_arg(DUP_TOPX, count)
+    if six.PY2:
+        def DUP_TOPX(self, count):
+            self.stackchange(count, count * 2)
+            self.emit_arg(DUP_TOPX, count)
+    else:
+        def DUP_TOP_TWO(self, count):
+            self.stackchange(count, count * 2)
+            self.emit_arg(DUP_TOP_TWO, count)
 
     def RAISE_VARARGS(self, argc):
         assert 0 <= argc <= 3, "Invalid number of arguments for RAISE_VARARGS"
@@ -711,13 +722,13 @@ class Code(object):
         def tuple_arg(args):
             self.UNPACK_SEQUENCE(len(args))
             for arg in args:
-                if not isinstance(arg, basestring):
+                if not isinstance(arg, six.string_types):
                     tuple_arg(arg)
                 else:
                     self.STORE_FAST(arg)
 
         for narg, arg in enumerate(args):
-            if not isinstance(arg, basestring):
+            if not isinstance(arg, six.string_types):
                 dummy_name = '.' + str(narg)
                 self.co_varnames[narg] = dummy_name
                 self.LOAD_FAST(dummy_name)
@@ -836,14 +847,25 @@ class Code(object):
         elif parent is not None and self.co_freevars:
             parent.makecells(self.co_freevars)
 
-        return CodeType(
-            self.co_argcount, len(self.co_varnames),
-            self.co_stacksize, flags, self.co_code.tostring(),
-            tuple(self.co_consts), tuple(self.co_names),
-            tuple(self.co_varnames),
-            self.co_filename, self.co_name, self.co_firstlineno,
-            self.co_lnotab.tostring(), self.co_freevars, self.co_cellvars
-        )
+        if six.PY2:
+            return CodeType(
+                self.co_argcount, len(self.co_varnames),
+                self.co_stacksize, flags, self.co_code.tostring(),
+                tuple(self.co_consts), tuple(self.co_names),
+                tuple(self.co_varnames),
+                self.co_filename, self.co_name, self.co_firstlineno,
+                self.co_lnotab.tostring(), self.co_freevars, self.co_cellvars
+            )
+        else:
+            kwonlyargcount = 0
+            return CodeType(
+                self.co_argcount, kwonlyargcount, len(self.co_varnames),
+                self.co_stacksize, flags, self.co_code.tobytes(),
+                tuple(self.co_consts), tuple(self.co_names),
+                tuple(self.co_varnames),
+                self.co_filename, self.co_name, self.co_firstlineno,
+                self.co_lnotab.tobytes(), self.co_freevars, self.co_cellvars
+            )
 
 for op in hasfree:
     if not hasattr(Code, opname[op]):
@@ -921,11 +943,10 @@ def gen_list(code, ob):
 
 generate_types = {
     int: Code.LOAD_CONST,
-    long: Code.LOAD_CONST,
     bool: Code.LOAD_CONST,
     CodeType: Code.LOAD_CONST,
     str: Code.LOAD_CONST,
-    unicode: Code.LOAD_CONST,
+    six.text_type: Code.LOAD_CONST,
     complex: Code.LOAD_CONST,
     float: Code.LOAD_CONST,
     type(None): Code.LOAD_CONST,
@@ -933,6 +954,8 @@ generate_types = {
     list: gen_list,
     dict: gen_map,
 }
+if six.PY2:
+    generate_types[long] = Code.LOAD_CONST
 
 
 class _se(object):

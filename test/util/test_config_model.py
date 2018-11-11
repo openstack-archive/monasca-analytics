@@ -59,7 +59,7 @@ class TestConfigModel(MonanasTestCase):
         self.config = self.get_config()
 
     def test_validate_config_missing_spark_key(self):
-        for key in self.config["spark_config"].keys():
+        for key in list(self.config["spark_config"].keys()):
             del self.config["spark_config"][key]
             self.assertRaises(voluptuous.Invalid,
                               validation.validate_config, self.config)

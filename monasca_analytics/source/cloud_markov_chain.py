@@ -28,6 +28,9 @@ import monasca_analytics.source.markov_chain.state_check as dck
 import monasca_analytics.source.markov_chain.transition as tr
 from monasca_analytics.util import validation_utils as vu
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,8 +39,8 @@ class CloudMarkovChainSource(base.MarkovChainSource):
     @staticmethod
     def validate_config(_config):
         source_schema = voluptuous.Schema({
-            "module": voluptuous.And(
-                basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "min_event_per_burst": voluptuous.Or(float, int),
             "sleep": voluptuous.And(
                 float, voluptuous.Range(
@@ -81,7 +84,8 @@ class CloudMarkovChainSource(base.MarkovChainSource):
                 },
             },
             "graph": {
-                voluptuous.And(basestring, vu.ValidMarkovGraph()): [basestring]
+                voluptuous.And(six.string_types[0],
+                               vu.ValidMarkovGraph()): [six.string_types[0]]
             }
         }, required=True)
         return source_schema(_config)
@@ -205,7 +209,7 @@ class CloudMarkovChainSource(base.MarkovChainSource):
                 support_node.dependencies.append(webs)
                 nodes[node_name] = webs
 
-        for k, v in graph.iteritems():
+        for k, v in six.iteritems(graph):
             node_name, _ = k.split(":")
 
             for depend_on in v:

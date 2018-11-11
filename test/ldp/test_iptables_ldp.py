@@ -36,7 +36,7 @@ class TestIptablesLDP(MonanasTestCase):
                 "id": "1"
             }
         }]
-        self.raw_events = map(lambda x: x["event"], self.rdd_entry)
+        self.raw_events = [x["event"] for x in self.rdd_entry]
         self.ip_ldp = iptables_ldp.IptablesLDP("fake_id",
                                                {"module": "fake_config"})
 

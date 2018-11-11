@@ -20,6 +20,9 @@ from monasca_analytics.sink import base
 from monasca_analytics.util import validation_utils as vu
 
 
+import six
+
+
 class StdoutSink(base.BaseSink):
     """Sink that prints the dstream to stdout, using pprint command"""
 
@@ -36,7 +39,8 @@ class StdoutSink(base.BaseSink):
     @staticmethod
     def validate_config(_config):
         stdout_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter())
         }, required=True)
         stdout_schema(_config)
 

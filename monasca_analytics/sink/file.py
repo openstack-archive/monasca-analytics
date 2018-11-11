@@ -26,6 +26,9 @@ import monasca_analytics.sink.base as base
 from monasca_analytics.util import validation_utils as vu
 
 
+import six
+
+
 class FileSink(base.BaseSink):
     """Sink that prints the dstream to a file in the driver
 
@@ -75,9 +78,10 @@ class FileSink(base.BaseSink):
     @staticmethod
     def validate_config(_config):
         file_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter()),
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter()),
             "path": voluptuous.Or(
-                voluptuous.And(basestring, vu.ExistingPath()),
+                voluptuous.And(six.string_types[0], vu.ExistingPath()),
                 None)
         }, required=True)
         return file_schema(_config)

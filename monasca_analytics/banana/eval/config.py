@@ -26,6 +26,9 @@ import monasca_analytics.config.const as conf_const
 import monasca_analytics.exception.banana as exception
 import monasca_analytics.util.common_util as introspect
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -186,7 +189,7 @@ def eval_comp(context, comp, expected_type):
     # Get default config for the component
     conf = component_type.get_default_config()
     # Update modified params
-    for k, val in arguments.iteritems():
+    for k, val in six.iteritems(arguments):
         conf[k] = val
     # Delay evaluation until we do the assign
     return component_type, conf
@@ -204,7 +207,7 @@ def eval_object(context, obj, expected_type):
     :return: Returns the computed value
     """
     result = expected_type.default_value()
-    for name, val in obj.props.iteritems():
+    for name, val in six.iteritems(obj.props):
         subtype = expected_type[name]
         ctx.set_property(result, name, eval_rhs(context, val, subtype))
     return result
@@ -239,7 +242,7 @@ def eval_expr(context, expr, expected_type):
         )
     current_operator = operator.add
     for el in expr.expr_tree:
-        if isinstance(el, basestring) and el in ['+', '-', '*', '/']:
+        if isinstance(el, six.string_types) and el in ['+', '-', '*', '/']:
             current_operator = get_op_func(el)
         else:
             value = eval_rhs(context, el, expected_type)

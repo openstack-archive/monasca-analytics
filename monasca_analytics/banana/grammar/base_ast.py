@@ -87,7 +87,7 @@ class Span(object):
         Returns a string that start at self and stops at to_span.
         :type to_span: Span
         :param to_span: Span to stop at.
-        :rtype: basestring
+        :rtype: six.string_types
         :return: Returns the string encapsulating both
         """
         return self._text[self.lo:to_span.hi]

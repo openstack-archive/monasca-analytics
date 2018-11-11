@@ -23,6 +23,9 @@ import monasca_analytics.source.base as source
 import monasca_analytics.voter.base as voter
 
 
+import six
+
+
 def into_old_conf_dict(components):
     """
     Convert the provided dict of components
@@ -37,20 +40,20 @@ def into_old_conf_dict(components):
     return {
         conf_const.INGESTORS:
             dict(filter(lambda x: isinstance(x[1], ingestor.BaseIngestor),
-                        components.iteritems())),
+                        six.iteritems(components))),
         conf_const.VOTERS:
             dict(filter(lambda x: isinstance(x[1], voter.BaseVoter),
-                        components.iteritems())),
+                        six.iteritems(components))),
         conf_const.SINKS:
             dict(filter(lambda x: isinstance(x[1], sink.BaseSink),
-                        components.iteritems())),
+                        six.iteritems(components))),
         conf_const.LDPS:
             dict(filter(lambda x: isinstance(x[1], ldp.BaseLDP),
-                        components.iteritems())),
+                        six.iteritems(components))),
         conf_const.SOURCES:
             dict(filter(lambda x: isinstance(x[1], source.BaseSource),
-                        components.iteritems())),
+                        six.iteritems(components))),
         conf_const.SMLS:
             dict(filter(lambda x: isinstance(x[1], sml.BaseSML),
-                        components.iteritems())),
+                        six.iteritems(components))),
     }

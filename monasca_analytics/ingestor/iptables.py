@@ -17,6 +17,7 @@
 import logging
 
 import numpy as np
+import six
 import voluptuous
 
 from monasca_analytics.ingestor import base
@@ -45,7 +46,8 @@ class IptablesIngestor(base.BaseIngestor):
     @staticmethod
     def validate_config(_config):
         iptables_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter())
         }, required=True)
         return iptables_schema(_config)
 

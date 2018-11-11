@@ -22,6 +22,9 @@ import monasca_analytics.util.string_util as strut
 import pyparsing as p
 
 
+import six
+
+
 ASTNode = base.ASTNode
 Span = base.Span
 
@@ -112,7 +115,7 @@ class BananaFile(object):
 
     def statements_to_str(self):
         return "{ " + ', '.join(
-            map(lambda x: '{} = {}'.format(x[0], x[1]), self.statements)
+            ['{} = {}'.format(x[0], x[1]) for x in self.statements]
         ) + ' }'
 
     def __str__(self):
@@ -134,7 +137,7 @@ def make_span(s, l, t):
         for tok in tokens:
             if isinstance(tok, ASTNode):
                 hi = max(hi, tok.span.hi)
-            elif isinstance(tok, basestring):
+            elif isinstance(tok, six.string_types):
                 hi += len(tok)
             elif isinstance(tok, p.ParseResults):
                 hi = max(hi, compute_hi(init_loc, tok))
@@ -266,12 +269,12 @@ class DotPath(ASTNode):
 
     def into_unmodified_str(self):
         arr = [self.varname.into_unmodified_str()]
-        arr.extend(map(lambda x: x.into_unmodified_str(), self.properties))
+        arr.extend([x.into_unmodified_str() for x in self.properties])
         return '.'.join(arr)
 
     def __str__(self):
         arr = [str(self.varname)]
-        arr.extend(map(lambda x: str(x), self.properties))
+        arr.extend([str(x) for x in self.properties])
         return 'DotPath< {} >'.format('.'.join(arr))
 
     def __key(self):
@@ -489,7 +492,8 @@ class Connection(ASTNode):
         """
         def extend(into, iterable, what):
             for other_thing in iterable:
-                if len(filter(lambda x: x.val == other_thing.val, into)) > 0:
+                if len(list(filter(lambda x: x.val == other_thing.val,
+                                   into))) > 0:
                     emitter.emit_warning(
                         other_thing.span,
                         "{} {} already present".format(
@@ -561,8 +565,8 @@ class Connection(ASTNode):
 
     def __str__(self):
         res = "Connection<"
-        res += " {} ".format(map(lambda x: (str(x[0]), str(x[1])),
-                                 self.connections))
+        res += " {} ".format([(str(x[0]), str(x[1]))
+                             for x in self.connections])
         res += ">"
         return res
 

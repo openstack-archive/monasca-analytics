@@ -15,6 +15,7 @@
 # under the License.
 
 import os
+import six
 import unittest
 
 from monasca_analytics.config import const
@@ -34,37 +35,37 @@ class CommonUtilTest(unittest.TestCase):
         test_json_file = os.path.join(current_dir,
                                       "../resources/test_json.json")
         parsed_json = common_util.parse_json_file(test_json_file)
-        self.assertItemsEqual(parsed_json["sources"]["src1"],
-                              {"module": "src_module1",
-                               "params": {
-                                   "param1": "val1",
-                                   "param2": "val2",
-                                   "model_id": 3}
-                               })
-        self.assertItemsEqual(parsed_json["ingestors"]["ing1"],
-                              {"module": "ingestor_module"})
-        self.assertItemsEqual(parsed_json["smls"]["sml1"],
-                              {"module": "sml_module"})
+        six.assertCountEqual(self, parsed_json["sources"]["src1"],
+                             {"module": "src_module1",
+                              "params": {
+                                  "param1": "val1",
+                                  "param2": "val2",
+                                  "model_id": 3}
+                              })
+        six.assertCountEqual(self, parsed_json["ingestors"]["ing1"],
+                             {"module": "ingestor_module"})
+        six.assertCountEqual(self, parsed_json["smls"]["sml1"],
+                             {"module": "sml_module"})
         self.assertEqual(parsed_json["voters"]["vot1"],
                          {"module": "voter_module"})
-        self.assertItemsEqual(parsed_json["sinks"]["snk1"],
-                              {"module": "sink_module1"})
-        self.assertItemsEqual(parsed_json["sinks"]["snk2"],
-                              {"module": "sink_module2"})
-        self.assertItemsEqual(parsed_json["ldps"]["ldp1"],
-                              {"module": "ldps_module1"})
-        self.assertItemsEqual(parsed_json["connections"],
-                              {"src1": ["ing1"],
-                               "src2": ["ing1"],
-                               "ing1": ["aggr1", "ldp1", "sin1"],
-                               "snk1": [],
-                               "snk2": [],
-                               "sml1": ["vot1", "snk1"],
-                               "vot1": ["ldp1", "snk1"],
-                               "ldp1": ["snk2"]})
-        self.assertItemsEqual(parsed_json["feedback"],
-                              {"snk1": ["sml1"],
-                               "snk2": ["vot1"]})
+        six.assertCountEqual(self, parsed_json["sinks"]["snk1"],
+                             {"module": "sink_module1"})
+        six.assertCountEqual(self, parsed_json["sinks"]["snk2"],
+                             {"module": "sink_module2"})
+        six.assertCountEqual(self, parsed_json["ldps"]["ldp1"],
+                             {"module": "ldps_module1"})
+        six.assertCountEqual(self, parsed_json["connections"],
+                             {"src1": ["ing1"],
+                              "src2": ["ing1"],
+                              "ing1": ["aggr1", "ldp1", "sin1"],
+                              "snk1": [],
+                              "snk2": [],
+                              "sml1": ["vot1", "snk1"],
+                              "vot1": ["ldp1", "snk1"],
+                              "ldp1": ["snk2"]})
+        six.assertCountEqual(self, parsed_json["feedback"],
+                             {"snk1": ["sml1"],
+                              "snk2": ["vot1"]})
 
     def test_get_class_by_name(self):
         common_util.get_class_by_name("RandomSource", const.SOURCES)
@@ -79,9 +80,9 @@ class CommonUtilTest(unittest.TestCase):
         children = common_util.get_available_inherited_classes(util,
                                                                inh.Baseclass)
         classes = [source_class.__name__ for source_class in children]
-        self.assertItemsEqual(classes,
-                              ["Extended_1_1", "Extended_1_2",
-                               "Extended_1_3", "Extended_2_1", "Extended_3_1"])
+        six.assertCountEqual(self, classes,
+                             ["Extended_1_1", "Extended_1_2",
+                              "Extended_1_3", "Extended_2_1", "Extended_3_1"])
 
     def test_get_source_class_by_name(self):
         clazz = common_util.get_source_class_by_name("KafkaSource")
@@ -89,7 +90,8 @@ class CommonUtilTest(unittest.TestCase):
 
     def test_get_available_source_class_names(self):
         names = common_util.get_available_source_class_names()
-        self.assertItemsEqual(
+        six.assertCountEqual(
+            self,
             ['RandomSource', 'KafkaSource',
              'CloudMarkovChainSource', 'IPTablesSource',
              'MonascaMarkovChainSource'],
@@ -97,7 +99,8 @@ class CommonUtilTest(unittest.TestCase):
 
     def test_get_available_ingestor_class_names(self):
         names = common_util.get_available_ingestor_class_names()
-        self.assertItemsEqual(
+        six.assertCountEqual(
+            self,
             ['CloudIngestor', 'IptablesIngestor'],
             names)
 
@@ -108,7 +111,8 @@ class CommonUtilTest(unittest.TestCase):
 
     def test_get_available_sml_class_names(self):
         names = common_util.get_available_sml_class_names()
-        self.assertItemsEqual(
+        six.assertCountEqual(
+            self,
             ['LiNGAM',
              'SvmOneClass',
              'IsolationForest',
@@ -126,11 +130,11 @@ class CommonUtilTest(unittest.TestCase):
 
     def test_get_available_voter_class_names(self):
         names = common_util.get_available_voter_class_names()
-        self.assertItemsEqual(["PickIndexVoter"], names)
+        six.assertCountEqual(self, ["PickIndexVoter"], names)
 
     def test_get_available_ldp_class_names(self):
         names = common_util.get_available_ldp_class_names()
-        self.assertItemsEqual([
+        six.assertCountEqual(self, [
             "CloudCausalityLDP", "IptablesLDP",
             'MonascaDerivativeLDP', 'MonascaAggregateLDP',
             'MonascaCombineLDP'

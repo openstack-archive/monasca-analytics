@@ -21,6 +21,9 @@ import monasca_analytics.banana.typeck.type_util as type_util
 import monasca_analytics.exception.banana as exception
 
 
+import six
+
+
 def deadpathck(banana_file, type_table, emitter=emit.PrintEmitter()):
     """
     Perform dead path elimination on the provided AST.
@@ -67,7 +70,7 @@ def deadpathck(banana_file, type_table, emitter=emit.PrintEmitter()):
 
     # We can now remove all the components that are "dead"
     # from the list of connections
-    for ident, node in dag_nodes.iteritems():
+    for ident, node in six.iteritems(dag_nodes):
         if not node.is_alive():
             emitter.emit_warning(
                 ident.span,
@@ -75,10 +78,9 @@ def deadpathck(banana_file, type_table, emitter=emit.PrintEmitter()):
                 "starting from a 'Source' and ending with a 'Sink'."
             )
             banana_file.components.pop(ident)
-            connections.connections = filter(
-                lambda edge: edge[0] != ident and edge[1] != ident,
-                connections.connections
-            )
+            connections.connections = [edge for edge in connections.connections
+                                       if edge[0] != ident and
+                                       edge[1] != ident]
 
     # TODO(Joan): We could also remove them from the statements.
     # TODO(Joan): But for this we need a dependency graph between
@@ -107,8 +109,8 @@ def contains_at_least_one_path_to_a_sink(banana_file, type_table):
         return isinstance(type_comp, type_util.Source)
 
     comp_vars = banana_file.components.keys()
-    at_least_one_sink = len(filter(is_sink, comp_vars)) > 0
-    at_least_one_source = len(filter(is_src, comp_vars)) > 0
+    at_least_one_sink = len(list(filter(is_sink, comp_vars))) > 0
+    at_least_one_source = len(list(filter(is_src, comp_vars))) > 0
 
     if not at_least_one_sink:
         raise exception.BananaNoFullPath("Sink")

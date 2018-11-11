@@ -22,6 +22,9 @@ import monasca_analytics.banana.bytecode.assembler as asbl
 import monasca_analytics.exception.banana as exception
 import monasca_analytics.parsing.private as priv
 
+import six
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,7 +47,7 @@ class ExpressionParser(object):
     def parse(self, string, code=asbl.Code()):
         """
         Parse a given string and construct an Evaluator
-        :type string: basestring
+        :type string: six.string_types
         :param string: String to parse.
         :type code: ass.Code
         :param code: Generated code will be written here.
@@ -76,7 +79,7 @@ class ExpressionParser(object):
         current_operator = None
         pushed_one_stack_value = False
         for child in subtree:
-            if isinstance(child, basestring):
+            if isinstance(child, six.string_types):
                 if priv.is_op(child):
                     current_operator = child
                 else:
@@ -125,7 +128,7 @@ def create_fn_with_config(env, expr_string):
     code(asbl.Local('__monanas__env'))
     code.co_argcount = 1
     # Create local variables
-    for key, value in env.iteritems():
+    for key, value in six.iteritems(env):
         code(asbl.Call(
             asbl.Getattr(
                 asbl.Local('__monanas__env'), 'get'),
@@ -147,12 +150,12 @@ def validate_environment(env):
     is expecting.
     :param env: Environment spec
     """
-    for key, val in env.iteritems():
-        if not isinstance(key, basestring):
+    for key, val in six.iteritems(env):
+        if not isinstance(key, six.string_types):
             raise exception.BananaEnvironmentError(
                 "{} is not a valid key (only string are)".format(key)
             )
-        if not isinstance(val, basestring):
+        if not isinstance(val, six.string_types):
             raise exception.BananaEnvironmentError(
                 "{} is not a valid value (only string are)".format(val)
             )
@@ -167,9 +170,9 @@ def validate_expression(expr_string):
               name usage against an environment.
     :raises: exception.BananaInvalidExpression
     """
-    if not isinstance(expr_string, basestring):
+    if not isinstance(expr_string, six.string_types):
         raise exception.BananaArgumentTypeError(
-            expected_type=basestring,
+            expected_type=six.string_types[0],
             received_type=type(expr_string)
         )
     parser = ExpressionParser()
@@ -202,7 +205,7 @@ def validate_name_binding(expr_handle, environment):
         :param subtree: subtree
         """
         for child in subtree:
-            if isinstance(child, basestring):
+            if isinstance(child, six.string_types):
                 if priv.is_not_op(child):
                     names.add(child)
             else:
@@ -210,7 +213,7 @@ def validate_name_binding(expr_handle, environment):
     names = set()
     collect_names(expr_handle.tree)
     for name in names:
-        if name not in environment.keys():
+        if name not in list(environment.keys()):
             raise exception.BananaInvalidExpression(
                 "The expression '{}' can't be used with the provided "
                 "environment: '{}'. Reason: '{}' is not defined.".format(

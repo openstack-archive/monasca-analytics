@@ -36,7 +36,7 @@ class ProbCheck(object):
                      success associated with it.
         """
         if isinstance(prob, dict):
-            self._prob = prob.items()
+            self._prob = list(prob.items())
         else:
             self._prob = prob
 

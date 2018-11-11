@@ -17,6 +17,7 @@
 import logging
 
 import numpy as np
+import six
 import voluptuous
 
 from monasca_analytics.ingestor import base
@@ -35,7 +36,8 @@ class CloudIngestor(base.BaseIngestor):
     @staticmethod
     def validate_config(_config):
         cloud_schema = voluptuous.Schema({
-            "module": voluptuous.And(basestring, vu.NoSpaceCharacter())
+            "module": voluptuous.And(six.string_types[0],
+                                     vu.NoSpaceCharacter())
         }, required=True)
         return cloud_schema(_config)
 

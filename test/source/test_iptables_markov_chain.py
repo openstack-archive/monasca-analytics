@@ -20,6 +20,9 @@ from monasca_analytics.source import iptables_markov_chain
 from test.util_for_testing import MonanasTestCase
 
 
+import six
+
+
 class TestIPTablesSource(MonanasTestCase):
 
     def setUp(self):
@@ -77,7 +80,7 @@ class TestIPTablesSource(MonanasTestCase):
         self.assertEqual(len(node._triggers), num_triggers)
         self.assertEqual(len(node._markov_chain._transitions),
                          len(states_transitions.keys()))
-        for state, num_transitions in states_transitions.iteritems():
+        for state, num_transitions in six.iteritems(states_transitions):
             self.assertEqual(len(node._markov_chain._transitions[state]),
                              num_transitions)
 

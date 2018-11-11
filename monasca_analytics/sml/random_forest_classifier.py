@@ -17,6 +17,7 @@
 import logging
 
 import numpy as np
+import six
 from sklearn import ensemble
 from sklearn.metrics import classification_report
 import voluptuous
@@ -41,8 +42,8 @@ class RandomForestClassifier(BaseSML):
     @staticmethod
     def validate_config(_config):
         randomforest_schema = voluptuous.Schema({
-            'module': voluptuous.And(
-                basestring, NoSpaceCharacter()),
+            'module': voluptuous.And(six.string_types[0],
+                                     NoSpaceCharacter()),
             'nb_samples': voluptuous.Or(float, int)
         }, required=True)
         return randomforest_schema(_config)

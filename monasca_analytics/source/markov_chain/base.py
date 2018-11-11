@@ -20,7 +20,7 @@ import itertools
 import json
 import logging
 import six
-import SocketServer
+from six.moves import socketserver
 import threading
 import time
 
@@ -74,7 +74,7 @@ class MarkovChainSource(base.BaseSource):
         self._server_thread.join()
 
     def _start_thread(self, system):
-        self._server = SocketServer.ThreadingTCPServer(
+        self._server = socketserver.ThreadingTCPServer(
             ("", 0),        # Let the OS pick a port for us
             FMSTCPHandler,  # Handler of the requests
             False)
@@ -229,7 +229,7 @@ class StateNode(object):
             dep.collect_events(hour_of_day, fake_date, request)
 
 
-class FMSTCPHandler(SocketServer.BaseRequestHandler):
+class FMSTCPHandler(socketserver.BaseRequestHandler):
     """A TCP server handler for the alert generation."""
 
     def handle(self):
