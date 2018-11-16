@@ -80,7 +80,7 @@ this function should return the number of samples that the algorithm requires in
 
 ## Coding Standards
 Python: All Python code conforms to the OpenStack standards at:
-http://docs.openstack.org/developer/hacking/
+https://docs.openstack.org/hacking/latest/
 
 * Developers must add unit tests for all logical components before merging to
 master.
