@@ -135,39 +135,6 @@ function unistall_pkgs {
 }
 
 ###
-function install_monasca_analytics {
-    echo_summary "Install Monasca-analytics"
-
-    sudo groupadd --system monasca-analytics || true
-    sudo useradd --system -g monasca-analytics monasca-analytics || true
-
-    create_monasca_analytics_directories
-    copy_monasca_analytics_files
-}
-
-###
-function create_monasca_analytics_directories {
-
-    MONASCA_ANALYTICS_DIRECTORIES=("/var/log/monasca/analytics" "/etc/monasca/analytics/init")
-
-    for MONASCA_ANALYTICS_DIRECTORY in "${MONASCA_ANALYTICS_DIRECTORIES[@]}"
-    do
-       sudo mkdir -p ${MONASCA_ANALYTICS_DIRECTORY}
-       sudo chown monasca-analytics:monasca-analytics ${MONASCA_ANALYTICS_DIRECTORY}
-       sudo chmod 755 ${MONASCA_ANALYTICS_DIRECTORY}
-    done
-}
-
-###
-function copy_monasca_analytics_files {
-    sudo cp -f "${MONASCA_ANALYTICS_BASE}"/devstack/files/monasca-analytics/markov_source_config.json /etc/monasca/analytics
-    sudo cp -f "${MONASCA_ANALYTICS_BASE}"/devstack/files/monasca-analytics/logging.json /etc/monasca/analytics
-    sudo cp -f "${MONASCA_ANALYTICS_BASE}"/devstack/files/monasca-analytics/monasca_analytics_init.conf /etc/init/monasca-analytics.conf
-    sudo cp -f "${MONASCA_ANALYTICS_BASE}"/devstack/files/monasca-analytics/start-monasca-analytics.sh /etc/monasca/analytics/init/.
-    sudo chmod +x /etc/monasca/analytics/init/start-monasca-analytics.sh
-}
-
-###
 function install_pkg {
     ## JDK
     sudo -E apt-get -y install $JDK_PKG
@@ -200,12 +167,12 @@ END
             LENGTH_FOR_HOST=`expr match "$http_proxy" 'http://[\.A-Za-z\-]*'`-7
             sed -e '7,8d' \
                 -e "s/<host><\/host>/<host>${http_proxy:7:$LENGTH_FOR_HOST}<\/host>/g" \
-                ${MONASCA_ANALYTICS_BASE}/devstack/files/monasca-analytics/settings.xml > ~/.m2/settings.xml
+                ${MONASCA_ANALYTICS_BASE}/devstack/files/maven/settings.xml > ~/.m2/settings.xml
         else
             sed -e "s/<username><\/username>/<username>${HTTP_PROXY_USER_NAME}<\/username>/g" \
                 -e "s/<password><\/password>/<password>${HTTP_PROXY_PASSWORD}<\/password>/g" \
                 -e "s/<host><\/host>/<host>${HTTP_PROXY_HOST}<\/host>/g" \
-                ${MONASCA_ANALYTICS_BASE}/devstack/files/monasca-analytics/settings.xml > ~/.m2/settings.xml
+                ${MONASCA_ANALYTICS_BASE}/devstack/files/maven/settings.xml > ~/.m2/settings.xml
         fi
     fi
 
@@ -318,11 +285,6 @@ function install_spark {
 }
 
 ###
-function extra_spark {
-:
-}
-
-###
 function post_config_monasca_analytics {
 :
 }
@@ -349,8 +311,6 @@ if is_service_enabled monasca-analytics; then
         # Perform installation of service source
         echo_summary "Installing Spark"
         install_spark
-        echo_summary "Installing Monasca-analytics"
-        install_monasca_analytics
 
     elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
         # Configure after the other layer 1 and 2 services have been configured
