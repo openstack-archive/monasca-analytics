@@ -1,7 +1,7 @@
 Team and repository tags
 ========================
 
-[![Team and repository tags](https://governance.openstack.org/badges/monasca-analytics.svg)](https://governance.openstack.org/reference/tags/index.html)
+[![Team and repository tags](https://governance.openstack.org/tc/badges/monasca-analytics.svg)](https://governance.openstack.org/tc/reference/tags/index.html)
 
 <!-- Change things from this point on -->
 
@@ -68,9 +68,9 @@ its functional requirements and core concepts.
 
 ## Technologies
 MoNanas uses a number of third-party technologies:
-* Apache Spark (http://spark.apache.org/): Apache Spark is a fast and general
+* Apache Spark (https://spark.apache.org/): Apache Spark is a fast and general
 engine for large-scale data processing.
-* Apache Kafka (http://kafka.apache.org/): Used by Monasca and MoNanas's Kafka
+* Apache Kafka (https://kafka.apache.org/): Used by Monasca and MoNanas's Kafka
 `source` and `sink`.
 * Apache ZooKeeper (https://zookeeper.apache.org/): Used by Kafka.
 
