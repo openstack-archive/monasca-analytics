@@ -1,6 +1,6 @@
 numpy
 scipy < 1.2.0
-tornado
+tornado < 6.0
 scikit-learn
 kafka-python
 pyparsing
