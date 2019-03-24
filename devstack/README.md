@@ -36,7 +36,7 @@ LOGDIR=$DEST/logs
 LOG_COLOR=False
 
 # This line will enable all of Monasca Analytics.
-enable_plugin monasca-analytics git://git.openstack.org/openstack/monasca-analytics
+enable_plugin monasca-analytics https://git.openstack.org/openstack/monasca-analytics
 ```
 
 # END DEVSTACK LOCAL.CONF CONTENTS
