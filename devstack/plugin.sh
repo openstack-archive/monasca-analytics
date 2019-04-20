@@ -140,7 +140,7 @@ function install_pkg {
     sudo -E apt-get -y install $JDK_PKG
 
     ## SCALA
-    sudo -E curl $SCALA_URL -o $SPARK_DOWNLOAD/$SCALA
+    download_through_cache $SCALA_URL $SCALA $SPARK_DOWNLOAD
     sudo -E dpkg -i $SPARK_DOWNLOAD/$SCALA
     echo "deb https://dl.bintray.com/sbt/debian /" | sudo -E tee -a /etc/apt/sources.list.d/sbt.list
     sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv $KEYID
@@ -155,9 +155,9 @@ function install_pkg {
 ###
 function build_spark {
     ## install maven
-    sudo -E curl $MAVEN_URL -o $SPARK_DOWNLOAD/$MAVEN_TARBALL
+    download_through_cache $MAVEN_URL $MAVEN_TARBALL $SPARK_DOWNLOAD
     sudo chown stack:stack $SPARK_DOWNLOAD/$MAVEN_TARBALL
-    sudo -u stack tar -xzf $SPARK_DOWNLOAD/$MAVEN_TARBALL -C $SPARK_DIR
+    sudo -u stack -g stack tar -xzf $SPARK_DOWNLOAD/$MAVEN_TARBALL -C $SPARK_DIR
 
     if [ ${http_proxy} ];then
         read HTTP_PROXY_USER_NAME HTTP_PROXY_PASSWORD HTTP_PROXY_HOST<< END
@@ -177,9 +177,9 @@ END
     fi
 
     ## Build Spark
-    sudo -E curl $SPARK_URL -o $SPARK_DOWNLOAD/${SPARK_TARBALL_NAME}
+    download_through_cache $SPARK_URL ${SPARK_TARBALL_NAME} $SPARK_DOWNLOAD
     sudo chown stack:stack $SPARK_DOWNLOAD/${SPARK_TARBALL_NAME}
-    sudo -u stack tar -xzf $SPARK_DOWNLOAD/${SPARK_TARBALL_NAME} -C $SPARK_DIR
+    sudo -u stack -g stack tar -xzf $SPARK_DOWNLOAD/${SPARK_TARBALL_NAME} -C $SPARK_DIR
 
     DEVSTACK_DIR=`pwd`
     cd $SPARK_DIR/spark-${SPARK_VERSION}
@@ -221,7 +221,7 @@ function install_kafka {
         sudo groupadd --system kafka || true
         sudo useradd --system -g kafka kafka || true
 
-        sudo -E curl $KAFKA_URL -o $SPARK_DOWNLOAD/$KAFKA_TARBALL
+        download_through_cache $KAFKA_URL  $KAFKA_TARBALL $SPARK_DOWNLOAD
         sudo tar -xzf $SPARK_DOWNLOAD/$KAFKA_TARBALL -C /opt
         sudo ln -sf /opt/kafka_${KAFKA_VERSION} /opt/kafka
 
@@ -294,6 +294,22 @@ function extra_monasca_analytics {
 :
 }
 
+function download_through_cache  {
+    local resource_location=$1
+    local resource_name=$2
+    local download_dir=$3
+
+    if [[ ! -d ${download_dir} ]]; then
+        _safe_permission_operation mkdir -p ${download_dir}
+        _safe_permission_operation chown stack ${download_dir}
+    fi
+
+    pushd  ${download_dir}
+    if [[ ! -f ${resource_name} ]]; then
+        sudo -E curl -m ${DOWNLOAD_FILE_TIMEOUT} --retry 3 --retry-delay 5 ${resource_location} -o ${resource_name}
+    fi
+    popd
+}
 
 # check for service enabled
 echo_summary "Monasca-analytics plugin with service enabled = `is_service_enabled monasca-analytics`"
