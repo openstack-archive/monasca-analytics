@@ -33,15 +33,20 @@ we can speed up the extraction of actionable infrastructure insight.
 
 :thumbsup: Transparently exploit data parallelism.
 
-### Example Use Cases
-* [MoNanas/UseCases](doc/use_cases.md): Use cases that are relevant to OpenStack
-
 ### Documentation
 * [MoNanas/GettingStarted](doc/getting_started.md): A starting point for users
 and developers of MoNanas.
 
 ### Repositories
 Core: https://github.com/openstack/monasca-analytics.git
+
+## Example Use Cases
+
+### Integrate with Monasca
+See: [MoNanas/IntegrateMonasca](doc/monasca.md) for more details integration with Monasca
+
+### Relevant to OpenStack
+See: [MoNanas/UseCases](doc/use_cases.md) for more details use cases that are relevant to OpenStack.
 
 ## MoNanas Design
 See: [MoNanas/Design](doc/design.md) for details on MoNanas's architecture,
