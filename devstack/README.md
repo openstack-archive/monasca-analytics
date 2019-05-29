@@ -14,7 +14,7 @@ To run Monasca Analytics in DevStack, do the following three steps.
 1. Clone the DevStack repo.
 
 ```
-git clone https://git.openstack.org/openstack-dev/devstack
+git clone https://opendev.org/openstack/devstack
 ```
 
 2. Add the following to the DevStack local.conf file in the root of the devstack directory. You may
@@ -36,7 +36,7 @@ LOGDIR=$DEST/logs
 LOG_COLOR=False
 
 # This line will enable all of Monasca Analytics.
-enable_plugin monasca-analytics https://git.openstack.org/openstack/monasca-analytics
+enable_plugin monasca-analytics https://opendev.org/openstack/monasca-analytics
 ```
 
 # END DEVSTACK LOCAL.CONF CONTENTS
