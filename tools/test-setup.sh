@@ -6,7 +6,7 @@
 
 HOME=${HOME:-/home/jenkins}
 SPARK_DIR=$HOME/spark
-SPARK_VERSION=${SPARK_VERSION:-2.1.0}
+SPARK_VERSION=${SPARK_VERSION:-2.4.4}
 SPARK_TARBALL_NAME=spark-$SPARK_VERSION.tgz
 SPARK_URL=http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_TARBALL_NAME
 
