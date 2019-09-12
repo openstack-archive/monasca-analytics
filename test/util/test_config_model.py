@@ -68,15 +68,6 @@ class TestConfigModel(MonanasTestCase):
         self.assertRaises(voluptuous.Invalid,
                           validation.validate_config, self.config)
 
-    def test_validate_config_missing_server_key(self):
-        del self.config["server"]["port"]
-        self.assertRaises(voluptuous.Invalid,
-                          validation.validate_config, self.config)
-        self.config = self.get_config()
-        del self.config["server"]["debug"]
-        self.assertRaises(voluptuous.Invalid,
-                          validation.validate_config, self.config)
-
     def test_validate_config_spark_wrong_format(self):
         self.config["spark_config"]["streaming"][
             "batch_interval"] = "I should not be a string"

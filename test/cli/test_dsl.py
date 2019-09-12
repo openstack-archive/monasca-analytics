@@ -20,8 +20,6 @@ import logging.config
 import os
 import unittest
 
-import voluptuous
-
 from monasca_analytics.banana.cli.dsl import MonanasDSL
 from monasca_analytics.config import const
 from monasca_analytics.exception import dsl as dsl_err
@@ -123,13 +121,6 @@ class TestMonanasDSL(unittest.TestCase):
         expected_config[const.SOURCES]["src4"] = self.testing_new_source_config
         expected_config[const.CONNECTIONS]["src4"] = []
         self.assertEqual(expected_config, self.dsl._config)
-
-    def test_add_component_wrong_config(self):
-        del (self.testing_new_source_config["params"]["zk_port"])
-        self.assertRaises(voluptuous.Invalid,
-                          self.dsl.add_component,
-                          self.testing_new_source_config)
-        self.assertEqual(self.original_config, self.dsl._config)
 
     def test_add_component_wrong_module(self):
         self.testing_new_source_config["module"] = "fake_module"

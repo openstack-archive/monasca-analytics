@@ -105,12 +105,6 @@ class MarkovChainSourceTest(MonanasTestCase):
             self.mcs.validate_config,
             self.config_extra_param)
 
-    def test_validate_config_missing_param(self):
-        self.assertRaises(
-            voluptuous.Invalid,
-            self.mcs.validate_config,
-            self.config_missing_param)
-
     def test_validate_config_wrong_type(self):
         self.assertRaises(
             voluptuous.Invalid,

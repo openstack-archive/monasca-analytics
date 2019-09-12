@@ -16,7 +16,6 @@
 
 from monasca_analytics.exception.banana import BananaEnvironmentError
 from monasca_analytics.exception.banana import BananaInvalidExpression
-from monasca_analytics.parsing.api import create_fn_with_config
 from monasca_analytics.parsing.api import validate_environment
 from monasca_analytics.parsing.api import validate_expression
 from monasca_analytics.parsing.api import validate_name_binding
@@ -70,31 +69,3 @@ class TestBananaAPI(MonanasTestCase):
     def test_validate_environment_is_invalid(self):
         self.assertRaises(BananaEnvironmentError,
                           validate_environment, {"a": 0})
-
-    def test_generated_fn_is_valid(self):
-        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
-                                   "a * b + c")
-        result = fn({"foo": 12, "bar": 2, "toto": -12})
-        self.assertEqual(result, 12)
-        result = fn({"foo": 0, "bar": 42, "toto": 13})
-        self.assertEqual(result, 13)
-        result = fn({"foo": 2, "bar": 3, "toto": 5})
-        self.assertEqual(result, 11)
-
-    def test_generated_fn_with_parentheses_in_expr1(self):
-        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
-                                   "(a - b) + c")
-        result = fn({"foo": 12, "bar": 2, "toto": -12})
-        self.assertEqual(result, -2)
-
-    def test_generated_fn_with_parentheses_in_expr2(self):
-        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
-                                   "a - (b + c)")
-        result = fn({"foo": 12, "bar": 2, "toto": -12})
-        self.assertEqual(result, 22)
-
-    def test_generated_fn_with_no_parentheses_in_expr(self):
-        fn = create_fn_with_config({"a": "foo", "b": "bar", "c": "toto"},
-                                   "a - b + c")
-        result = fn({"foo": 12, "bar": 2, "toto": 12})
-        self.assertEqual(result, 22)

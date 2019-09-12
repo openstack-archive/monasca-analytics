@@ -14,9 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from monasca_analytics.ldp.monasca_combine import MonascaCombineLDP
-from monasca_analytics.parsing.api import create_fn_with_config
-from test.util_for_testing import gen_metric
 from test.util_for_testing import MonanasTestCase
 
 
@@ -33,23 +30,3 @@ class TestMonascaAggregateLDP(MonanasTestCase):
 
     def tearDown(self):
         super(TestMonascaAggregateLDP, self).tearDown()
-
-    def test_combine_for_two_metric_product(self):
-        fn = create_fn_with_config({"a": "nb_cores", "b": "idl_perc"}, "a * b")
-        res = MonascaCombineLDP.combine(self.all_metrics, fn, "cpu_usage", 2)
-        res = [m["metric"]["value"] for m in res]
-        self.assertEqual(res, [0.24, 1.6])
-
-    def test_combine_for_two_metric_sum(self):
-        fn = create_fn_with_config({"a": "nb_cores", "b": "idl_perc"},
-                                   "b - a")
-        res = MonascaCombineLDP.combine(self.all_metrics, fn, "cpu_usage", 2)
-        res = [m["metric"]["value"] for m in res]
-        self.assertEqual(res, [-1.0, -1.2])
-
-    def test_combine_for_two_metric_some_expr(self):
-        fn = create_fn_with_config({"a": "nb_cores", "b": "idl_perc"},
-                                   "a * b - a + b")
-        res = MonascaCombineLDP.combine(self.all_metrics, fn, "cpu_usage", 2)
-        res = [m["metric"]["value"] for m in res]
-        self.assertEqual(res, [-0.76, 0.40000000000000013])

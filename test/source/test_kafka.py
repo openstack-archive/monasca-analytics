@@ -80,12 +80,6 @@ class KafkaSourceTest(MonanasTestCase):
             self.ks.validate_config,
             self.config_extra_param)
 
-    def test_validate_config_missing_dir(self):
-        self.assertRaises(
-            voluptuous.Invalid,
-            self.ks.validate_config,
-            self.config_missing_param)
-
     def test_validate_config_wrong_type(self):
         self.assertRaises(
             voluptuous.Invalid,
