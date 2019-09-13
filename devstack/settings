@@ -35,23 +35,23 @@ SPARK_DIRECTORIES=("/var/spark" "/var/log/spark" "/var/run/spark/work" "/etc/spa
 
 JDK_PKG="openjdk-8-jre-headless openjdk-8-jdk"
 
-MAVEN="apache-maven-3.5.3"
+MAVEN="apache-maven-3.5.4"
 MAVEN_TARBALL="$MAVEN-bin.tar.gz"
-MAVEN_URL="https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/$MAVEN_TARBALL"
+MAVEN_URL="https://archive.apache.org/dist/maven/maven-3/3.5.4/binaries/$MAVEN_TARBALL"
 
-SCALA_VERSION=${SCALA_VERSION:-2.11}
-SCALA_MIN_VERSION=${SCALA_MIN_VERSION:-.7}
+SCALA_VERSION=${SCALA_VERSION:-2.12}
+SCALA_MIN_VERSION=${SCALA_MIN_VERSION:-.8}
 SCALA="scala-${SCALA_VERSION}${SCALA_MIN_VERSION}.deb"
-SCALA_URL="https://downloads.typesafe.com/scala/${SCALA_VERSION}${SCALA_MIN_VERSION}/$SCALA"
+SCALA_URL="https://downloads.lightbend.com/scala/${SCALA_VERSION}${SCALA_MIN_VERSION}/$SCALA"
 KEYID=642AC823
 
 SPARK_DIR="/opt/spark"
 SPARK_DOWNLOAD="$SPARK_DIR/download"
-SPARK_VERSION=${SPARK_VERSION:-2.1.0}
+SPARK_VERSION=${SPARK_VERSION:-2.4.4}
 SPARK_TARBALL_NAME="spark-${SPARK_VERSION}.tgz"
 SPARK_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_TARBALL_NAME"
 
-BASE_KAFKA_VERSION=${BASE_KAFKA_VERSION:-1.0.1}
+BASE_KAFKA_VERSION=${BASE_KAFKA_VERSION:-2.1.1}
 KAFKA_DIR="/opt/kafka"
 KAFKA_DOWNLOAD="$KAFKA_DIR/download"
 KAFKA_VERSION=${KAFKA_VERSION:-${SCALA_VERSION}-${BASE_KAFKA_VERSION}}
