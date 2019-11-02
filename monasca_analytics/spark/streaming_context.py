@@ -65,6 +65,11 @@ class DriverStreamingListener(streaming.StreamingListener):
         logger.debug("Receiver has stopped: \n\t{}\n".format(
             receiverStopped))
 
+    @staticmethod
+    def onStreamingStarted(streamingStarted):
+        logger.debug("Streaming has been started: \n\t{}\n".format(
+            streamingStarted))
+
 
 def create_streaming_context(spark_context, config):
     """
