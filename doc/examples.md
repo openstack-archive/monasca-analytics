@@ -244,6 +244,170 @@ the source input format. So you can typically use it anywhere in existing data
 flow. In this mode, only root cause alerts are preserved. A result example
 under this mode is shown below.
 
+## Disk Failure prediction using SMART data
+
+Hard disk drives (HDDs) are most fragile part of systems and consequences of disk failures can be difficult to recover, or even unrecoverable.
+To ensure the reliability and stability of systems, it is crucial to monitor the working conditions of HDDs in real time and detect soon-to-fail HDDs by sensors.
+
+This example shows how MoNanas ingests SMART (self-monitoring and repair technology) data, trains a classification algorithm(Random forest), and then uses the trained  algorithm to detect the likelihood failure of the HDDs.  
+
+To train the model, we use publically available [SMART dataset](https://www.backblaze.com/b2/hard-drive-test-data.html), which is collected in the Backblaze data center. Backblaze run tens of thousands hard drives from 2013 and representing the largest public SMART dataset.
+
+### Running the Example
+To test this example, perform the following steps.
+
+#### Configuration File
+Before running MoNanas, we need to create a configuration file describing how
+we want MoNanas to orchestrate the data execution (creating a pipeline). You can find the following configuration in `$MONANAS_HOME/config/smart.json`:
+
+
+
+
+```json
+{
+    "spark_config": {
+        "appName": "testApp",
+        "streaming": {
+            "batch_interval": 1
+        }
+    },
+    "server": {
+        "port": 3000,
+        "debug": false
+    },
+    "sources": {
+        "src1": {
+            "module": "SmartFile",
+            "params": {
+               "dir": "/var/tmp/source_data/"
+            }
+        }
+    },
+    "ingestors": {
+        "ing1": {
+            "module": "SmartIngestor"
+        }
+    },
+    "smls": {
+        "sml1": {
+            "module": "RandomForestClassifier",
+        }
+    },
+    "voters": {
+        "vot1": {
+            "module": "PickIndexVoter",
+            "index": 0
+        }
+    },
+    "sinks": {
+        "snk3": {
+            "module": "KafkaSink",
+            "host": "127.0.0.1",
+            "port": 9092,
+            "topic": "my_topic"
+        },
+        "snk2": {
+            "module": "StdoutSink"
+        }
+    },
+    "ldps": {
+        "ldp1": {
+            "module": "Smart"
+        }
+    },
+    "connections": {
+        "src1": ["ing1", "ldp1"],
+        "ing1": [],
+        "sml1": ["vot1"],
+        "vot1": ["ldp1"],
+        "ldp1": ["snk1", "snk2"],
+        "snk1": [],
+        "snk2": [],
+        "snk3": []
+    },
+    "feedback": {}
+}
+```
+
+
+The flow of data execution is defined in `connections`. In this case, data
+are ingested from `src1` where smart data with csv format smart-data are being generated
+using open dataxxxx. The data are then ingested by `ing1` where
+each entry is converted into a format suitable for machine learning algorithm.
+MoNanas uses `numpy.array` as a standard format. Typically, an aggregator is
+responsible for aggregating data from different ingestors but in this scenario,
+there is only one ingestor, hence the implicit aggregator (not defined in the
+configuration) simply forwards the data to `sml1`, which uses Random Forest algorithm
+ to find the disk failures then passes the result to `vot1`.
+
+The voter is configured to pick the output of the first SML function and
+forwards that to `ldp1`. Here, the live data processor transforms data streamed from `src1`
+using prediction result and pushes it to standard output as well as thespecified Kafka server.
+
+#### Run MoNanas
+Start MoNanas as follows:
+
+
+```bash
+python $MONANAS_HOME/run.py -p $SPARK_HOME -c $MONANAS_HOME/config/iptables_anomalies.json \
+  -l $MONANAS_HOME/config/logging.json
+```
+If you want to run your own configuration you will need to change the value of the -c parameter.
+
+#### Start Data Execution
+MoNanas exposes a REST API for controlling the data execution. Use any HTTP
+client to POST with the following request body to MoNanas server (running on your localhost, at port 3000 by default) to start data streaming.
+
+
+```json
+{
+  "action": "start_streaming"
+}
+```
+e.g. using curl from terminal to make a request assuming the server is running
+locally.
+
+```bash
+curl -H "Content-Type: application/json" -X POST \
+  -d '{"action": "start_streaming"}' \
+  http://localhost:3000/api/v1/actions
+```
+
+#### Stop Data Execution
+When you want to stop the example, you can send another HTTP POST to order MoNanas to stop streaming data. In this case, the request body should be:
+
+
+```json
+{
+  "action": "stop_streaming"
+}
+```
+e.g. using curl from terminal to make a request assuming the server is running
+locally.
+
+```bash
+curl -H "Content-Type: application/json" -X POST \
+  -d '{"action": "stop_streaming"}' \
+  http://localhost:3000/api/v1/actions
+```
+
+#### Results
+
+
+The sinks for the transformed (processed) alerts defined in the configuration are via standard output and Kafka server. 
+Therefore, if the hard drive failure is predicted, the output will be displayed in the console. Alternatively, users can subscribe to a queue with the topic "my_topic" using any Kafka client.
+
+A result example is shown below. The value of the `DiskFailure` is identifier specified in input, so you can change the value as you like,  as long as it's constant and unique across all data.
+
+```json
+{
+"DiskFailure": "ST3000DM001_disk001"
+}
+```
+
+
+
+
 ## Anomalies in Rule Firing Patterns
 
 Some attacks can be recognized by patterns of rules being triggered in an anomalous fashion. For example, a Ping flood, a denial of service attack that consist in sending multiple pings to a system, would trigger IPTable rules handling the Ping much more often than if the system is not being attacked.
