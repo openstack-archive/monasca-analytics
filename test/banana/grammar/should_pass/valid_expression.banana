@@ -1,5 +1,0 @@
-c = SomeComponent()
-b = 12 + c.param1."foo bar constant"
-a = b * 12
-
-# STMT_EQ { DotPath< Ident< c > > = Component {    type_name:  Ident< SomeComponent >,    args: []}, DotPath< Ident< b > > = Expr< [Number< 12.0 >, +, DotPath< Ident< c >.Ident< param1 >.StringLit< "foo bar constant" > >] >, DotPath< Ident< a > > = Expr< [DotPath< Ident< b > >, *, Number< 12.0 >] > }

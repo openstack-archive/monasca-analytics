@@ -1,3 +1,0 @@
-a = { a.b: "test", a.c: "test" }
-
-# TYPE_TABLE_EQ {Ident< a >: TypeObject < {a: TypeObject < {b: TypeString, c: TypeString} >} >}

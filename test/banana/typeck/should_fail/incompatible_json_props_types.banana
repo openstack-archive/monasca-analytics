@@ -1,8 +1,0 @@
-# Incompatible type between string and object required by "a.b"
-a = { a: "test", a.b: 23 }
-
-# NEW_TEST
-
-a = { "a"."b": "test", a.b.c: 23 }
-
-# RAISE BananaTypeError

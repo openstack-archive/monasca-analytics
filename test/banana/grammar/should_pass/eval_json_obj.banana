@@ -1,6 +1,0 @@
-a = { a.b: "test" }
-c = { e: a }
-# VAR a EQ_JSON { "a": {"b": "test"} }
-# VAR c EQ_JSON { "e": {"a": {"b": "test"}} }
-
-# STMT_EQ { DotPath< Ident< a > > = JsonObj< {DotPath< Ident< a >.Ident< b > >: Expr< [StringLit< "test" >] >} >, DotPath< Ident< c > > = JsonObj< {DotPath< Ident< e > >: Expr< [DotPath< Ident< a > >] >} > }

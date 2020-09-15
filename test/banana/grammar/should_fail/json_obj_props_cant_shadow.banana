@@ -1,4 +1,0 @@
-# This one shadow the a.b, so this is still an error.
-a = { a.b: "test", a.b: 23 }
-
-# RAISE ParseSyntaxException

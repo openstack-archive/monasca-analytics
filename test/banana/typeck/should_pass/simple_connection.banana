@@ -1,7 +1,0 @@
-# Simple connection
-a -> b
-
-a = IPTablesSource(sleep=0.01)
-b = IptablesIngestor()
-
-# TYPE_TABLE_EQ {Ident< a >: IPTablesSource(sleep=TypeNumber), Ident< b >: IptablesIngestor()}

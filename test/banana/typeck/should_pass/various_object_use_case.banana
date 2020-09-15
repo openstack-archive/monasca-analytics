@@ -1,7 +1,0 @@
-a = {}
-b = {a: a}
-c.d.e = {}
-a.test = 12
-e = a
-a.test = "test"
-# TYPE_TABLE_EQ {Ident< a >: TypeObject < {test: TypeString} >, Ident< b >: TypeObject < {a: TypeObject < {test: TypeString} >} >, Ident< c >: TypeObject < {d: TypeObject < {e: TypeObject < {} >} >} >, Ident< e >: TypeObject < {test: TypeString} >}

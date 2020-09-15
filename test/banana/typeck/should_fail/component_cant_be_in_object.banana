@@ -1,4 +1,0 @@
-c = IptablesIngestor()
-a = { b: c }
-# TODO(Joan): rename Comp to Components
-# RAISE BananaAssignCompError

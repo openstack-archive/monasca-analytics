@@ -1,9 +1,0 @@
-a = IPTablesSource(sleep=0.01)
-b = a.sleep.test
-
-# NEW_TEST
-a = CloudMarkovChainSource()
-# Typo: runs -> run
-b = a.transitions.web_service."runs=>slow"
-
-# RAISE BananaPropertyDoesNotExists

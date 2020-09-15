@@ -1,9 +1,0 @@
-a = CloudMarkovChainSource()
-b = a.transitions.web_service
-
-# NEW_TEST
-
-a = CloudMarkovChainSource()
-b = a."transitions"."web_service"
-
-# TYPE_TABLE_EQ {Ident< a >: CloudMarkovChainSource(sleep=TypeNumber,min_event_per_burst=TypeNumber,transitions=TypeStruct < {host: TypeStruct < {off=>on: TypeNumber, on=>off: TypeNumber} >, switch: TypeStruct < {off=>on: TypeNumber, on=>off: TypeNumber} >, web_service: TypeStruct < {run=>slow: TypeAny, slow=>run: TypeAny, stop=>run: TypeAny} >} >,triggers=TypeStruct < {support: TypeStruct < {get_called: TypeAny} >} >,graph=TypeAny), Ident< b >: TypeStruct < {run=>slow: TypeAny, slow=>run: TypeAny, stop=>run: TypeAny} >}

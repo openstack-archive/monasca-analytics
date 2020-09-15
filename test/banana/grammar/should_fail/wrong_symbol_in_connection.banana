@@ -1,3 +1,0 @@
-# This should fail
-a -> b * c
-# RAISE ParseException

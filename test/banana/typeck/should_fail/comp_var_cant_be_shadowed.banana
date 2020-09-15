@@ -1,3 +1,0 @@
-c = IptablesIngestor()
-c = 23
-# RAISE BananaShadowingComponentError

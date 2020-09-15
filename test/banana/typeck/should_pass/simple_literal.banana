@@ -1,4 +1,0 @@
-a = "test"
-b = 213
-c = {}
-# TYPE_TABLE_EQ {Ident< a >: TypeString, Ident< b >: TypeNumber, Ident< c >: TypeObject < {} >}

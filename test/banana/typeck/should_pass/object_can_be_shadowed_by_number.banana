@@ -1,4 +1,0 @@
-a = 23
-a = {}
-
-# TYPE_TABLE_EQ {Ident< a >: TypeObject < {} >}

@@ -1,7 +1,0 @@
-numpy
-scipy < 1.2.0
-tornado < 6.0
-scikit-learn
-kafka-python
-pyparsing
-voluptuous>=0.8.9  # BSD License

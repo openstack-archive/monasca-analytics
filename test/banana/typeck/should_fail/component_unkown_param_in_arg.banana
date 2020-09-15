@@ -1,2 +1,0 @@
-a = IPTablesSource(sleep=0.01, test="foobar")
-# RAISE BananaComponentTooManyParams

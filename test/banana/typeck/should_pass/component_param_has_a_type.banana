@@ -1,3 +1,0 @@
-a = IPTablesSource(sleep=0.01)
-b = a.sleep
-# TYPE_TABLE_EQ {Ident< a >: IPTablesSource(sleep=TypeNumber), Ident< b >: TypeNumber}

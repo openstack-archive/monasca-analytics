@@ -1,3 +1,0 @@
-a = CloudMarkovChainSource() # LHS_EQ IGNORE
-c = a.sleep # LHS_EQ 0.01
-c = a.transitions.web_service."run=>slow"."0" # LHS_EQ 0.001
